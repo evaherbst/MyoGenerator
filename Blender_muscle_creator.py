@@ -10,8 +10,6 @@ import bmesh
 
 
 def reorder_coords():
-    import bpy
-    import bmesh
     bpy.ops.object.mode_set(mode = 'EDIT')
     bpy.ops.mesh.select_all(action='SELECT')
     bpy.context.tool_settings.mesh_select_mode = (True, False, False) #vertex select mode
@@ -33,14 +31,9 @@ def reorder_coords():
         prev, vert = vert, next
     bm.verts.sort()
     bmesh.update_edit_mesh(me)
-
-
 	
 	
 def export_coords():
-    import bpy
-    import math
-    import bmesh
     path = 'C:/Users/evach/Dropbox/MuscleTool/test_new_code_coords.txt'
     bpy.ops.object.transform_apply(location=True, rotation=True, scale=True) #need to set transforms to make sure they are in global CS
     bpy.ops.object.mode_set(mode = 'EDIT')
@@ -60,9 +53,6 @@ def export_coords():
 		
 
 
-"""define functions to be used later for calculations"""
-
-#add functions here
 
 """Main Script step by step to convert to add-on"""
 import bpy
@@ -75,6 +65,7 @@ import bmesh
 #go to edit mode and face select mode, clear selection
 bpy.ops.object.mode_set(mode = 'EDIT')
 bpy.context.tool_settings.mesh_select_mode = (False, False, True)
+bpy.context.tool_settings.select_lasso
 bpy.ops.mesh.select_all(action='DESELECT')
 #how to set to lasso select mode?
 
@@ -86,7 +77,8 @@ names = [ obj.name for obj in scn.objects]
 """prompt user to select origin attachment area""" 
 
 #select outer loop, duplicate, separate
-bpy.ops.mesh.region_to_loop() #omit this to copy faces - but will need loop only for generating input for the muscle decomposition tool, so could move this to the reorder_coords fxn
+bpy.ops.mesh.region_to_loop() #omit this if you want to copy all faces - but will still need loop isolated, for generating input for the muscle decomposition tool, 
+# so could move this to the reorder_coords fxn, make separate outside loop, reorder and export points, then delete extra loop
 bpy.ops.mesh.duplicate()
 bpy.ops.mesh.separate(type='SELECTED')
 
@@ -146,7 +138,6 @@ def make_muscle_empties():
 		print(i)
 		o = bpy.data.objects.new(i, None)
 		bpy.context.scene.collection.objects.link( o )
-	  # empty_draw was replaced by empty_display
 		o.empty_display_size = 2
 		o.empty_display_type = 'PLAIN_AXES'   
 		 
