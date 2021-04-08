@@ -65,9 +65,8 @@ import bmesh
 #go to edit mode and face select mode, clear selection
 bpy.ops.object.mode_set(mode = 'EDIT')
 bpy.context.tool_settings.mesh_select_mode = (False, False, True)
-bpy.context.tool_settings.select_lasso
 bpy.ops.mesh.select_all(action='DESELECT')
-#how to set to lasso select mode?
+
 
 # keep track of objects in scene to later rename new objects
 scn = bpy.context.scene
@@ -77,7 +76,7 @@ names = [ obj.name for obj in scn.objects]
 """prompt user to select origin attachment area""" 
 
 #select outer loop, duplicate, separate
-bpy.ops.mesh.region_to_loop() #omit this if you want to copy all faces - but will still need loop isolated, for generating input for the muscle decomposition tool, 
+# bpy.ops.mesh.region_to_loop() #omit this if you want to copy all faces - but will still need loop isolated, for generating input for the muscle decomposition tool, 
 # so could move this to the reorder_coords fxn, make separate outside loop, reorder and export points, then delete extra loop
 bpy.ops.mesh.duplicate()
 bpy.ops.mesh.separate(type='SELECTED')
@@ -91,10 +90,10 @@ new_objs = [ obj for obj in scn.objects if not obj.name in names]
 #rename new object and select and make active
 """Ideally have user enter a name in the GUI - but for now I just hardcoded it as an example"""
 for obj in new_objs:
-    obj.name = "muscle origin"
-    obj.data.name = "muscle origin"
+    obj.name = "AMEM insertion"
+    obj.data.name = "AMEM insertion"
     obj.select_set(True)
-    bpy.context.view_layer.objects.active = bpy.data.objects['muscle origin']
+    bpy.context.view_layer.objects.active = bpy.data.objects['AMEM insertion']
 
 bpy.ops.object.transform_apply(location=True, rotation=True, scale=True) #set transforms to make sure they are in global CS - not sure if necessary but just in case 
 #not sure if the above is applied to all objects or only selected or active
