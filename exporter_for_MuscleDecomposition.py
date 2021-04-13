@@ -2,6 +2,7 @@
 import bpy
 import math
 import bmesh
+import re
 
 
 def reorder_coords():
@@ -29,22 +30,37 @@ def reorder_coords():
 	
 	
 def export_coords():
-    path = 'C:/Users/evach/Dropbox/MuscleTool/test_new_code_coords.txt'
-    bpy.ops.object.transform_apply(location=True, rotation=True, scale=True) #need to set transforms to make sure they are in global CS
-    bpy.ops.object.mode_set(mode = 'EDIT')
-    bpy.ops.mesh.select_all(action='SELECT')
-    bpy.context.tool_settings.mesh_select_mode = (True, False, False) #vertex select mode
-    obj = bpy.context.object
-    file = open(path,'w')
-    # Get the active mesh
-    obj = bpy.context.edit_object
-    me = obj.data
-    # Get a BMesh representation
-    bm = bmesh.from_edit_mesh(me)
-    bm.faces.active = None
-    for v in bm.verts:
-        if v.select:
-            file.write(str(tuple(v.co) )+'\n')
+path = 'C:/Users/evach/Dropbox/MuscleTool/test_vtk_2.vtk'
+bpy.ops.object.transform_apply(location=True, rotation=True, scale=True) #need to set transforms to make sure they are in global CS
+bpy.ops.object.mode_set(mode = 'EDIT')
+bpy.ops.mesh.select_all(action='SELECT')
+bpy.context.tool_settings.mesh_select_mode = (True, False, False) #vertex select mode
+obj = bpy.context.object
+file = open(path,'w')
+
+# Get the active mesh
+obj = bpy.context.edit_object
+me = obj.data
+# Get a BMesh representation
+bm = bmesh.from_edit_mesh(me)
+bm.faces.active = None
+pointsList=[]
+for v in bm.verts:
+    if v.select:
+        # print(v.co)
+        coords = str(tuple(v.co))
+        coords = re.sub('[(),]', '', coords)
+        pointsList.append(coords) 
+print(pointsList)
+pointsCount = len(pointsList)
+print(pointsCount)
+header = str('# vtk DataFile Version 3.0\nvtk output\nASCII\nDATASET POLYDATA\nPOINTS %d float\n' %pointsCount) 
+file.write(header)
+for point in pointsList:
+    file.write(point +'\n')
+# file.close()
+
+
 
 
 
@@ -73,16 +89,14 @@ def create_boundary()
     new_objs = [ obj for obj in scn.objects if not obj.name in names]
 
     #rename new object and select and make active
-    """Ideally have user enter a name in the GUI - but for now I just hardcoded it as an example"""
     for obj in new_objs:
         obj.name = obj.name + "boundary"
         obj.data.name = obj.name + "boundary"
         obj.select_set(True)
-        bpy.context.view_layer.objects.active = bpy.data.objects[obj.name+ "boundary"]
+        bpy.context.view_layer.objects.active = bpy.data.objects[obj.name + "boundary"]
 
 
-    bpy.ops.object.transform_apply(location=True, rotation=True, scale=True) #set transforms to make sure they are in global CS - not sure if necessary but just in case 
-    #not sure if the above is applied to all objects or only selected or active
+
 
 
 
@@ -117,13 +131,18 @@ for obj in bpy.context.selected_objects:
             create_boundary()
             reorder_coords()
             export_coords()
+            #parent boundary to empty
+            #for "boundary" in obj.name
+               # reorder_coords()
+               # export_coords()
           
 
         elif "insertion" in obj.name:
             create_boundary()
-            reorder_coords()
-            export_coords()
-
+            #parent boundary to empty
+            for "boundary" in obj.name
+                reorder_coords()
+                export_coords()
 
         elif "volume" in obj.name:
           """export as .stls - make sure that the orientations for export are the same as in the scene!!!"""
