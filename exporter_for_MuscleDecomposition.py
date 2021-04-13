@@ -69,34 +69,41 @@ with open(path,'w') as of:
 
 def create_boundary():
 
+name = ""
+for obj in bpy.context.selected_objects:
     name = obj.name
 
-    # keep track of objects in scene to later rename new objects
-    scn = bpy.context.scene
-    names = [ obj.name for obj in scn.objects]
+# keep track of objects in scene to later rename new objects
+scn = bpy.context.scene
+names = [ obj.name for obj in scn.objects]
 
 
-    bpy.ops.object.mode_set(mode = 'EDIT')
-    bpy.ops.mesh.select_all(action='SELECT')
+bpy.ops.object.mode_set(mode = 'EDIT')
+bpy.ops.mesh.select_all(action='SELECT')
 
 
-    #select outer loop, duplicate, separate
-    bpy.ops.mesh.region_to_loop()
-    bpy.ops.mesh.duplicate()
-    bpy.ops.mesh.separate(type='SELECTED')
+#select outer loop, duplicate, separate
+bpy.ops.mesh.region_to_loop()
+bpy.ops.mesh.duplicate()
+bpy.ops.mesh.separate(type='SELECTED')
 
-    bpy.ops.object.mode_set(mode = 'OBJECT')
-    bpy.ops.object.select_all(action='DESELECT') 
+bpy.ops.object.mode_set(mode = 'OBJECT')
+bpy.ops.object.select_all(action='DESELECT') 
 
 
-    new_objs = [ obj for obj in scn.objects if not obj.name in names]
+new_objs = [ obj for obj in scn.objects if not obj.name in names]
 
-    #rename new object and select and make active
-    for obj in new_objs:
-        obj.name = obj.name + "boundary"
-        obj.data.name = obj.name + "boundary"
-        obj.select_set(True)
-        bpy.context.view_layer.objects.active = bpy.data.objects[obj.name + "boundary"]
+#rename new object and select and make active
+for obj in new_objs:
+    obj.name = name + " boundary"
+    obj.data.name = name + " boundary"
+    obj.select_set(True)
+    bpy.context.view_layer.objects.active = bpy.data.objects[name]
+    bpy.data.objects[name].select_set(True)
+    bpy.ops.object.parent_set(keep_transform=True)
+    bpy.context.view_layer.objects.active = bpy.data.objects[name + " boundary"]
+
+
 
 
 
