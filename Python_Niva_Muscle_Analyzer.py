@@ -23,7 +23,7 @@ def object_Recenter():
 #calculate muscle attachment 
 def get_attachment_area(obj):
     
-    bpy.ops.object.transform_apply(location=True rotation=True, scale=True)  #set scale = 1 to get correct area values and apply other transforms
+    bpy.ops.object.transform_apply(location=True rotation=True, scale=True)  #set transforms = 1 to get correct area values and apply other transforms
     objName=obj.name 
     me = obj.data #get mesh of object
     me.name=objName
@@ -38,7 +38,7 @@ def get_attachment_area(obj):
         
 
 def measure_muscle_volume(obj):
-    bpy.ops.object.transform_apply(location = True, scale = True, rotation = True) #set scale = 1 to get correct volume values and apply other transforms
+    bpy.ops.object.transform_apply(location = True, scale = True, rotation = True) #set transforms = 1 to get correct volume values and apply other transforms
     me = obj.data
     # Get a BMesh representation
     bm = bmesh.new() # create an empty BMesh
@@ -66,6 +66,8 @@ def get_muscle_length(attachment_list):
    
 
 def main_loop():
+  bpy.ops.object.select_all(action='SELECT')
+  bpy.ops.object.transform_apply(location = True, scale = True, rotation = True) #set transforms = 1 to get correct volume values and apply other transforms
   complete_Muscle_List = []
   muscle_Data = [] #create a list to store muscle data
   attachment_list = [] #create a list of origin and insertion objects
