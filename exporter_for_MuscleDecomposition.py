@@ -31,7 +31,8 @@ def reorder_coords():
 	
 def export_coords():
 path = 'C:/Users/evach/Dropbox/MuscleTool/test_vtk_2.vtk'
-bpy.ops.object.transform_apply(location=True, rotation=True, scale=True) #need to set transforms to make sure they are in global CS
+bpy.ops.object.transform_apply(location=True, rotation=True, scale=True) #need to set transforms to make sure they are in global CS #CHECK THIS - MAYBE DO NOT WANT LOCATION SET TO 0,0,0
+#NEED TO DO SOME TESTS!
 bpy.ops.object.mode_set(mode = 'EDIT')
 bpy.ops.mesh.select_all(action='SELECT')
 bpy.context.tool_settings.mesh_select_mode = (True, False, False) #vertex select mode

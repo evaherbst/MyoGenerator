@@ -23,7 +23,7 @@ def object_Recenter():
 #calculate muscle attachment 
 def get_attachment_area(obj):
     
-    bpy.ops.object.transform_apply(location=True rotation=True, scale=True)  #set transforms = 1 to get correct area values and apply other transforms
+    bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)  #set scale and rotation = 1 to get correct volume values and apply other transforms, do not set location to 0 because we want to know global position
     objName=obj.name 
     me = obj.data #get mesh of object
     me.name=objName
@@ -36,9 +36,15 @@ def get_attachment_area(obj):
     print(area)
     return area
         
+def get_centroid(obj):
+    centroid = obj.location
+    print(centroid)
+
+
+
 
 def measure_muscle_volume(obj):
-    bpy.ops.object.transform_apply(location = True, scale = True, rotation = True) #set transforms = 1 to get correct volume values and apply other transforms
+    bpy.ops.object.transform_apply(location = False, scale = True, rotation = True) #set scale and rotation = 1 to get correct volume values and apply other transforms, do not set location to 0 because we want to know global position
     me = obj.data
     # Get a BMesh representation
     bm = bmesh.new() # create an empty BMesh
@@ -64,15 +70,28 @@ def get_muscle_length(attachment_list):
       print("attachment list needs to be a list")
       return ("MISSING VALUE")
    
+def export(complete_Muscle_List):
+  filepath = bpy.data.filepath
+  main_path = os.path.dirname(filepath)
+  print("writing to: " + main_path)
+  outputFile = main_path + '\muscle metrics.csv' #save output to same folder as blender file
+  header = [['muscle_name', ' origin_area', ' origin_centroid', 'insertion_area', 'insertion_centroid', ' length', ' volume']]
+  with open(outputFile, "w", newline='') as f:
+      writer = csv.writer(f)
+      writer.writerows(header)
+      writer.writerows(complete_Muscle_List)
 
 def main_loop():
   bpy.ops.object.select_all(action='SELECT')
-  bpy.ops.object.transform_apply(location = True, scale = True, rotation = True) #set transforms = 1 to get correct volume values and apply other transforms
+  bpy.ops.object.transform_apply(location = False, scale = True, rotation = True) #set scale and rotation = 1 to get correct volume values and apply other transforms, do not set location to 0 because we want to know global position
+  # NEED TO CHECK IF THE PARENTING GIVES WRONG COORDINATES
   complete_Muscle_List = []
   muscle_Data = [] #create a list to store muscle data
   attachment_list = [] #create a list of origin and insertion objects
   origin_area=0
   insertion_area=0
+  origin_centroid=0
+  insertion_centroid=0
   muscle_volume=0
   muscle_length=0
   for obj in bpy.context.selected_objects:
@@ -83,32 +102,24 @@ def main_loop():
       for obj in children:
         if "origin" in obj.name:
           origin_area=get_attachment_area(obj) 
+          origin_centroid=get_centroid(obj)
           attachment_list.append(obj)
         elif "insertion" in obj.name:
           insertion_area=get_attachment_area(obj) 
+          insertion_centroid = get_centroid(obj)
           attachment_list.append(obj)
         elif "volume" in obj.name:
           muscle_volume=measure_muscle_volume(obj)
         else:
           print("Unproper naming of children. The following object will be ignored: "+obj.name)  
       muscle_length=get_muscle_length(attachment_list)
-      muscle_Data = [muscle_name, origin_area, insertion_area, muscle_length, muscle_volume]
+      muscle_Data = [muscle_name, origin_area, origin_centroid, insertion_area, insertion_centroid, muscle_length, muscle_volume]
       print(muscle_Data)
       complete_Muscle_List.append((muscle_Data))
       print(complete_Muscle_List)
       export(complete_Muscle_List)
  
 
-def export(complete_Muscle_List):
-  filepath = bpy.data.filepath
-  main_path = os.path.dirname(filepath)
-  print("writing to: " + main_path)
-  outputFile = main_path + '\muscle metrics.csv' #save output to same folder as blender file
-  header = [['muscle_name', ' origin_area', ' insertion_area', ' length', ' volume']]
-  with open(outputFile, "w", newline='') as f:
-      writer = csv.writer(f)
-      writer.writerows(header)
-      writer.writerows(complete_Muscle_List)
 
 
 object_Recenter() 
