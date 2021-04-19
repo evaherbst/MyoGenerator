@@ -33,6 +33,8 @@ def export_coords():
 path = 'C:/Users/evach/Dropbox/MuscleTool/test_vtk_2.vtk'
 bpy.ops.object.transform_apply(location=True, rotation=True, scale=True) #need to set transforms to make sure they are in global CS #CHECK THIS - MAYBE DO NOT WANT LOCATION SET TO 0,0,0
 #NEED TO DO SOME TESTS!
+#Did tests, if selecting edge loop origin should be same as parent and so if you check origin with or without parenting it's ok. But if origins are different, should set origin to geometry for boundary loop, otherwise it will still have parent origin
+#However, although parenting it sine, I think the locations need to be set to 0/global (as in done in line 34) to make sure vertices are in global space - otherwise will be in local (relative to object origin)
 bpy.ops.object.mode_set(mode = 'EDIT')
 bpy.ops.mesh.select_all(action='SELECT')
 bpy.context.tool_settings.mesh_select_mode = (True, False, False) #vertex select mode
@@ -45,13 +47,15 @@ me = obj.data
 bm = bmesh.from_edit_mesh(me)
 bm.faces.active = None
 pointsList=[]
+#maybe add in code to make sure all locations are in global CS?
 for v in bm.verts:
     if v.select:
         # print(v.co)
         coords = str(tuple(v.co))
         coords = re.sub('[(),]', '', coords)
-        pointsList.append(coords) 
-print(pointsList)
+        pointsList.append(coords)
+    print(pointsList)
+
 pointsCount = len(pointsList)
 print(pointsCount)
 
@@ -71,7 +75,7 @@ with open(path,'w') as of:
 def create_boundary():
 
 name = ""
-for obj in bpy.context.selected_objects:
+for obj in bpy.context.selected_objects: #maybe need to instead select that object only? e.g. obj.select_set(True) and deselect all other objects?
     name = obj.name
 
 # keep track of objects in scene to later rename new objects
@@ -101,7 +105,7 @@ for obj in new_objs:
     obj.select_set(True)
     bpy.context.view_layer.objects.active = bpy.data.objects[name]
     bpy.data.objects[name].select_set(True)
-    bpy.ops.object.parent_set(keep_transform=True)
+    bpy.ops.object.parent_set(keep_transform=True) #parents new loop to the attachment area - need to double check that the transforms are all global 
     bpy.context.view_layer.objects.active = bpy.data.objects[name + " boundary"]
 
 
