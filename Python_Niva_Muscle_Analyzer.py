@@ -36,12 +36,6 @@ def get_attachment_area(obj):
     print(area)
     return area
         
-        
-def get_centroid(obj):
-  centroid = obj.location
-
-
-
 
 
 def measure_muscle_volume(obj):
@@ -107,7 +101,7 @@ def main_loop():
         else:
           print("Unproper naming of children. The following object will be ignored: "+obj.name)  
       muscle_length=get_muscle_length(attachment_list)
-      muscle_Data = [muscle_name, origin_area, insertion_area, muscle_length, muscle_volume]
+      muscle_Data = [muscle_name, origin_area, origin_centroid, insertion_area, insertion_centroid, muscle_length, muscle_volume]
       print(muscle_Data)
       complete_Muscle_List.append((muscle_Data))
       print(complete_Muscle_List)
