@@ -13,6 +13,7 @@ from math import sqrt
 import bmesh
 import os
 import csv
+import re
 
 # center all origins on the geometry of the object so that location = center of mass
 def object_Recenter():
@@ -53,19 +54,29 @@ def measure_muscle_volume(obj):
     return volume
 
 # calculate the muscle length (= distance between the center of mass of the muscle origin and insertion)
-def get_muscle_length(attachment_list):
-    l = []
-    if (isinstance(attachment_list,list)):
-      for item in attachment_list:
-          l.append(item.location)
-      length = sqrt( (l[0][0] - l[1][0])**2 + (l[0][1] - l[1][1])**2 + (l[0][2] - l[1][2])**2)
-      print("Muscle Length")
-      print(length)
-      return length
-    else:
-      print("attachment list needs to be a list")
-      return ("MISSING VALUE")
+# def get_muscle_length(attachment_list):
+#     l = []
+#     if (isinstance(attachment_list,list)):
+#       for item in attachment_list:
+#           l.append(item.location)
+#       length = sqrt( (l[0][0] - l[1][0])**2 + (l[0][1] - l[1][1])**2 + (l[0][2] - l[1][2])**2)
+#       print("Muscle Length")
+#       print(length)
+#       return length
+#     else:
+#       print("attachment list needs to be a list")
+#       return ("MISSING VALUE")
    
+def get_muscle_length(origin_centroid,insertion_centroid):
+  point1 = origin_centroid
+  point2 = insertion_centroid
+  muscle_length=math.sqrt((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2 + (point2[2] - point1[2]) ** 2)
+  return muscle_length
+
+def vector_to_coord(centroid): #convert from format "Vector <(X,Y,Z)>"" to "(X,Y,Z)"
+  centroid = str(tuple(centroid)) #convert to string
+  centroid = re.sub('Vector', '', centroid) #remove "vector" 
+  return centroid
 
 def main_loop():
   bpy.ops.object.mode_set(mode = 'OBJECT')
@@ -92,21 +103,26 @@ def main_loop():
           origin_area=get_attachment_area(obj) 
           attachment_list.append(obj)
           origin_centroid=obj.location
+          origin_centroid_coords=str(tuple(origin_centroid))
+          origin_centroid_coords=re.sub('Vector<>', '', origin_centroid_coords)
         elif "insertion" in obj.name:
           insertion_area=get_attachment_area(obj) 
           attachment_list.append(obj)
           insertion_centroid=obj.location
+          insertion_centroid_coords=str(tuple(insertion_centroid))
+          insertion_centroid_coords=re.sub('Vector<>', '', insertion_centroid_coords)
         elif "volume" in obj.name:
           muscle_volume=measure_muscle_volume(obj)
         else:
           print("Unproper naming of children. The following object will be ignored: "+obj.name)  
-      muscle_length=get_muscle_length(attachment_list)
-      muscle_Data = [muscle_name, origin_area, origin_centroid, insertion_area, insertion_centroid, muscle_length, muscle_volume]
+      muscle_length=get_muscle_length(origin_centroid,insertion_centroid)
+      #insertion_centroid = str(tuple(insertion_centroid)) #convert to string
+      #insertion_centroid = re.sub('Vector<>', '', insertion_centroid) #remove "vector" 
+      muscle_Data = [muscle_name, origin_area, origin_centroid_coords, insertion_area, insertion_centroid_coords, muscle_length, muscle_volume]
       print(muscle_Data)
       complete_Muscle_List.append((muscle_Data))
       print(complete_Muscle_List)
       export(complete_Muscle_List)
- 
 
 def export(complete_Muscle_List):
   filepath = bpy.data.filepath
@@ -171,7 +187,7 @@ def main_loop():
           bpy.context.view_layer.objects.active = bpy.data.objects[obj.name]
           origin_area=get_attachment_area(obj) 
           origin_centroid=obj.location
-          attachment_list.append(obj)
+          # attachment_list.append(obj)
         elif "insertion" in obj.name:
           bpy.ops.object.mode_set(mode = 'OBJECT')
           bpy.ops.object.select_all(action='DESELECT') #deselect objects
@@ -179,7 +195,7 @@ def main_loop():
           bpy.context.view_layer.objects.active = bpy.data.objects[obj.name]
           insertion_area=get_attachment_area(obj) 
           insertion_centroid=obj.location
-          attachment_list.append(obj)
+          # attachment_list.append(obj)
         elif "volume" in obj.name:
           muscle_volume=measure_muscle_volume(obj)
         else:
@@ -189,6 +205,8 @@ def main_loop():
         point2=insertion_centroid
         length = math.sqrt((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2 + (point2[2] - point1[2]) ** 2) 
     muscle_length=get_muscle_length(attachment_list)
+    origin_centroid=
+    insertion_centroid=
     muscle_Data = [muscle_name, origin_area, origin_centroid, insertion_area, insertion_centroid, muscle_length, muscle_volume] #has issues with muscle_nae
     print(muscle_Data)
     complete_Muscle_List.append((muscle_Data))
