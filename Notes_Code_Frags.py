@@ -9,6 +9,24 @@ import math
 import bmesh
 
 
+
+#Get ACtive Object
+bpy.context.view_layer.objects.active = bpy.data.objects[objName]
+
+
+#Get Object origin coords (make sure to set origin to geometry first)
+obj.location
+
+
+
+
+
+
+
+
+
+
+
 def reorder_coords():
     bpy.ops.object.mode_set(mode = 'EDIT')
     bpy.ops.mesh.select_all(action='SELECT')
