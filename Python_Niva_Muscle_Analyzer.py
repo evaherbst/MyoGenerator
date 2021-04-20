@@ -127,8 +127,10 @@ def main_loop():
 def export(complete_Muscle_List):
   filepath = bpy.data.filepath
   main_path = os.path.dirname(filepath)
+  suffix = '.csv'
+  name = muscle_metrics
   print("writing to: " + main_path)
-  outputFile = main_path + '\muscle metrics.csv' #save output to same folder as blender file
+  outputFile = os.path.join(main_path, name) + suffix
   header = [['muscle_name', ' origin_area', ' origin_centroid', ' insertion_area', ' insertion_centroid', ' length', ' volume']]
   with open(outputFile, "w", newline='') as f:
       writer = csv.writer(f)

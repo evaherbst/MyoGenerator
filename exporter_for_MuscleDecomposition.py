@@ -3,9 +3,15 @@ import bpy
 import math
 import bmesh
 import re
+import os
+import csv
+import re
 
 
 def reorder_coords(obj):
+    
+#Do I need to deselect all here, and then make this object active? or is it enough to just have the obj argument?
+#Do I need to make the object active? or is it fine with the input argument? #Test!
 bpy.ops.object.mode_set(mode = 'OBJECT') 
 bpy.ops.object.select_all(action='DESELECT')
 obj.select_set(True) #selects boundary
@@ -40,9 +46,22 @@ bmesh.update_edit_mesh(me)
 
 	
 def export_coords():
-path = 'C:/Users/evach/Dropbox/MuscleTool/test_vtk_April20.vtk'
+
+#Do I need to deselect all here, and then make this object active? or is it enough to just have the obj argument?
+#Do I need to make the object active? or is it fine with the input argument? #Test!
+name = obj.name
+filepath = bpy.data.filepath
+main_path = os.path.dirname(filepath)
+suffix = '.vtk'
+print("writing to: " + main_path)
+outputFile = os.path.join(main_path, name) + suffix
+print(outputFile)
 
 
+#How to make this actually add the name and not write out "name"?
+#and should we use os.path.join(dir_name, base_filename + "." + filename_suffix) for all our code to make it compatible for all OS?
+
+bpy.ops.object.mode_set(mode = 'OBJECT')
 bpy.ops.object.transform_apply(location=True, rotation=True, scale=True) # I think the locations need to be set to 0/global (as in done in line 34) to make sure vertices are in global space - otherwise will be in local (relative to object origin)
 #bc the object acts as a "parent" to the vertices so need to make sure that parent's transforms are zeroed
 bpy.ops.object.mode_set(mode = 'EDIT')
@@ -57,7 +76,6 @@ me = obj.data
 bm = bmesh.from_edit_mesh(me)
 bm.faces.active = None
 pointsList=[]
-#maybe add in code to make sure all locations are in global CS?
 for v in bm.verts:
     if v.select:
         # print(v.co)
@@ -71,7 +89,7 @@ print(pointsCount)
 
 
 
-with open(path,'w') as of:
+with open(outputFile,'w') as of:
     header = str('# vtk DataFile Version 3.0\nvtk output\nASCII\nDATASET POLYDATA\nPOINTS %d float\n' %pointsCount) 
     of.write(header)
     for point in pointsList:
@@ -82,11 +100,13 @@ with open(path,'w') as of:
 
 
 
-def create_boundary(): #this works well - makes boundary, parents to attachment area area
+def create_boundary(obj): #this works well - makes boundary, parents to attachment area area
 
 name = ""
-for obj in bpy.context.selected_objects: #[maybe need to instead select that object only? e.g. obj.select_set(True) and deselect all other objects?]
-    name = obj.name
+
+#Do I need to deselect all here, and then make this object active? or is it enough to just have the obj argument?
+#Do I need to make the object active? or is it fine with the input argument? #Test!
+name = obj.name
 
 # keep track of objects in scene to later rename new objects
 scn = bpy.context.scene
@@ -156,7 +176,7 @@ def main_loop():
             for obj in children:
                 if "origin" in obj.name:
                     #need to maybe deselect all, then select this object, and make active?
-                    create_boundary() #makes boundary and sets boundary as active object
+                    create_boundary(obj) #makes boundary and sets boundary as active object
 
 
 
@@ -172,9 +192,9 @@ def main_loop():
                 elif "volume" in obj.name:
                 """export as .stls - make sure that the orientations for export are the same as in the scene!!!"""
 
-        if "boundary" in obj.name #Correct hierarchy? or should specify children of children? 
-                reorder_coords(obj) #Is it correct like this to add in the object?
-                export_coords() #For exporter, need to also specify object and deselect all others? do some tests..
+        if "boundary" in obj.name 
+                reorder_coords(obj) 
+                export_coords(obj) 
 
 
                 # else:
