@@ -4,15 +4,12 @@ Spyder Editor
 
 This is a temporary script file.
 """
-import bpy
-import math
-import bmesh
+obj 
 
 
-
-#Get ACtive Object
+#make object active
 bpy.context.view_layer.objects.active = bpy.data.objects[objName]
-
+bpy.context.view_layer.objects.active = bpy.data.objects["Skull_point"]
 
 #Get Object origin coords (make sure to set origin to geometry first)
 obj.location

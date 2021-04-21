@@ -104,7 +104,7 @@ def main_loop():
           attachment_list.append(obj)
           origin_centroid=obj.location
           origin_centroid_coords=str(tuple(origin_centroid))
-          origin_centroid_coords=re.sub('Vector<>', '', origin_centroid_coords)
+          origin_centroid_coords=re.sbu('Vector<>', '', origin_centroid_coords)
         elif "insertion" in obj.name:
           insertion_area=get_attachment_area(obj) 
           attachment_list.append(obj)
@@ -116,8 +116,6 @@ def main_loop():
         else:
           print("Unproper naming of children. The following object will be ignored: "+obj.name)  
       muscle_length=get_muscle_length(origin_centroid,insertion_centroid)
-      #insertion_centroid = str(tuple(insertion_centroid)) #convert to string
-      #insertion_centroid = re.sub('Vector<>', '', insertion_centroid) #remove "vector" 
       muscle_Data = [muscle_name, origin_area, origin_centroid_coords, insertion_area, insertion_centroid_coords, muscle_length, muscle_volume]
       print(muscle_Data)
       complete_Muscle_List.append((muscle_Data))
