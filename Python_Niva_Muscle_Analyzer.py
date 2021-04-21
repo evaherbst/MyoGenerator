@@ -104,7 +104,7 @@ def main_loop():
           attachment_list.append(obj)
           origin_centroid=obj.location
           origin_centroid_coords=str(tuple(origin_centroid))
-          origin_centroid_coords=re.sbu('Vector<>', '', origin_centroid_coords)
+          origin_centroid_coords=re.sub('Vector<>', '', origin_centroid_coords)
         elif "insertion" in obj.name:
           insertion_area=get_attachment_area(obj) 
           attachment_list.append(obj)

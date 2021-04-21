@@ -73,7 +73,7 @@ new_objs = [ obj for obj in scn.objects if not obj.name in names]
 """Ideally have user enter a name in the GUI - but for now I just hardcoded it as an example"""
 for obj in new_objs:
     obj.name = Muscle + " origin"
-    obj.data.name = Muscle + " origin"
+    obj.data.name = obj.name #set mesh name to object name
     obj.select_set(True)
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + "origin"]
 
@@ -131,7 +131,7 @@ new_objs = [ obj for obj in scn.objects if not obj.name in names]
 """Ideally have user enter a name in the GUI - but for now I just hardcoded it as an example"""
 for obj in new_objs:
     obj.name = Muscle + " insertion"
-    obj.data.name = Muscle + " insertion"
+    obj.data.name = Muscle + obj.name #set mesh name to object name
     obj.select_set(True)
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + "insertion"]
 
@@ -179,6 +179,9 @@ bpy.ops.mesh.edge_face_add()
 
 
 
-
+# bpy.ops.curve.primitive_bezier_circle_add()    #for blending
+# obj = bpy.context.object
+# bpy.ops.curve.primitive_bezier_curve_add()     # a curve, your endpoints for example
+# bpy.context.object.data.bevel_object = bpy.data.objects[obj.name] #a cylinder
 
 

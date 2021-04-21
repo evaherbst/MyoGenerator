@@ -106,7 +106,7 @@ new_objs = [ obj for obj in scn.objects if not obj.name in names]
 """Ideally have user enter a name in the GUI - but for now I just hardcoded it as an example"""
 for obj in new_objs:
     obj.name = "AMEM insertion"
-    obj.data.name = "AMEM insertion"
+    obj.data.name = obj.name #set object mesh name to object name
     obj.select_set(True)
     bpy.context.view_layer.objects.active = bpy.data.objects['AMEM insertion']
 
@@ -160,4 +160,18 @@ make_muscle_empties()
 
 
 
-"""
+
+
+
+#Renaming objects that are just created
+#If in object mode, the newly created mesh will become active
+
+ob = bpy.context.object #select active object which is the newly created object
+
+ob.name = 'skull_pt_tightest'
+ob.data.name = ob.name #set object mesh name to object name
+
+
+#Or can just use:
+bpy.context.active_object.name = 'Skull point tightest'
+bpy.context.active_object.data.name = bpy.context.active_object.name

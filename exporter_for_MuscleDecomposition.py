@@ -131,7 +131,7 @@ new_objs = [ obj for obj in scn.objects if not obj.name in names]
 #rename new object and select and make active
 for obj in new_objs:
     obj.name = name + " boundary"
-    obj.data.name = name + " boundary"
+    obj.data.name = obj.name #set mesh name to object name
     obj.select_set(True)
     bpy.context.view_layer.objects.active = bpy.data.objects[name]
     bpy.data.objects[name].select_set(True)
