@@ -41,7 +41,10 @@ import bmesh
 """ORIGIN CREATION"""
 
 """user specifies muscle name"""
-Muscle = "mAMES"
+Muscle = "mAMEP"
+
+bpy.ops.object.mode_set(mode = 'OBJECT')
+
 
 """prompt user to select bone on which to draw origin""" 
 
@@ -52,7 +55,7 @@ bpy.context.tool_settings.mesh_select_mode = (False, False, True)
 bpy.ops.mesh.select_all(action='DESELECT')
 
 
-# keep track of objects in scene to later rename new objects
+# keep track of objects in scene to later rename new objects (#can't just rename active object bc duplicated object doesn't automatically become active)
 scn = bpy.context.scene
 names = [ obj.name for obj in scn.objects]
 
@@ -67,23 +70,23 @@ bpy.ops.object.mode_set(mode = 'OBJECT')
 bpy.ops.object.select_all(action='DESELECT') 
 
 
-new_objs = [ obj for obj in scn.objects if not obj.name in names]
+new_objs = [ obj for obj in scn.objects if not obj.name in names] 
 
 #rename new object and select and make active
-"""Ideally have user enter a name in the GUI - but for now I just hardcoded it as an example"""
+"""Ideally have user enter a name in the GUI - but for now I just hardcoded it at the beginning"""
 for obj in new_objs:
     obj.name = Muscle + " origin"
     obj.data.name = obj.name #set mesh name to object name
     obj.select_set(True)
-    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + "origin"]
+    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin"]   
 
-bpy.ops.object.transform_apply(location=True, rotation=True, scale=True) #set transforms to make sure they are in global CS - not sure if necessary but just in case 
-#not sure if the above is applied to all objects or only selected or active
 
+bpy.ops.object.transform_apply(location=True, rotation=True, scale=True) #set transforms to make sure they are in global CS 
+#not sure if we want origins at global origin or set
 
 #Parent to the muscle empty
-
-bpy.context.view_layer.objects.active = bpy.data.objects[Muscle]
+ 
+bpy.context.view_layer.objects.active = bpy.data.objects[Muscle]   #This works!
 bpy.data.objects[Muscle].select_set(True)
 bpy.ops.object.parent_set(keep_transform=True)
 bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin"]
@@ -128,12 +131,12 @@ bpy.ops.object.select_all(action='DESELECT')
 new_objs = [ obj for obj in scn.objects if not obj.name in names]
 
 #rename new object and select and make active
-"""Ideally have user enter a name in the GUI - but for now I just hardcoded it as an example"""
+"""Ideally have user enter a name in the GUI - but for now I just hardcoded  it at the beginning"""
 for obj in new_objs:
     obj.name = Muscle + " insertion"
     obj.data.name = Muscle + obj.name #set mesh name to object name
     obj.select_set(True)
-    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + "insertion"]
+    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " insertion"]
 
 bpy.ops.object.transform_apply(location=True, rotation=True, scale=True) #set transforms to make sure they are in global CS - not sure if necessary but just in case 
 #not sure if the above is applied to all objects or only selected or active
