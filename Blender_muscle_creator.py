@@ -41,12 +41,16 @@ import bmesh
 """ORIGIN CREATION"""
 
 """user specifies muscle name"""
-Muscle = "mAMEP"
+Muscle = "mPT"
 
 bpy.ops.object.mode_set(mode = 'OBJECT')
 
 
-"""prompt user to select bone on which to draw origin""" 
+"""prompt user to select bone on which to draw origin - needs to be meshed nicely and if several bones they need to be one object""" 
+
+"""Need to check if it works if you select two groups of faces that aren't connected, which might happen with attachments that span multiply bones that are not connecte"""
+"""I think it should work though! Because it just uses object origin"""
+
 
 
 #go to edit mode and face select mode, clear selection
@@ -80,8 +84,7 @@ for obj in new_objs:
     obj.select_set(True)
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin"]   
 
-
-bpy.ops.object.transform_apply(location=True, rotation=True, scale=True) #set transforms to make sure they are in global CS 
+#bpy.ops.object.transform_apply(location=True, rotation=True, scale=True) #set transforms to make sure they are in global CS 
 #not sure if we want origins at global origin or set
 
 #Parent to the muscle empty
@@ -101,10 +104,10 @@ bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin"]
 """INSERTION CREATION"""
 
 """user specifies muscle name"""
-Muscle = "mAMES"
+Muscle = "mPPt"
 
 
-"""prompt user to select bone on which to draw insertion""" 
+"""prompt user to select bone on which to draw insertion - needs to be meshed nicely and if several bones they need to be one object""" 
 
 
 #go to edit mode and face select mode, clear selection
@@ -128,7 +131,10 @@ bpy.ops.object.mode_set(mode = 'OBJECT')
 bpy.ops.object.select_all(action='DESELECT') 
 
 
-new_objs = [ obj for obj in scn.objects if not obj.name in names]
+new_objs = [ obj for obj in scn.objects if not obj.name in names] #sometimes this doesn't work and throew error bpy.context.view_layer.objects.active = bpy.data.objects[Muscle]
+bpy.data.objects[Muscle].select_set(True)
+bpy.ops.object.parent_set(keep_transform=True)
+bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " insertion"]
 
 #rename new object and select and make active
 """Ideally have user enter a name in the GUI - but for now I just hardcoded  it at the beginning"""
@@ -138,7 +144,7 @@ for obj in new_objs:
     obj.select_set(True)
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " insertion"]
 
-bpy.ops.object.transform_apply(location=True, rotation=True, scale=True) #set transforms to make sure they are in global CS - not sure if necessary but just in case 
+#bpy.ops.object.transform_apply(location=True, rotation=True, scale=True) #set transforms to make sure they are in global CS - not sure if necessary but just in case 
 #not sure if the above is applied to all objects or only selected or active
 
 
