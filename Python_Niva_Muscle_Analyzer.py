@@ -5,6 +5,10 @@ Muscle Analyzer for Blender Files
 Extracts muscle metrics (origin area, insertion area, length, volume) from a Blender file.
 Saves as .csv file, which can be imported into Excel to create table where row headers = muscle names, column headers = metrics.
 
+NOTE: for muscle modeling paper, export list with both 3D modeled volume and frustum to compare
+
+NOTE: also want to add in correction factor/option to add in pennation angle if known? Or tell people to add in the calculations later/just publish the volume metrics and not the force etc?
+
 """
 
 import bpy
@@ -80,7 +84,9 @@ def main_loop():
   # do not set location to 0 because we want origin centered based on geometry
   #or add code to make sure all calculations are in global coordinates?
   complete_Muscle_List = []
+  complete_Muscle_List_Frustum = []
   muscle_Data = [] #create a list to store muscle data
+  muscle_Data_Frustum = []
   attachment_list = [] #create a list of origin and insertion objects
   origin_area=0
   insertion_area=0
@@ -114,23 +120,23 @@ def main_loop():
           print("Unproper naming of children. The following object will be ignored: "+obj.name)  
       muscle_length=math.sqrt((insertion_centroid[0] - origin_centroid[0]) ** 2 + (insertion_centroid[1] - origin_centroid[1]) ** 2 + (insertion_centroid[2] - origin_centroid[2]) ** 2)
       frustum_volume=(muscle_length/3)*(origin_area + insertion_area + math.sqrt(origin_area * insertion_area))
-      CSA=frustum_volume/muscle_length
-      force_newtons=.3(CSA)
-      muscle_Data = [muscle_name, origin_area, origin_centroid_coords, insertion_area, insertion_centroid_coords, muscle_length, muscle_volume]
-      muscle_Data_frustum = [muscle_name, origin_area, origin_centroid_coords, insertion_area, insertion_centroid_coords, muscle_length, frustum_volume, CSA, force_newtons]
-      print(muscle_Data)
-      complete_Muscle_List.append((muscle_Data))
-      print(complete_Muscle_List)
-      export(complete_Muscle_List)
+      CSA=(frustum_volume)/(muscle_length)
+      force_newtons=(0.3)*(CSA)
+      #muscle_Data = [muscle_name, origin_area, origin_centroid_coords, insertion_area, insertion_centroid_coords, muscle_length, muscle_volume]
+      muscle_Data_Frustum = [muscle_name, origin_area, origin_centroid_coords, insertion_area, insertion_centroid_coords, muscle_length, frustum_volume, CSA, force_newtons]
+      #print(muscle_Data)
+      #complete_Muscle_List.append((muscle_Data))
+      complete_Muscle_List_Frustum.append((muscle_Data_Frustum))
+      #print(complete_Muscle_List)
+      export(complete_Muscle_List_Frustum)
 
 def export(complete_Muscle_List):
   filepath = bpy.data.filepath
   main_path = os.path.dirname(filepath)
   suffix = '.csv'
-  name = 'muscle_metrics_Macrocnemus_April26'
+  name = 'muscle_metrics_Macrocnemus_April26_frustum'
   print("writing to: " + main_path)
   outputFile = os.path.join(main_path, name) + suffix
-  frustum_volume, CSA, force_newtons
   #header = [['muscle_name', ' origin_area', ' origin_centroid', ' insertion_area', ' insertion_centroid', ' length', ' volume']]
   header = [['muscle_name', ' origin_area', ' origin_centroid', ' insertion_area', ' insertion_centroid', ' length', ' frustum_volume', ' CSA', ' force_newtons']]
   with open(outputFile, "w", newline='') as f:
