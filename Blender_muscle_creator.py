@@ -30,8 +30,7 @@ make_muscle_empties()
 
 
 
-
-
+"""maybe also should add in a step before exporting muscle info to check whether everything is manifold - although boundaries will cause an issue - so maybe not"""
 
 """Main Script step by step to convert to add-on"""
 import bpy
@@ -41,7 +40,7 @@ import bmesh
 """ORIGIN CREATION"""
 
 """user specifies muscle name"""
-Muscle = "mPT"
+Muscle = "mPSTp"
 
 bpy.ops.object.mode_set(mode = 'OBJECT')
 
@@ -104,7 +103,7 @@ bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin"]
 """INSERTION CREATION"""
 
 """user specifies muscle name"""
-Muscle = "mPPt"
+Muscle = "mPSTp"
 
 
 """prompt user to select bone on which to draw insertion - needs to be meshed nicely and if several bones they need to be one object""" 
