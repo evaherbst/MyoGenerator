@@ -14,11 +14,6 @@ def make_empty(Muscle):
 	bpy.context.scene.collection.objects.link( o )
 	o.empty_display_size = 2
 	o.empty_display_type = 'PLAIN_AXES'   
-		 
-
-make_muscle_empties()
-
-
 
 def reorder_coords(obj):
 #to use for getting origin and insertion vertex numbers the same
@@ -59,14 +54,9 @@ bmesh.update_edit_mesh(me)
 
 
 
-
-
 def create_boundary(obj): #this works well - makes boundary, parents to attachment area area
 
 
-
-	#Do I need to deselect all here, and then make this object active? or is it enough to just have the obj argument?
-	#Do I need to make the object active? or is it fine with the input argument? #Test!
 	name = obj.name
 
 	# keep track of objects in scene to later rename new objects
@@ -87,27 +77,70 @@ def create_boundary(obj): #this works well - makes boundary, parents to attachme
 	bpy.ops.object.select_all(action='DESELECT') 
 
 
-new_objs = [ obj for obj in scn.objects if not obj.name in names]
+	new_objs = [ obj for obj in scn.objects if not obj.name in names]
 
-#rename new object and select and make active
-for obj in new_objs:
-    obj.name = name + " boundary"
-    obj.data.name = obj.name #set mesh name to object name
-    obj.select_set(True)
-    bpy.context.view_layer.objects.active = bpy.data.objects[name]
-    bpy.data.objects[name].select_set(True)
-    bpy.ops.object.parent_set(keep_transform=True) #parents new loop to the attachment area - need to double check that the transforms are all global 
-    bpy.context.view_layer.objects.active = bpy.data.objects[name + " boundary"]
-return obj
+	#rename new object and select and make active
+	for obj in new_objs:
+	    obj.name = name + " boundary"
+	    obj.data.name = obj.name #set mesh name to object name
+	    obj.select_set(True)
+	    bpy.context.view_layer.objects.active = bpy.data.objects[name]
+	    bpy.data.objects[name].select_set(True)
+	    bpy.ops.object.parent_set(keep_transform=True) #parents new loop to the attachment area - need to double check that the transforms are all global 
+	    bpy.context.view_layer.objects.active = bpy.data.objects[name + " boundary"]
+	return obj
 
 
 def calculate_centroid(obj):
     centroid=obj.location
-    centroid_coords=centroid[:]
-    return centroid_coords
+    return centroid
 
 
-"""maybe also should add in a step before exporting muscle info to check whether everything is manifold - although boundaries will cause an issue - so maybe not"""
+
+def get_normal():
+	obj = bpy.context.object
+	bpy.ops.object.mode_set(mode = 'EDIT')
+	bpy.context.tool_settings.mesh_select_mode = (False, True, False) #edge select mode
+	bpy.ops.mesh.select_all(action='SELECT')
+	bpy.ops.mesh.edge_face_add() 
+	bm = bmesh.from_edit_mesh(obj.data)
+	normal = bm.faces[0].normal
+	normal = normal[:]
+	typetest = type(normal)
+	print(normal)
+	print(typetest)
+
+	for f in bm.faces:
+	    print(f.normal)
+	    normal = f.normal
+	bpy.ops.mesh.delete(type='ONLY_FACE')
+	return normal
+
+
+def BezierCurve():
+
+import mathutils
+
+lineLength=math.sqrt((insertion_centroid[0] - origin_centroid[0]) ** 2 + (insertion_centroid[1] - origin_centroid[1]) ** 2 + (insertion_centroid[2] - origin_centroid[2]) ** 2)
+scaleFactor = .2*(lineLength)
+
+#need to normalize the vectors called "origin_normal" and "insertion_normal"
+
+curve = bpy.ops.curve.primitive_bezier_curve_add(radius=1, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
+#Curve becomes active object after renaming so can just name here
+
+bpy.context.active_object.name = Muscle + " curve"
+
+
+curve = bpy.context.active_object
+bez_points = curve.data.splines[0].bezier_points
+bez_points[0].co = origin_centroid[:]
+bez_points[1].co = insertion_centroid[:]
+bez_points[0].handle_left = origin_centroid[:] + (origin_normal[0]*scaleFactor, origin_normal[1]*scaleFactor, origin_normal[2]*scaleFactor)
+# bez_points[0].handle_right = origin_centroid[:] + origin 
+# bez_points[1].handle_left = insertion_centroid[:] + origin
+# bez_points[1].handle_right = insertion_centroid[:] + origin
+
 
 """Main Script step by step to convert to add-on"""
 import bpy
@@ -176,7 +209,9 @@ bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin"]
 
 
 obj = bpy.context.view_layer.objects.active
-origin_centroid_coords = calculate_centroid(obj)
+origin_centroid = calculate_centroid(obj)
+origin_normal = get_normal(obj)
+
 
 #apply transforms again? or fine just with Niva analyzer
 
@@ -228,7 +263,8 @@ for obj in new_objs:
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " insertion"]
 
 obj = bpy.context.view_layer.objects.active
-insertion_centroid_coords = calculate_centroid(obj)
+insertion_centroid = calculate_centroid(obj)
+insertion_normal = get_normal(obj)
 
 
 #bpy.ops.object.transform_apply(location=True, rotation=True, scale=True) #set transforms to make sure they are in global CS - not sure if necessary but just in case 
@@ -271,44 +307,14 @@ create_boundary(insertion)
 
 
 
-#If we need to fill edge loop for face normal, duplicate boundary and use the following
-bpy.ops.object.mode_set(mode = 'EDIT')
-bpy.context.tool_settings.mesh_select_mode = (False, True, False) #edge select mode
-bpy.ops.mesh.select_all(action='SELECT')
-
-#fill edge loop to make 1 face
-bpy.ops.mesh.edge_face_add() 
-
-
-"""BEZIER CURVE"""
-
-#NEED TO IMPORT THE FOLLOWING FROM NivaMuscleAnalyzer and make sure they are floats, not strings! or calculate separately in new function
-# origin_centroid_coords
-# insertion_centroid_coords
-# need to make sure type = float
-# note: Niva Muscle Analyzer selects all and exports info based on 
 
 
 
 
-curve = bpy.ops.curve.primitive_bezier_curve_add(radius=1, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
-#Curve becomes active object after renaming so can just name here
-
-bpy.context.active_object.name = Muscle + " curve"
- 
-curve = bpy.context.active_object
-bez_points = curve.data.splines[0].bezier_points
-bez_points[0].co = origin_centroid_coords
-bez_points[1].co = insertion_centroid_coords
-# bez_points[0].handle_left =  
-# bez_points[0].handle_right =  
-# bez_points[1].handle_left = 
-# # bez_points[1].handle_right = 
 
 
 #RESET ORIGINS BEFORE USING CURVE MODIFIER:
 #Use geometric origin of Bezier curve to the muscle origin attachment centroid, and also set geometric origin of array mesh the muscle origin attachment centroid
-
 
 
 
