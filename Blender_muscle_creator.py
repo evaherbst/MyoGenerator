@@ -101,7 +101,10 @@ for obj in new_objs:
 return obj
 
 
-
+def calculate_centroid(obj):
+    centroid=obj.location
+    centroid_coords=centroid[:]
+    return centroid_coords
 
 
 """maybe also should add in a step before exporting muscle info to check whether everything is manifold - although boundaries will cause an issue - so maybe not"""
@@ -157,7 +160,9 @@ for obj in new_objs:
     obj.name = Muscle + " origin"
     obj.data.name = obj.name #set mesh name to object name
     obj.select_set(True)
-    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin"]   
+    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin"]
+
+
 
 #bpy.ops.object.transform_apply(location=True, rotation=True, scale=True) #set transforms to make sure they are in global CS 
 #not sure if we want origins at global origin or set
@@ -169,6 +174,9 @@ bpy.data.objects[Muscle].select_set(True)
 bpy.ops.object.parent_set(keep_transform=True)
 bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin"]
 
+
+obj = bpy.context.view_layer.objects.active
+origin_centroid_coords = calculate_centroid(obj)
 
 #apply transforms again? or fine just with Niva analyzer
 
@@ -206,7 +214,7 @@ bpy.ops.object.mode_set(mode = 'OBJECT')
 bpy.ops.object.select_all(action='DESELECT') 
 
 
-new_objs = [ obj for obj in scn.objects if not obj.name in names] #sometimes this doesn't work and throew error bpy.context.view_layer.objects.active = bpy.data.objects[Muscle]
+new_objs = [ obj for obj in scn.objects if not obj.name in names] #sometimes this doesn't work and throws error bpy.context.view_layer.objects.active = bpy.data.objects[Muscle]
 bpy.data.objects[Muscle].select_set(True)
 bpy.ops.object.parent_set(keep_transform=True)
 bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " insertion"]
@@ -218,6 +226,10 @@ for obj in new_objs:
     obj.data.name = Muscle + obj.name #set mesh name to object name
     obj.select_set(True)
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " insertion"]
+
+obj = bpy.context.view_layer.objects.active
+insertion_centroid_coords = calculate_centroid(obj)
+
 
 #bpy.ops.object.transform_apply(location=True, rotation=True, scale=True) #set transforms to make sure they are in global CS - not sure if necessary but just in case 
 #not sure if the above is applied to all objects or only selected or active
@@ -270,16 +282,32 @@ bpy.ops.mesh.edge_face_add()
 
 """BEZIER CURVE"""
 
-bpy.ops.curve.primitive_bezier_curve_add(radius=1, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
+#NEED TO IMPORT THE FOLLOWING FROM NivaMuscleAnalyzer and make sure they are floats, not strings! or calculate separately in new function
+# origin_centroid_coords
+# insertion_centroid_coords
+# need to make sure type = float
+# note: Niva Muscle Analyzer selects all and exports info based on 
 
 
-bpy.context.view_layer.objects.active = bpy.data.objects["BezierCurve"]
-curve = bpy.context.object
+
+
+curve = bpy.ops.curve.primitive_bezier_curve_add(radius=1, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
+#Curve becomes active object after renaming so can just name here
+
+bpy.context.active_object.name = Muscle + " curve"
+ 
+curve = bpy.context.active_object
 bez_points = curve.data.splines[0].bezier_points
-bez_points[0].co = (3,3,3) #replace with origin coord
-bez_points[1].co = (6,6,6) #replace with insertion coord
+bez_points[0].co = origin_centroid_coords
+bez_points[1].co = insertion_centroid_coords
+# bez_points[0].handle_left =  
+# bez_points[0].handle_right =  
+# bez_points[1].handle_left = 
+# # bez_points[1].handle_right = 
 
-#se geometric origin of Bezier curve to the muscle origin attachment centroid, and also set geometric origin of array mesh the muscle origin attachment centroid
+
+#RESET ORIGINS BEFORE USING CURVE MODIFIER:
+#Use geometric origin of Bezier curve to the muscle origin attachment centroid, and also set geometric origin of array mesh the muscle origin attachment centroid
 
 
 
