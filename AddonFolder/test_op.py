@@ -2,6 +2,8 @@ import bpy
 import sys 
 
 
+from . create_muscle_empties import make_muscle_empties
+from AddonFolder import create_muscle_empties
 #from Muscle_Volume_Sculptor import create_muscle_empties 
 
 
@@ -13,7 +15,7 @@ class Nico_Select_Muscle_Op(bpy.types.Operator):
     def execute(self,context):
         #function to execute
         objName = bpy.context.scene.muscle_Name
-
+        create_muscle_empties.make_muscle_empties()
        # make_muscle_empties()
 
         print('executing function test')
