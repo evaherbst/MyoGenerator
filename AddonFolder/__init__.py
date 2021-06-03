@@ -26,12 +26,12 @@ bl_info = {
 import bpy
 #import bpy.utilis
 
-from . test_op import Nico_Test_Op
+from . test_op import Nico_Select_Muscle_Op, Nico_Select_Origins_Op
 
-from . test_panel import Nico_Test_Panel
+from . test_panel import Nico_Test_Panel_PT_
 
-classes =(Nico_Test_Op, Nico_Test_Panel)
-register, unregister = bpy.utils.register_classes_factory(classes)
+#classes =(Nico_Test_Op, Nico_Test_Panel_PT_)
+#register, unregister = bpy.utils.register_classes_factory(classes)
 
 
 # REF FOR BUTTON TO MAKE BUTTONS: https://blender.stackexchange.com/questions/57545/can-i-make-a-ui-button-that-makes-buttons-in-a-panel
@@ -41,3 +41,23 @@ register, unregister = bpy.utils.register_classes_factory(classes)
 #REF GRAYOUT BUTTONS: https://blenderartists.org/t/gray-out-a-panel-button/522047/2
 
 #REF GRAOUT BUTTONS 2 https://blender.stackexchange.com/questions/160883/contextually-grey-out-panel-element-in-python-2-8
+
+
+def register():
+    bpy.utils.register_class(Nico_Select_Muscle_Op)
+    bpy.utils.register_class(Nico_Select_Origins_Op)
+    bpy.utils.register_class(Nico_Test_Panel_PT_)
+
+    bpy.types.Scene.muscle_Name=bpy.props.StringProperty \
+        (
+            name = "Muscle Name",
+            description = "Inser your muscle",
+            default ='this is default'
+        )
+
+
+def unregister():
+    bpy.utils.register_class(Nico_Select_Muscle_Op)
+    bpy.utils.register_class(Nico_Select_Origins_Op)
+    bpy.utils.register_class(Nico_Test_Panel_PT_)
+    del bpy.types.Scene.muscle_Name

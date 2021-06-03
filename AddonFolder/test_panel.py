@@ -1,6 +1,6 @@
 import bpy
 
-class Nico_Test_Panel(bpy.types.Panel):
+class Nico_Test_Panel_PT_(bpy.types.Panel):
     bl_idname = "Nico_Test_Panel"
     bl_label = "Test Panel Label"
     bl_category = "Test Addon"
@@ -11,4 +11,17 @@ class Nico_Test_Panel(bpy.types.Panel):
         layout = self.layout
 
         row = layout.row()
-        row.operator('view3d.test_print', text= "button text")    # operator idname . it'll invoce the execute function of operator
+        row.prop(context.scene, "muscle_Name", text ="Muscle Name")  
+        
+        row = layout.row()
+        row.operator('view3d.submit_button', text= "Submit Muscle")    # operator idname . it'll invoce the execute function of operator
+        
+
+
+        row = layout.row()
+        col1=layout.column()
+        col1.prop(context.scene, "muscle_Name", text ="Muscle Name")  
+        col2=layout.column()
+        col2.prop(context.scene, "muscle_Name", text ="Muscle Name")  
+        row = layout.row()
+        row.operator('view3d.select_origins', text= "Select Origins")
