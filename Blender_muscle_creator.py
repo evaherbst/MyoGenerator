@@ -9,29 +9,100 @@ way to get all the muscle data or whether to just save as we go along for each m
 
 import bpy
 
-def make_muscle_empties():
-	#enter your list of muscles here
-	muscle_List = ["mPT", "mLPt", "mPPt","mPSTs", "mPSTp", "mAMEP", "mAMEM", "mAMES", "mAMP", "mDM"]
-	for i in muscle_List:
-		print(i)
-		o = bpy.data.objects.new(i, None)
-		bpy.context.scene.collection.objects.link( o )
-		o.empty_display_size = 2
-		o.empty_display_type = 'PLAIN_AXES'   
-		 
-
-make_muscle_empties()
+def make_empty(Muscle):
+	o = bpy.data.objects.new(Muscle, None)
+	bpy.context.scene.collection.objects.link( o )
+	o.empty_display_size = 2
+	o.empty_display_type = 'PLAIN_AXES'   
 
 
 
 
+def create_boundary(obj): #this works well - makes boundary, parents to attachment area area
+
+
+	name = obj.name
+
+	# keep track of objects in scene to later rename new objects
+	scn = bpy.context.scene
+	names = [ obj.name for obj in scn.objects]
+
+
+	bpy.ops.object.mode_set(mode = 'EDIT')
+	bpy.ops.mesh.select_all(action='SELECT')
+
+
+	#select outer loop, duplicate, separate
+	bpy.ops.mesh.region_to_loop()
+	bpy.ops.mesh.duplicate()
+	bpy.ops.mesh.separate(type='SELECTED')
+
+	bpy.ops.object.mode_set(mode = 'OBJECT')
+	bpy.ops.object.select_all(action='DESELECT') 
+
+
+	new_objs = [ obj for obj in scn.objects if not obj.name in names]
+
+	#rename new object and select and make active
+	for obj in new_objs:
+	    obj.name = name + " boundary"
+	    obj.data.name = obj.name #set mesh name to object name
+	    obj.select_set(True)
+	    bpy.context.view_layer.objects.active = bpy.data.objects[name]
+	    bpy.data.objects[name].select_set(True)
+	    bpy.ops.object.parent_set(keep_transform=True) #parents new loop to the attachment area - need to double check that the transforms are all global 
+	    bpy.context.view_layer.objects.active = bpy.data.objects[name + " boundary"]
+	return obj
+
+
+def calculate_centroid(obj):
+    centroid=obj.location
+    return centroid
 
 
 
+def get_normal():
+	obj = bpy.context.object
+	bpy.ops.object.mode_set(mode = 'EDIT')
+	bpy.context.tool_settings.mesh_select_mode = (False, True, False) #edge select mode
+	bpy.ops.mesh.select_all(action='SELECT')
+	bpy.ops.mesh.edge_face_add() 
+	bm = bmesh.from_edit_mesh(obj.data)
+	normal = bm.faces[0].normal
+	normal = normal[:]
+	typetest = type(normal)
+	print(normal)
+	print(typetest)
+
+	for f in bm.faces:
+	    print(f.normal)
+	    normal = f.normal
+	bpy.ops.mesh.delete(type='ONLY_FACE')
+	return normal
 
 
-"""maybe also should add in a step before exporting muscle info to check whether everything is manifold - although boundaries will cause an issue - so maybe not"""
+def BezierCurve():
 
+	lineLength=math.sqrt((insertion_centroid[0] - origin_centroid[0]) ** 2 + (insertion_centroid[1] - origin_centroid[1]) ** 2 + (insertion_centroid[2] - origin_centroid[2]) ** 2)
+	scaleFactor = .2*(lineLength)
+
+	origin_normal_unit = origin_normal/origin_normal.length
+	insertion_normal_unit = insertion_normal/insertion_normal.length
+
+	curve = bpy.ops.curve.primitive_bezier_curve_add(radius=1, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
+	#Curve becomes active object after creating so can just name here
+
+	bpy.context.active_object.name = Muscle + " curve"
+
+	curve = bpy.context.active_object
+	bez_points = curve.data.splines[0].bezier_points
+	bez_points[0].co = origin_centroid[:]
+	bez_points[0].handle_left = origin_centroid[:] + (origin_normal_unit[0]*scaleFactor, origin_normal_unit[1]*scaleFactor, origin_normal_unit[2]*scaleFactor)
+	bez_points[0].handle_right = origin_centroid[:] - (origin_normal_unit[0]*scaleFactor, origin_normal_unit[1]*scaleFactor, origin_normal_unit[2]*scaleFactor)
+	bez_points[1].co = insertion_centroid[:] 
+	bez_points[1].handle_left = insertion_centroid[:] + (origin_normal[0]*scaleFactor, insertion_normal[1]*scaleFactor, insertion_normal[2]*scaleFactor)
+	bez_points[1].handle_right = insertion_centroid[:] - (insertion_normal[0]*scaleFactor, insertion_normal[1]*scaleFactor, insertion_normal[2]*scaleFactor)
+test
 """Main Script step by step to convert to add-on"""
 import bpy
 import math
@@ -40,9 +111,11 @@ import bmesh
 """ORIGIN CREATION"""
 
 """user specifies muscle name"""
-Muscle = "mPSTp"
+Muscle = "mPSTp" 
 
 bpy.ops.object.mode_set(mode = 'OBJECT')
+
+make_empty(Muscle)
 
 
 """prompt user to select bone on which to draw origin - needs to be meshed nicely and if several bones they need to be one object""" 
@@ -81,7 +154,9 @@ for obj in new_objs:
     obj.name = Muscle + " origin"
     obj.data.name = obj.name #set mesh name to object name
     obj.select_set(True)
-    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin"]   
+    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin"]
+
+
 
 #bpy.ops.object.transform_apply(location=True, rotation=True, scale=True) #set transforms to make sure they are in global CS 
 #not sure if we want origins at global origin or set
@@ -92,6 +167,11 @@ bpy.context.view_layer.objects.active = bpy.data.objects[Muscle]   #This works!
 bpy.data.objects[Muscle].select_set(True)
 bpy.ops.object.parent_set(keep_transform=True)
 bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin"]
+
+
+obj = bpy.context.view_layer.objects.active
+origin_centroid = calculate_centroid(obj)
+origin_normal = get_normal(obj)
 
 
 #apply transforms again? or fine just with Niva analyzer
@@ -130,7 +210,7 @@ bpy.ops.object.mode_set(mode = 'OBJECT')
 bpy.ops.object.select_all(action='DESELECT') 
 
 
-new_objs = [ obj for obj in scn.objects if not obj.name in names] #sometimes this doesn't work and throew error bpy.context.view_layer.objects.active = bpy.data.objects[Muscle]
+new_objs = [ obj for obj in scn.objects if not obj.name in names] #sometimes this doesn't work and throws error bpy.context.view_layer.objects.active = bpy.data.objects[Muscle]
 bpy.data.objects[Muscle].select_set(True)
 bpy.ops.object.parent_set(keep_transform=True)
 bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " insertion"]
@@ -142,6 +222,11 @@ for obj in new_objs:
     obj.data.name = Muscle + obj.name #set mesh name to object name
     obj.select_set(True)
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " insertion"]
+
+obj = bpy.context.view_layer.objects.active
+insertion_centroid = calculate_centroid(obj)
+insertion_normal = get_normal(obj)
+
 
 #bpy.ops.object.transform_apply(location=True, rotation=True, scale=True) #set transforms to make sure they are in global CS - not sure if necessary but just in case 
 #not sure if the above is applied to all objects or only selected or active
@@ -164,32 +249,33 @@ bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " insertion"]
 
 
 
-"""MUSCLE VOLUME CREATION"""
+"""MUSCLE VOLUME CREATION - IN PROGRESS"""
 
 
-"""add modified tube tool or add shape key method to make muscle volume
+#create boundary for origin and insertion, duplicate, save serapately 
+origin = bpy.data.objects[Muscle + " origin"]
+insertion = bpy.data.objects[Muscle + " insertion"]
+create_boundary(origin)
+create_boundary(insertion)
 
+    if "boundary" in obj.name 
+        reorder_coords(obj) 
 
-if we use tube tool, need to add conver origins and insertions into single face with:
-create_boundary script (see exporter_for_MuscleDecomposition) and this:
-
-
-bpy.ops.object.mode_set(mode = 'EDIT')
-bpy.context.tool_settings.mesh_select_mode = (False, True, False) #edge select mode
-bpy.ops.mesh.select_all(action='SELECT')
-
-fill edge loop to make 1 face
-bpy.ops.mesh.edge_face_add() 
-
-- need to decide if we want to export centroid coords before simplifying to single face
-- try to figure out how to calculate curve length for muscle length"""
+### match vertex counts of origin and insertion here:
+#- count vertices in origin and insertion
+#calculate how many subdivisions x are needed (x = difference in vertices between 2 objects)
+#take object that has less vertice, and select every n pairs of vertices and subdivide (until there are x number of subdivisions performed
 
 
 
 
-# bpy.ops.curve.primitive_bezier_circle_add()    #for blending
-# obj = bpy.context.object
-# bpy.ops.curve.primitive_bezier_curve_add()     # a curve, your endpoints for example
-# bpy.context.object.data.bevel_object = bpy.data.objects[obj.name] #a cylinder
+
+
+
+
+
+#RESET ORIGINS BEFORE USING CURVE MODIFIER:
+#Use geometric origin of Bezier curve to the muscle origin attachment centroid, and also set geometric origin of array mesh the muscle origin attachment centroid
+
 
 
