@@ -15,42 +15,6 @@ def make_empty(Muscle):
 	o.empty_display_size = 2
 	o.empty_display_type = 'PLAIN_AXES'   
 
-def reorder_coords(obj):
-#to use for getting origin and insertion vertex numbers the same
-    
-#Do I need to deselect all here, and then make this object active? or is it enough to just have the obj argument?
-#Do I need to make the object active? or is it fine with the input argument? #Test!
-	bpy.ops.object.mode_set(mode = 'OBJECT') 
-	bpy.ops.object.select_all(action='DESELECT')
-	obj.select_set(True) #selects boundary
-	bpy.context.view_layer.objects.active = bpy.data.objects[obj.name] #sets boundary as active mesh
-	bpy.ops.object.mode_set(mode = 'EDIT')
-	bpy.context.tool_settings.mesh_select_mode = (True, False, False) #vertex select mode
-	bpy.ops.mesh.select_all(action='SELECT') #select all vertices
-
-	#somehow the above section and the below section run well separately but not if I run them together as one chunk..
-	me = bpy.context.object.data
-	bm = bmesh.from_edit_mesh(me)
-
-	# index of the start vertex
-	initial = bm.verts[0]
-
-	vert = initial
-	prev = None
-	for i in range(len(bm.verts)):
-	    print(vert.index, i)
-	    vert.index = i
-	    next = None
-	    adjacent = []
-	    for v in [e.other_vert(vert) for e in vert.link_edges]:
-	        if (v != prev and v != initial):
-	            next = v
-	    if next == None: break
-	    prev, vert = vert, next
-
-	bm.verts.sort()
-
-bmesh.update_edit_mesh(me)
 
 
 
@@ -119,29 +83,26 @@ def get_normal():
 
 def BezierCurve():
 
-import mathutils
+	lineLength=math.sqrt((insertion_centroid[0] - origin_centroid[0]) ** 2 + (insertion_centroid[1] - origin_centroid[1]) ** 2 + (insertion_centroid[2] - origin_centroid[2]) ** 2)
+	scaleFactor = .2*(lineLength)
 
-lineLength=math.sqrt((insertion_centroid[0] - origin_centroid[0]) ** 2 + (insertion_centroid[1] - origin_centroid[1]) ** 2 + (insertion_centroid[2] - origin_centroid[2]) ** 2)
-scaleFactor = .2*(lineLength)
+	origin_normal_unit = origin_normal/origin_normal.length
+	insertion_normal_unit = insertion_normal/insertion_normal.length
 
-#need to normalize the vectors called "origin_normal" and "insertion_normal"
+	curve = bpy.ops.curve.primitive_bezier_curve_add(radius=1, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
+	#Curve becomes active object after creating so can just name here
 
-curve = bpy.ops.curve.primitive_bezier_curve_add(radius=1, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
-#Curve becomes active object after renaming so can just name here
+	bpy.context.active_object.name = Muscle + " curve"
 
-bpy.context.active_object.name = Muscle + " curve"
-
-
-curve = bpy.context.active_object
-bez_points = curve.data.splines[0].bezier_points
-bez_points[0].co = origin_centroid[:]
-bez_points[1].co = insertion_centroid[:]
-bez_points[0].handle_left = origin_centroid[:] + (origin_normal[0]*scaleFactor, origin_normal[1]*scaleFactor, origin_normal[2]*scaleFactor)
-# bez_points[0].handle_right = origin_centroid[:] + origin 
-# bez_points[1].handle_left = insertion_centroid[:] + origin
-# bez_points[1].handle_right = insertion_centroid[:] + origin
-
-
+	curve = bpy.context.active_object
+	bez_points = curve.data.splines[0].bezier_points
+	bez_points[0].co = origin_centroid[:]
+	bez_points[0].handle_left = origin_centroid[:] + (origin_normal_unit[0]*scaleFactor, origin_normal_unit[1]*scaleFactor, origin_normal_unit[2]*scaleFactor)
+	bez_points[0].handle_right = origin_centroid[:] - (origin_normal_unit[0]*scaleFactor, origin_normal_unit[1]*scaleFactor, origin_normal_unit[2]*scaleFactor)
+	bez_points[1].co = insertion_centroid[:] 
+	bez_points[1].handle_left = insertion_centroid[:] + (origin_normal[0]*scaleFactor, insertion_normal[1]*scaleFactor, insertion_normal[2]*scaleFactor)
+	bez_points[1].handle_right = insertion_centroid[:] - (insertion_normal[0]*scaleFactor, insertion_normal[1]*scaleFactor, insertion_normal[2]*scaleFactor)
+test
 """Main Script step by step to convert to add-on"""
 import bpy
 import math
