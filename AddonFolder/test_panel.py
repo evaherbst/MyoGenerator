@@ -20,8 +20,8 @@ class Nico_Test_Panel_PT_(bpy.types.Panel):
 
         row = layout.row()
         col1=layout.column()
-        col1.prop(context.scene, "muscle_Name", text ="Muscle Name")  
+        col1.prop(context.scene, "origin_Name", text ="Origin Name")  
         col2=layout.column()
-        col2.prop(context.scene, "muscle_Name", text ="Muscle Name")  
+        col2.prop(context.scene, "insertion_Name", text ="Insertion Name")  
         row = layout.row()
         row.operator('view3d.select_origins', text= "Select Origins")

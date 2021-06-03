@@ -9,6 +9,7 @@ to run the Niva_Muscle_Analyzer script
 """
 import bpy
 
+
 def make_muscle_empties():
 	#enter your list of muscles here
 	muscle_List = ["mPT", "mLPt", "mPPt","mPSTs", "mPSTp", "mAMEP", "mAMEM", "mAMES", "mAMP", "mDM"]
@@ -21,5 +22,5 @@ def make_muscle_empties():
 		o.empty_display_type = 'PLAIN_AXES'   
 		 
 
-make_muscle_empties()
+#make_muscle_empties()
 

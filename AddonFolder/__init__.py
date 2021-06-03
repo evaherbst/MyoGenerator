@@ -24,6 +24,7 @@ bl_info = {
 
 
 import bpy
+#from muscleCore.create_muscle_empties import *
 #import bpy.utilis
 
 from . test_op import Nico_Select_Muscle_Op, Nico_Select_Origins_Op
@@ -51,8 +52,20 @@ def register():
     bpy.types.Scene.muscle_Name=bpy.props.StringProperty \
         (
             name = "Muscle Name",
-            description = "Inser your muscle",
-            default ='this is default'
+            description = "Insert your muscle name",
+            default ='Insert  muscle name'
+        )
+    bpy.types.Scene.origin_Name=bpy.props.StringProperty \
+        (
+            name = "Origin Name",
+            description = "Insert origin name",
+            default ='Insert origin name'
+        )
+    bpy.types.Scene.insertion_Name=bpy.props.StringProperty \
+        (
+            name = "Insertion Name",
+            description = "Insert insertion name",
+            default ='Insert insertion name'
         )
 
 
