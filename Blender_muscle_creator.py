@@ -81,7 +81,11 @@ def get_normal():
 
 
 def BezierCurve():
-
+    #create boundary for origin and insertion, duplicate, save serapately 
+    origin = bpy.data.objects[Muscle + " origin"]
+    insertion = bpy.data.objects[Muscle + " insertion"]
+    create_boundary(origin)
+    create_boundary(insertion)
     lineLength=math.sqrt((insertion_centroid[0] - origin_centroid[0]) ** 2 + (insertion_centroid[1] - origin_centroid[1]) ** 2 + (insertion_centroid[2] - origin_centroid[2]) ** 2)
     scaleFactor = .2*(lineLength)
     origin_normal_unit = origin_normal/origin_normal.length
@@ -98,13 +102,6 @@ def BezierCurve():
     bez_points[1].handle_left = insertion_centroid + (insertion_normal_unit*scaleFactor)
     bez_points[1].handle_right = insertion_centroid - (insertion_normal_unit*scaleFactor)
 
-
-import mathutils
-
-origin_centroid = mathutils.Vector((0,0,0))
-insertion_centroid = mathutils.Vector((0,2,2))
-origin_normal = mathutils.Vector((1,1,1))
-insertion_normal = mathutils.Vector((1,3,3))
 
 
 
@@ -233,11 +230,7 @@ bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " insertion"]
 """MUSCLE VOLUME CREATION - IN PROGRESS"""
 
 
-#create boundary for origin and insertion, duplicate, save serapately 
-origin = bpy.data.objects[Muscle + " origin"]
-insertion = bpy.data.objects[Muscle + " insertion"]
-create_boundary(origin)
-create_boundary(insertion)
+#Bezier_curve_function
 
 ### match vertex counts of origin and insertion here:
 
