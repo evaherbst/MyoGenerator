@@ -25,33 +25,29 @@ def change_vertex_number(originCount,insertionCount):
         obj.data.edges[x].select = True
         bpy.ops.object.mode_set(mode = 'EDIT') 
         bpy.ops.mesh.subdivide()
-
-  # if (originCount > insertionCount): #Should this be elif?? 
-  #   print("ORIGIN > INSERTION")
-  #   increment = math.floor((insertionCount)/vertexDiff) #rounds down to nearest whole number increment
-  #   print(increment)
-  #   insertion_boundary_obj.select_set(True)
-  #   bpy.ops.object.mode_set(mode = 'EDIT')
-  #   bpy.context.tool_settings.mesh_select_mode = (False, True, False) #edge select mode
-  #   for x in range(0, insertionCount-1, increment):
-  #     if(counter < vertexDiff):
-  #       counter+=1 
-  #       insertion_boundary_obj.select_set(True)
-  #       bpy.ops.mesh.select_all(action='DESELECT')
-  #       bpy.ops.object.mode_set(mode = 'OBJECT')
-  #       obj.data.edges[x].select = True
-  #       bpy.ops.object.mode_set(mode = 'EDIT') 
-  #       bpy.ops.mesh.subdivide()
-
-      # if(counter = vertexDiff):
-      #   break
-
-
-      # if(counter = vertexDiff):
-      # break
-
-  # if (originCount == insertionCount):
-  #   print('wow, that was lucky')
+        print("subdivision successful")
+     # if(counter = vertexDiff):
+     #   break
+  if (originCount > insertionCount): #Should this be elif?? 
+    print("ORIGIN > INSERTION")
+    increment = math.floor((insertionCount)/vertexDiff) #rounds down to nearest whole number increment
+    print(increment)
+    insertion_boundary_obj.select_set(True)
+    bpy.ops.object.mode_set(mode = 'EDIT')
+    bpy.context.tool_settings.mesh_select_mode = (False, True, False) #edge select mode
+    for x in range(0, insertionCount-1, increment):
+      if(counter < vertexDiff):
+        counter+=1 
+        insertion_boundary_obj.select_set(True)
+        bpy.ops.mesh.select_all(action='DESELECT')
+        bpy.ops.object.mode_set(mode = 'OBJECT')
+        obj.data.edges[x].select = True
+        bpy.ops.object.mode_set(mode = 'EDIT') 
+        bpy.ops.mesh.subdivide()
+    # if(counter = vertexDiff):
+    #   break
+  if (originCount == insertionCount):
+    print('wow, that was lucky')
 
 def reorder_coords(obj): 
     bpy.ops.object.mode_set(mode = 'OBJECT') 
