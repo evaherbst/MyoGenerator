@@ -13,6 +13,17 @@ from mathutils import Vector
 import math
 import bmesh
 
+
+
+origin_centroid = mathutils.Vector(0)
+insertion_centroid = mathutils.Vector(0)
+origin_normal = mathutils.Vector(0)
+insertion_normal = mathutils.Vector(0)
+
+
+attachments_centroids = [0,0]
+attachments_normals=[0,0]
+
 def make_empty(Muscle):
     o = bpy.data.objects.new(Muscle, None)
     bpy.context.scene.collection.objects.link( o )
@@ -66,7 +77,11 @@ def create_boundary(obj): #this works well - makes boundary, parents to attachme
     return boundary
 
 #to be used for each muscle origins
-def get_normal(boundary): #fills boundary with face, gets normal, deletes face
+def get_normal(boundary):
+     #fills boundary with face, gets normal, deletes face
+    
+
+
     bpy.ops.object.select_all( action = 'DESELECT' ) #make sure nothing else in scene is selected
     boundary.select_set(True) #select boundary only
     bpy.ops.object.mode_set(mode = 'EDIT')
@@ -89,6 +104,11 @@ def get_normal(boundary): #fills boundary with face, gets normal, deletes face
 
 def create_attachments(index): #function creates attachment as new object, parents to muscle empty, also contains functions to recenter object, get origin_centroid, create boundary, and calculate origin_normal
     # keep track of objects in scene to later rename new objects (#can't just rename active object bc duplicated object doesn't automatically become active)
+
+    global origin_centroid
+    global insertion_centroid
+    global origin_normal
+
     attachMentNames = [' origin', ' insertion']
     attachmentName = attachMentNames[index]
 
@@ -114,9 +134,11 @@ def create_attachments(index): #function creates attachment as new object, paren
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + attachmentName]
     obj = bpy.context.view_layer.objects.active
     object_Recenter(obj)
-    origin_centroid = calculate_centroid(obj)
-    create_boundary(obj)
-    origin_normal = get_normal(boundary)
+
+    attachments_centroids[index]=calculate_centroid(obj)
+    boundary = create_boundary(obj)
+    attachments_centroids[index]=get_normal(boundary)
+    #origin_normal = get_normal(boundary)
 
 
 
@@ -147,7 +169,7 @@ def create_origin_attachment(): #function creates attachment as new object, pare
     obj = bpy.context.view_layer.objects.active
     object_Recenter(obj)
     origin_centroid = calculate_centroid(obj)
-    create_boundary(obj)
+    boundary = create_boundary(obj)
     origin_normal = get_normal(boundary)
 
 
@@ -175,7 +197,7 @@ def create_insertion_attachment(): #function creates attachment as new object, p
     obj = bpy.context.view_layer.objects.active
     object_Recenter(obj)
     insertion_centroid = calculate_centroid(obj)
-    create_boundary(obj)
+    boundary =create_boundary(obj)
     insertion_normal = get_normal(boundary)
 
 
@@ -189,6 +211,7 @@ def reset_origin(curve):
 
 
 def BezierCurve():
+
     lineLength=math.sqrt((insertion_centroid[0] - origin_centroid[0]) ** 2 + (insertion_centroid[1] - origin_centroid[1]) ** 2 + (insertion_centroid[2] - origin_centroid[2]) ** 2)
     scaleFactor = .2*(lineLength)
     origin_normal_unit = origin_normal/origin_normal.length
