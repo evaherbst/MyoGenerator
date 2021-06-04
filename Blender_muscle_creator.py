@@ -8,6 +8,10 @@ Method to create muscle empties as parents. Then origin and insertion must be pa
 way to get all the muscle data or whether to just save as we go along for each muscle"""
 
 import bpy
+import mathutils
+from mathutils import Vector
+import math
+import bmesh
 
 def make_empty(Muscle):
     o = bpy.data.objects.new(Muscle, None)
@@ -84,11 +88,18 @@ def create_boundary(obj): #this works well - makes boundary, parents to attachme
         bpy.context.view_layer.objects.active = bpy.data.objects[name + " boundary"]
     return obj
 
+def reset_origin(curve):
+    offset = origin_centroid - curve.location
+    me = curve.data
+    for v in me.vertices:
+        v.co = v.co - offset
+    me.update()
+    curve.location = curve.location + offset
 
 
 
 def BezierCurve():
-    #create boundary for origin and insertion, duplicate, save serapately 
+    #create boundary for origin and insertion, duplicate, save separately
     origin = bpy.data.objects[Muscle + " origin"]
     insertion = bpy.data.objects[Muscle + " insertion"]
     create_boundary(origin)
@@ -97,7 +108,7 @@ def BezierCurve():
     scaleFactor = .2*(lineLength)
     origin_normal_unit = origin_normal/origin_normal.length
     insertion_normal_unit = insertion_normal/insertion_normal.length
-    curve = bpy.ops.curve.primitive_bezier_curve_add(radius=1, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
+    bpy.ops.curve.primitive_bezier_curve_add(radius=1, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
     #Curve becomes active object after creating so can just name here
     bpy.context.active_object.name = Muscle + " curve"
     curve = bpy.context.active_object
@@ -108,14 +119,12 @@ def BezierCurve():
     bez_points[1].co = insertion_centroid
     bez_points[1].handle_left = insertion_centroid + (insertion_normal_unit*scaleFactor)
     bez_points[1].handle_right = insertion_centroid - (insertion_normal_unit*scaleFactor)
-
+    reset_origin(curve)
 
 
 
 """Main Script step by step to convert to add-on"""
-import bpy
-import math
-import bmesh
+
 
 
 """User enters muscle name"""
