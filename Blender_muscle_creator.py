@@ -17,6 +17,36 @@ def make_empty(Muscle):
 
 
 
+# center origin of object on center of mass
+def object_Recenter(obj):
+  bpy.ops.object.select_all( action = 'DESELECT' ) #make sure nothing else in scene is selected
+  obj.select_set(True) #select obj onlu
+  bpy.ops.object.origin_set( type = 'ORIGIN_GEOMETRY' ) #need to set origin to geometry, otherwise all muscles will still have same origin as bone
+
+
+def calculate_centroid(obj):
+    centroid=obj.location
+    return centroid
+
+
+def get_normal(obj):
+    bpy.ops.object.mode_set(mode = 'EDIT')
+    bpy.context.tool_settings.mesh_select_mode = (False, True, False) #edge select mode
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.edge_face_add() 
+    bm = bmesh.from_edit_mesh(obj.data)
+    normal = bm.faces[0].normal
+    normal = normal[:]
+    typetest = type(normal)
+    print(normal)
+    print(typetest)
+
+    for f in bm.faces:
+        print(f.normal)
+        normal = f.normal
+    bpy.ops.mesh.delete(type='ONLY_FACE')
+    return normal
+
 
 def create_boundary(obj): #this works well - makes boundary, parents to attachment area area
 
@@ -55,29 +85,6 @@ def create_boundary(obj): #this works well - makes boundary, parents to attachme
     return obj
 
 
-def calculate_centroid(obj):
-    centroid=obj.location
-    return centroid
-
-
-def get_normal():
-    obj = bpy.context.object
-    bpy.ops.object.mode_set(mode = 'EDIT')
-    bpy.context.tool_settings.mesh_select_mode = (False, True, False) #edge select mode
-    bpy.ops.mesh.select_all(action='SELECT')
-    bpy.ops.mesh.edge_face_add() 
-    bm = bmesh.from_edit_mesh(obj.data)
-    normal = bm.faces[0].normal
-    normal = normal[:]
-    typetest = type(normal)
-    print(normal)
-    print(typetest)
-
-    for f in bm.faces:
-        print(f.normal)
-        normal = f.normal
-    bpy.ops.mesh.delete(type='ONLY_FACE')
-    return normal
 
 
 def BezierCurve():
@@ -168,13 +175,7 @@ bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin"]
 
 
 obj = bpy.context.view_layer.objects.active
-
-#set scale to 1 before centroid and Beziercurve calculation, transform_apply works on all selected objects
-bpy.ops.object.mode_set(mode = 'OBJECT')
-bpy.ops.object.select_all(action='DESELECT') 
-obj.select_set(True)
-bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)  #set scale and rotation = 1 to get correct volume values and apply other transforms, do not set location to 0 because we want object origin set to geometry
-
+object_Recenter(obj)
 origin_centroid = calculate_centroid(obj)
 origin_normal = get_normal(obj)
 
@@ -221,14 +222,8 @@ for obj in new_objs:
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " insertion"]
 
 
-
-
 obj = bpy.context.view_layer.objects.active
-#set scale to 1 before centroid and Beziercurve calculation, transform_apply works on all selected objects
-bpy.ops.object.mode_set(mode = 'OBJECT')
-bpy.ops.object.select_all(action='DESELECT') 
-obj.select_set(True)
-bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)  #set scale and rotation = 1 to get correct volume values and apply other transforms, do not set location to 0 because we want object origin set to geometry
+object_Recenter(obj)
 insertion_centroid = calculate_centroid(obj)
 insertion_normal = get_normal(obj)
 
