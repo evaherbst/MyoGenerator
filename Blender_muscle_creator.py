@@ -165,6 +165,13 @@ bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin"]
 
 
 obj = bpy.context.view_layer.objects.active
+
+#set scale to 1 before centroid and Beziercurve calculation, transform_apply works on all selected objects
+bpy.ops.object.mode_set(mode = 'OBJECT')
+bpy.ops.object.select_all(action='DESELECT') 
+obj.select_set(True)
+bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)  #set scale and rotation = 1 to get correct volume values and apply other transforms, do not set location to 0 because we want object origin set to geometry
+
 origin_centroid = calculate_centroid(obj)
 origin_normal = get_normal(obj)
 
@@ -210,7 +217,15 @@ for obj in new_objs:
     obj.select_set(True)
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " insertion"]
 
+
+
+
 obj = bpy.context.view_layer.objects.active
+#set scale to 1 before centroid and Beziercurve calculation, transform_apply works on all selected objects
+bpy.ops.object.mode_set(mode = 'OBJECT')
+bpy.ops.object.select_all(action='DESELECT') 
+obj.select_set(True)
+bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)  #set scale and rotation = 1 to get correct volume values and apply other transforms, do not set location to 0 because we want object origin set to geometry
 insertion_centroid = calculate_centroid(obj)
 insertion_normal = get_normal(obj)
 
@@ -230,21 +245,16 @@ bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " insertion"]
 """MUSCLE VOLUME CREATION - IN PROGRESS"""
 
 
-#Bezier_curve_function
+Bezier_curve()
 
-### match vertex counts of origin and insertion here:
+### function vertex counts of origin and insertion here
 
-
-
-
-
-
-
-
-
+# create array
 
 #RESET ORIGINS BEFORE USING CURVE MODIFIER:
 #Use geometric origin of Bezier curve to the muscle origin attachment centroid, and also set geometric origin of array mesh the muscle origin attachment centroid
 
 
+# curve modifier function
 
+#then, maybe at end one button that runs NivaMuscleAnalyzer to export data from all muscles in scene? and it can be run separately from rest of GUI
