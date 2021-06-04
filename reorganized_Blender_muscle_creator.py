@@ -26,17 +26,19 @@ def set_edit_mode(): #sets edit mode
     bpy.ops.mesh.select_all(action='DESELECT')
 
 
+#to be used for each muscle origins
 def object_Recenter(obj): 
 # center origin of object on center of mass
   bpy.ops.object.select_all( action = 'DESELECT' ) #make sure nothing else in scene is selected
   obj.select_set(True) #select obj only
   bpy.ops.object.origin_set( type = 'ORIGIN_GEOMETRY' ) #need to set origin to geometry, otherwise all muscles will still have same origin as bone
 
-
+#to be used for each muscle origins
 def calculate_centroid(obj):
     centroid=obj.location
     return centroid
 
+#to be used for each muscle origins
 def create_boundary(obj): #this works well - makes boundary, parents to attachment area area
     name = obj.name
     # keep track of objects in scene to later rename new objects
@@ -63,7 +65,7 @@ def create_boundary(obj): #this works well - makes boundary, parents to attachme
         boundary = bpy.context.view_layer.objects.active
     return boundary
 
-
+#to be used for each muscle origins
 def get_normal(boundary): #fills boundary with face, gets normal, deletes face
     bpy.ops.object.select_all( action = 'DESELECT' ) #make sure nothing else in scene is selected
     boundary.select_set(True) #select boundary only
@@ -85,6 +87,41 @@ def get_normal(boundary): #fills boundary with face, gets normal, deletes face
     return normal
 
 
+def create_attachments(index): #function creates attachment as new object, parents to muscle empty, also contains functions to recenter object, get origin_centroid, create boundary, and calculate origin_normal
+    # keep track of objects in scene to later rename new objects (#can't just rename active object bc duplicated object doesn't automatically become active)
+    attachMentNames = [' origin', ' insertion']
+    attachmentName = attachMentNames[index]
+
+    scn = bpy.context.scene
+    names = [ obj.name for obj in scn.objects]
+    #select faces, duplicate, separate
+    bpy.ops.mesh.duplicate()
+    bpy.ops.mesh.separate(type='SELECTED')
+    bpy.ops.object.mode_set(mode = 'OBJECT')
+    bpy.ops.object.select_all(action='DESELECT') 
+    new_objs = [ obj for obj in scn.objects if not obj.name in names] 
+    #rename new object and select and make active
+    for obj in new_objs:
+        obj.name = Muscle + attachmentName
+        obj.data.name = obj.name #set mesh name to object name
+        obj.select_set(True)
+        bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + attachmentName]
+    #Parent to the muscle empty 
+    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle]   #This works!
+    bpy.data.objects[Muscle].select_set(True)
+    bpy.ops.object.parent_set(keep_transform=True)
+    bpy.data.objects[Muscle].select_set(False) #make sure only origin is selected
+    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + attachmentName]
+    obj = bpy.context.view_layer.objects.active
+    object_Recenter(obj)
+    origin_centroid = calculate_centroid(obj)
+    create_boundary(obj)
+    origin_normal = get_normal(boundary)
+
+
+
+
+#to be used for each muscle origins
 def create_origin_attachment(): #function creates attachment as new object, parents to muscle empty, also contains functions to recenter object, get origin_centroid, create boundary, and calculate origin_normal
     # keep track of objects in scene to later rename new objects (#can't just rename active object bc duplicated object doesn't automatically become active)
     scn = bpy.context.scene
