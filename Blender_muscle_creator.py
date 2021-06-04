@@ -124,6 +124,9 @@ make_empty(Muscle)
 
 """prompt user to select bone on which to draw origin - needs to be meshed nicely and if several bones they need to be one object""" 
 
+#user inputs two obj names (makes a list) once once attachment is confirmed, go to nameList[1] (as in next in the list) 
+
+
 
 #go to edit mode and face select mode, clear selection
 bpy.ops.object.mode_set(mode = 'EDIT')
