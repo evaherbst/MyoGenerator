@@ -26,9 +26,7 @@ def change_vertex_number(originCount,insertionCount):
         bpy.ops.object.mode_set(mode = 'EDIT') 
         bpy.ops.mesh.subdivide()
         print("subdivision successful")
-     # if(counter = vertexDiff):
-     #   break
-  if (originCount > insertionCount): #Should this be elif?? 
+  elif (originCount > insertionCount): #Should this be elif?? 
     print("ORIGIN > INSERTION")
     increment = math.floor((insertionCount)/vertexDiff) #rounds down to nearest whole number increment
     print(increment)
@@ -44,9 +42,7 @@ def change_vertex_number(originCount,insertionCount):
         obj.data.edges[x].select = True
         bpy.ops.object.mode_set(mode = 'EDIT') 
         bpy.ops.mesh.subdivide()
-    # if(counter = vertexDiff):
-    #   break
-  if (originCount == insertionCount):
+  elif (originCount == insertionCount):
     print('wow, that was lucky')
 
 def reorder_coords(obj): 
