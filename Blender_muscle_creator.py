@@ -39,12 +39,13 @@ def get_normal(obj):
     bpy.ops.mesh.select_all(action='SELECT')
     bpy.ops.mesh.edge_face_add() 
     bm = bmesh.from_edit_mesh(obj.data)
+    if hasattr(bm.faces,"ensure_lookup_table"):
+        bm.faces.ensure_lookup_table()
     normal = bm.faces[0].normal
     normal = normal[:]
     typetest = type(normal)
     print(normal)
     print(typetest)
-
     for f in bm.faces:
         print(f.normal)
         normal = f.normal
@@ -129,7 +130,7 @@ def BezierCurve():
 
 """User enters muscle name"""
 
-Muscle = "mPSTp" 
+Muscle = "mAMEP" 
 
 bpy.ops.object.mode_set(mode = 'OBJECT')
 
@@ -252,7 +253,7 @@ bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " insertion"]
 """MUSCLE VOLUME CREATION - IN PROGRESS"""
 
 
-Bezier_curve()
+BezierCurve()
 
 ### function vertex counts of origin and insertion here
 

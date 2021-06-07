@@ -2,6 +2,7 @@
 
 """export data with NivaMuscleAnalyzer or variation thereof"""
 
+"""CURRENTLY THERE ARE ISSUES W/ VERTEX_COUNT, CREATE_ATTACHMENTS, RESET ORIGIN""" 
 
 """
 Method to create muscle empties as parents. Then origin and insertion must be parented to them to run NivaMuscleAnalyzer- not sure yet if this is the best 
@@ -138,7 +139,7 @@ def create_attachments(index): #function creates attachment as new object, paren
     attachments_centroids[index]=calculate_centroid(obj)
     boundary = create_boundary(obj)
     attachments_centroids[index]=get_normal(boundary)
-    #origin_normal = get_normal(boundary)
+    origin_normal = get_normal(boundary)
 
 
 
@@ -201,7 +202,7 @@ def create_insertion_attachment(): #function creates attachment as new object, p
     insertion_normal = get_normal(boundary)
 
 
-def reset_origin(curve):
+def reset_origin(curve): #GIVES ERROR CURVE HAS NO ATTRIBUTE VERTICES
     offset = origin_centroid - curve.location
     me = curve.data
     for v in me.vertices:
@@ -237,7 +238,7 @@ def BezierCurve():
 
 """User enters muscle name"""
 
-Muscle = "mPSTp" 
+Muscle = "mAMEP" 
 
 bpy.ops.object.mode_set(mode = 'OBJECT')
 
@@ -259,7 +260,10 @@ set_edit_mode()
 create_origin_attachment() #function creates attachment as new object, parents to muscle empty, also contains functions to recenter object, get origin_centroid, create boundary, and calculate origin_normal
 
 
-
+#RETURNS ERROR: "NAME OBJ IS NOT DEFINED    
+# File "<blender_console>", line 1, in <module>
+#  File "<blender_console>", line 27, in create_origin_attachment
+#  File "<blender_console>", line 15, in get_normal
 
 
 """INSERTION CREATION"""
@@ -280,12 +284,14 @@ create_insertion_attachment() #function creates attachment as new object, parent
 
 """MUSCLE VOLUME CREATION - IN PROGRESS"""
 
+#[VERTEX COUNT SCRIPT HERE]
 
 Bezier_curve()
 
 ### function vertex counts of origin and insertion here
 
 # create array
+
 
 #RESET ORIGINS BEFORE USING CURVE MODIFIER:
 #Use geometric origin of Bezier curve to the muscle origin attachment centroid, and also set geometric origin of array mesh the muscle origin attachment centroid

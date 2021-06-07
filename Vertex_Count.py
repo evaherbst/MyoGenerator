@@ -2,7 +2,11 @@ import bpy
 import bmesh
 import math
 
-def change_vertex_number(originCount,insertionCount):
+#CURRENTLY NOT WORKING - KEEPS THINKING BOTH ORIGIN AND INSERTION HAVE 0 VERTICES!
+
+
+def change_vertex_number(originCount,insertionCount,origin_boundary_obj,insertion_boundary_obj):
+
   print("OriginCount = ", originCount," InsCount =", insertionCount)
   vertexDiff=abs(originCount-insertionCount)
   print ("vert Diff", vertexDiff)
@@ -74,8 +78,11 @@ def reorder_coords(obj):
     bmesh.update_edit_mesh(me)
     return len(bm.verts)
 
-
-Muscle = "Muscle"
+#origin_boundary_obj = bpy.context.view_layer.objects.active
+#insertion_boundary_obj = bpy.context.view_layer.objects.active
+#obj = bpy.context.view_layer.objects.active
+#originVertexCount = 0
+Muscle = "mDM"
 bpy.ops.object.mode_set(mode = 'OBJECT') 
 bpy.ops.object.select_all(action='SELECT')
 for obj in bpy.context.selected_objects:
@@ -83,14 +90,14 @@ for obj in bpy.context.selected_objects:
     print(obj)
     if "origin" in obj.name:
       origin_boundary_obj = obj
-      originVertexCount = reorder_coords(obj)
+      originVertexCount = reorder_coords(origin_boundary_obj)
       print("reordering origin")
     if "insertion" in obj.name:
-      insertionVertexCount = reorder_coords(obj)
       insertion_boundary_obj = obj
+      insertionVertexCount = reorder_coords(insertion_boundary_obj)
       print("reordering insertion")
 
 print("reordering complete")
-change_vertex_number(originVertexCount,insertionVertexCount)
+change_vertex_number(originVertexCount,insertionVertexCount,origin_boundary_obj,insertion_boundary_obj)
 
 
