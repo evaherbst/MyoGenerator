@@ -2,7 +2,7 @@
 
 """export data with NivaMuscleAnalyzer or variation thereof"""
 
-"""CURRENTLY THERE ARE ISSUES W/ VERTEX_COUNT, CREATE_ATTACHMENTS, RESET ORIGIN""" 
+"""CURRENTLY THERE ARE ISSUES W/ VERTEX_COUNT, CREATE_ATTACHMENT, RESET ORIGIN""" 
 
 """
 Method to create muscle empties as parents. Then origin and insertion must be parented to them to run NivaMuscleAnalyzer- not sure yet if this is the best 
@@ -16,12 +16,10 @@ import bmesh
 
 
 
-origin_centroid = mathutils.Vector(0)
-insertion_centroid = mathutils.Vector(0)
-origin_normal = mathutils.Vector(0)
-insertion_normal = mathutils.Vector(0)
-
-
+origin_centroid = mathutils.Vector()
+insertion_centroid = mathutils.Vector()
+origin_normal = mathutils.Vector()
+insertion_normal = mathutils.Vector()
 attachments_centroids = [0,0]
 attachments_normals=[0,0]
 
@@ -78,41 +76,34 @@ def create_boundary(obj): #this works well - makes boundary, parents to attachme
     return boundary
 
 #to be used for each muscle origins
-def get_normal(boundary):
-     #fills boundary with face, gets normal, deletes face
-    
-
-
+def get_normal(boundary):#fills boundary with face, gets normal, deletes face
     bpy.ops.object.select_all( action = 'DESELECT' ) #make sure nothing else in scene is selected
     boundary.select_set(True) #select boundary only
     bpy.ops.object.mode_set(mode = 'EDIT')
     bpy.context.tool_settings.mesh_select_mode = (False, True, False) #edge select mode
     bpy.ops.mesh.select_all(action='SELECT')
     bpy.ops.mesh.edge_face_add() 
-    bm = bmesh.from_edit_mesh(obj.data)
+    bm = bmesh.from_edit_mesh(boundary.data)
     normal = bm.faces[0].normal
     normal = normal[:]
     typetest = type(normal)
     print(normal)
-    print(typetest)
-
     for f in bm.faces:
         print(f.normal)
         normal = f.normal
     bpy.ops.mesh.delete(type='ONLY_FACE')
     return normal
 
-
-def create_attachments(index): #function creates attachment as new object, parents to muscle empty, also contains functions to recenter object, get origin_centroid, create boundary, and calculate origin_normal
-    # keep track of objects in scene to later rename new objects (#can't just rename active object bc duplicated object doesn't automatically become active)
-
-    global origin_centroid
-    global insertion_centroid
+#works now, except won't return the coords from the attachment_centroid list, need to double check
+#also seems like it might make 2 boundaries (or one boundary and one origin but one is not parented right)
+def create_attachment(index): #function creates attachment as new object, parents to muscle empty, also contains functions to recenter object, get origin_centroid, create boundary, and calculate origin_normal
+# keep track of objects in scene to later rename new objects (#can't just rename active object bc duplicated object doesn't automatically become active)
+    #global origin_centroid
+    #global insertion_centroid
     global origin_normal
-
-    attachMentNames = [' origin', ' insertion']
-    attachmentName = attachMentNames[index]
-
+    global insertion_normal
+    attachmentNames = [' origin', ' insertion']
+    attachmentName = attachmentNames[index]
     scn = bpy.context.scene
     names = [ obj.name for obj in scn.objects]
     #select faces, duplicate, separate
@@ -135,10 +126,8 @@ def create_attachments(index): #function creates attachment as new object, paren
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + attachmentName]
     obj = bpy.context.view_layer.objects.active
     object_Recenter(obj)
-
     attachments_centroids[index]=calculate_centroid(obj)
     boundary = create_boundary(obj)
-    attachments_centroids[index]=get_normal(boundary)
     origin_normal = get_normal(boundary)
 
 
@@ -211,7 +200,7 @@ def reset_origin(curve): #GIVES ERROR CURVE HAS NO ATTRIBUTE VERTICES
     curve.location = curve.location + offset
 
 
-def BezierCurve():
+def bezier_curve():
 
     lineLength=math.sqrt((insertion_centroid[0] - origin_centroid[0]) ** 2 + (insertion_centroid[1] - origin_centroid[1]) ** 2 + (insertion_centroid[2] - origin_centroid[2]) ** 2)
     scaleFactor = .2*(lineLength)
@@ -257,7 +246,8 @@ set_edit_mode()
 
 """prompt user to select origin attachment area""" 
 
-create_origin_attachment() #function creates attachment as new object, parents to muscle empty, also contains functions to recenter object, get origin_centroid, create boundary, and calculate origin_normal
+#create_origin_attachment() #function creates attachment as new object, parents to muscle empty, also contains functions to recenter object, get origin_centroid, create boundary, and calculate origin_normal
+create_attachment(1) #function creates attachment as new object, parents to muscle empty, also contains functions to recenter object, get origin_centroid, create boundary, and calculate origin_normal
 
 
 #RETURNS ERROR: "NAME OBJ IS NOT DEFINED    
@@ -277,16 +267,15 @@ set_edit_mode()
 
 """prompt user to select insertion attachment area""" 
 
-create_insertion_attachment() #function creates attachment as new object, parents to muscle empty, also contains functions to recenter object, get insertionb_centroid, create boundary, and get insertion_normal
-
-
+#create_insertion_attachment() #function creates attachment as new object, parents to muscle empty, also contains functions to recenter object, get insertion_centroid, create boundary, and get insertion_normal
+create_attachment(1) #function creates attachment as new object, parents to muscle empty, also contains functions to recenter object, get insertion_centroid, create boundary, and get insertion_normal
 
 
 """MUSCLE VOLUME CREATION - IN PROGRESS"""
 
 #[VERTEX COUNT SCRIPT HERE]
 
-Bezier_curve()
+bezier_curve()
 
 ### function vertex counts of origin and insertion here
 
