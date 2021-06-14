@@ -6,7 +6,6 @@ import math
 
 
 def change_vertex_number(originCount,insertionCount,origin_boundary_obj,insertion_boundary_obj):
-
   print("OriginCount = ", originCount," InsCount =", insertionCount)
   vertexDiff=abs(originCount-insertionCount)
   print ("vert Diff", vertexDiff)
@@ -50,6 +49,8 @@ def change_vertex_number(originCount,insertionCount,origin_boundary_obj,insertio
     print('wow, that was lucky')
 
 def reorder_coords(obj): 
+    # global originCount
+    # global insertionCount
     bpy.ops.object.mode_set(mode = 'OBJECT') 
     bpy.ops.object.select_all(action='DESELECT')
     obj.select_set(True) #selects boundary
@@ -76,13 +77,23 @@ def reorder_coords(obj):
         prev, vert = vert, next
     bm.verts.sort()
     bmesh.update_edit_mesh(me)
+    # if "origin" in obj.name:
+    #     originCount = len(bm.verts)
+    #     print (obj.name)
+    # if "insertion" in obj.name:
+    #     insertionCount = len(bm.verts)
+    #     print (obj.name)
     return len(bm.verts)
 
-#origin_boundary_obj = bpy.context.view_layer.objects.active
-#insertion_boundary_obj = bpy.context.view_layer.objects.active
-#obj = bpy.context.view_layer.objects.active
-#originVertexCount = 0
+# origin_boundary_obj = bpy.context.view_layer.objects.active
+# insertion_boundary_obj = bpy.context.view_layer.objects.active
+# obj = bpy.context.view_layer.objects.active
+
 Muscle = "mDM"
+# originCount = 0
+# insertionCount = 0
+# origin_boundary_obj = 0
+# insertion_boundary_obj = 0
 bpy.ops.object.mode_set(mode = 'OBJECT') 
 bpy.ops.object.select_all(action='SELECT')
 for obj in bpy.context.selected_objects:
@@ -90,14 +101,13 @@ for obj in bpy.context.selected_objects:
     print(obj)
     if "origin" in obj.name:
       origin_boundary_obj = obj
-      originVertexCount = reorder_coords(origin_boundary_obj)
+      originCount = reorder_coords(origin_boundary_obj)
       print("reordering origin")
     if "insertion" in obj.name:
       insertion_boundary_obj = obj
-      insertionVertexCount = reorder_coords(insertion_boundary_obj)
+      insertionCount = reorder_coords(insertion_boundary_obj)
       print("reordering insertion")
 
-print("reordering complete")
-change_vertex_number(originVertexCount,insertionVertexCount,origin_boundary_obj,insertion_boundary_obj)
+change_vertex_number(originCount,insertionCount,origin_boundary_obj,insertion_boundary_obj)
 
 
