@@ -96,7 +96,7 @@ for obj in bpy.context.selected_objects:
     if "origin" in obj.name:
       originCounts = reorder_coords(obj)
       origin_boundary_obj = obj
-      print("reordering origin") #doesn't run this again
+      print("reordering origin") 
     if "insertion" in obj.name:
       insertionCounts = reorder_coords(obj)
       insertion_boundary_obj = obj

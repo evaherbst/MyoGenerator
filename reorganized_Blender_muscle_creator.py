@@ -36,9 +36,9 @@ def set_edit_mode(): #sets edit mode
 #to be used for each muscle origins
 def object_Recenter(obj): 
 # center origin of object on center of mass
-  bpy.ops.object.select_all( action = 'DESELECT' ) #make sure nothing else in scene is selected
-  obj.select_set(True) #select obj only
-  bpy.ops.object.origin_set( type = 'ORIGIN_GEOMETRY' ) #need to set origin to geometry, otherwise all muscles will still have same origin as bone
+    bpy.ops.object.select_all( action = 'DESELECT' ) #make sure nothing else in scene is selected
+    obj.select_set(True) #select obj only
+    bpy.ops.object.origin_set( type = 'ORIGIN_GEOMETRY' ) #need to set origin to geometry, otherwise all muscles will still have same origin as bone
 
 #to be used for each muscle origins
 def calculate_centroid(obj):
@@ -91,8 +91,7 @@ def get_normal(boundary):#fills boundary with face, gets normal, deletes face
     bpy.ops.mesh.delete(type='ONLY_FACE')
     return normal
 
-#works now, except won't return the coords from the attachment_centroid list, need to double check
-#also seems like it might make 2 boundaries (or one boundary and one origin but one is not parented right)
+
 def create_attachment(index): #function creates attachment as new object, parents to muscle empty, also contains functions to recenter object, get origin_centroid, create boundary, and calculate origin_normal
 # keep track of objects in scene to later rename new objects (#can't just rename active object bc duplicated object doesn't automatically become active)
     global attachment_centroids
