@@ -2,7 +2,7 @@ import bpy
 import bmesh
 import math
 
-#CURRENTLY NOT WORKING - KEEPS THINKING BOTH ORIGIN AND INSERTION HAVE 0 VERTICES!
+
 
 
 def change_vertex_number(originCount,insertionCount,origin_boundary_obj,insertion_boundary_obj):
