@@ -1,6 +1,13 @@
 import bpy
 
+
+parentMuscleGenerated = False
+
+
 class Nico_Test_Panel_PT_(bpy.types.Panel):
+
+    
+
     bl_idname = "Nico_Test_Panel"
     bl_label = "Test Panel Label"
     bl_category = "Test Addon"
@@ -21,7 +28,10 @@ class Nico_Test_Panel_PT_(bpy.types.Panel):
         row = layout.row()
         col1=layout.column()
         col1.prop(context.scene, "origin_Name", text ="Origin Name")  
+        col1.enabled=parentMuscleGenerated    #maybe check if selected face ' is not None '
         col2=layout.column()
         col2.prop(context.scene, "insertion_Name", text ="Insertion Name")  
         row = layout.row()
         row.operator('view3d.select_origins', text= "Select Origins")
+        row.enabled =  context.scene.origin_Name != 'Insert origin name'
+        

@@ -5,7 +5,7 @@ import sys
 #from . muscleCore import make_muscle_empties
 from AddonFolder import muscleCore
 #from Muscle_Volume_Sculptor import create_muscle_empties 
-
+from AddonFolder import test_panel
 
 class Nico_Select_Muscle_Op(bpy.types.Operator):
     bl_idname = "view3d.submit_button"
@@ -18,7 +18,10 @@ class Nico_Select_Muscle_Op(bpy.types.Operator):
         muscleCore.make_empty(objName)
        # make_muscle_empties()
 
+        test_panel.parentMuscleGenerated = True
+
         print('executing function test')
+      
         return{'FINISHED'}
 
 
@@ -27,6 +30,8 @@ class Nico_Select_Muscle_Op(bpy.types.Operator):
 class Nico_Select_Origins_Op(bpy.types.Operator):
     bl_idname = "view3d.select_origins"
     bl_label = "Select Origins"
+    
+
     #bl_description = "Centre Cursor Test"
 
     def execute(self,context):
@@ -35,7 +40,11 @@ class Nico_Select_Origins_Op(bpy.types.Operator):
         originName=bpy.context.scene.origin_Name
         insertionName=bpy.context.scene.insertion_Name
 
-        print(originName, insertionName)
+        muscleCore.attachments_names=[originName,insertionName]
+
+        print("test", bpy.context.scene.muscle_Name)
+
+        muscleCore.create_attachment(0,bpy.context.scene.muscle_Name)
 
         #print('executing function test')
         return{'FINISHED'}
