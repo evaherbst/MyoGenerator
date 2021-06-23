@@ -126,14 +126,6 @@ def create_attachment(index): #function creates attachment as new object, parent
 
 
 
-def reset_origin(curve): #GIVES ERROR CURVE HAS NO ATTRIBUTE VERTICES
-    offset = origin_centroid - curve.location
-    me = curve.data
-    for v in me.vertices:
-        v.co = v.co - offset
-    me.update()
-    curve.location = curve.location + offset
-
 
 def bezier_curve(attachment_centroids, attachment_normals):
     global origin_centroid
@@ -163,7 +155,7 @@ def bezier_curve(attachment_centroids, attachment_normals):
     bez_points[1].handle_right = insertion_centroid - (insertion_normal_unit*scaleFactor)
     # bez_points[1].handle_left = insertion_centroid + (insertion_normal_unit)
     # bez_points[1].handle_right = insertion_centroid - (insertion_normal_unit)
-    reset_origin(curve) #doesn't work, get error "'Curve' object has no attribute 'vertices'"
+    # reset_origin(curve) #doesn't work, get error "'Curve' object has no attribute 'vertices'" but don't need this for new method anyway
 
 
 

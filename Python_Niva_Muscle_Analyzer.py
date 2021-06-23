@@ -82,7 +82,6 @@ def main_loop():
   bpy.ops.object.select_all(action='SELECT')
   bpy.ops.object.transform_apply(location = False, scale = True, rotation = True) #set scale and rotation = 1 to get correct volume values and apply other transforms, 
   # do not set location to 0 because we want origin centered based on geometry
-  #or add code to make sure all calculations are in global coordinates?
   complete_Muscle_List = []
   complete_Muscle_List_Frustum = []
   muscle_Data = [] #create a list to store muscle data
