@@ -25,6 +25,9 @@ attachment_normals = [0,0]
 def make_empty(Muscle):
     bpy.ops.object.empty_add(type='PLAIN_AXES', align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
     bpy.context.object.name = Muscle
+    bpy.ops.object.mode_set(mode = 'EDIT')
+    bpy.context.tool_settings.mesh_select_mode = (False, False, True)
+    bpy.ops.mesh.select_all(action='DESELECT')
 
 def set_edit_mode(): #sets edit mode 
     #go to edit mode and face select mode, clear selection
