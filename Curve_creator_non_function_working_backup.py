@@ -25,7 +25,7 @@ obj = bpy.context.view_layer.objects.active
 insertion_centroid = calculate_centroid(obj)
 
 # get normal
-boundary = obj = bpy.context.view_layer.objects.active
+boundary = bpy.context.view_layer.objects.active
 bpy.ops.object.select_all( action = 'DESELECT' ) #make sure nothing else in scene is selected
 boundary.select_set(True) #select boundary only
 bpy.ops.object.mode_set(mode = 'EDIT')
@@ -37,16 +37,16 @@ normal = bm.faces[0].normal
 normal = normal[:]
 typetest = type(normal)
 print(normal)
-for f in bm.faces:
-    print(f.normal)
-    normal = f.normal
-bpy.ops.mesh.delete(type='ONLY_FACE') #doesnt delete
+#for f in bm.faces:
+   # print(f.normal)
+   # normal = f.normal
+bpy.ops.mesh.delete(type='ONLY_FACE') 
 origin_normal = normal
 
 #go back to object mode
 
 # get normal
-boundary = obj = bpy.context.view_layer.objects.active
+boundary = bpy.context.view_layer.objects.active
 bpy.ops.object.select_all( action = 'DESELECT' ) #make sure nothing else in scene is selected
 boundary.select_set(True) #select boundary only
 bpy.ops.object.mode_set(mode = 'EDIT')
@@ -79,8 +79,9 @@ origin_normal_unit = origin_normal/origin_normal.length
 insertion_normal = Vector(insertion_normal)
 insertion_normal_unit = insertion_normal/insertion_normal.length
 bpy.ops.curve.primitive_nurbs_path_add(radius=1, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1)) #makes nurbs path with 5 points 
-spline = bpy.data.objects["NurbsPath.002"].data.splines[0] #need to change name later
-
+curve = bpy.context.view_layer.objects.active
+curve.name = Muscle + " curve"
+spline = bpy.data.objects[curve.name].data.splines[0]
 
 point1 = origin_centroid + (origin_normal_unit*scaleFactor)
 point3 = insertion_centroid + (insertion_normal_unit*scaleFactor)
@@ -102,29 +103,106 @@ spline.points[3].select = True
 spline.points[4].select = True 
 bpy.ops.curve.subdivide()
 
-
-
-
-
-
-
-
-#TESTS FOR BEVELING
-
-#get object with "origin" and "boundary" and Muscle in name (to make sure it's only done for that specific muscle)
-
-#duplicate, because converting back will cause a different boundary which we do not want
-
-#rename (when you duplicate and separate the new object does not become active so you need to select it using the other method keeping track of new and old objects)
-
+bpy.ops.object.mode_set(mode = 'OBJECT')
+bpy.ops.object.select_all(action='DESELECT')
+obj = bpy.data.objects[Muscle + " origin" + " boundary"]  # select origin boundary loop for that particular muscle
+bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin" + " boundary"] #make active 
+bpy.data.objects[Muscle + " origin" + " boundary"].select_set(True)
+bpy.ops.object.duplicate_move(OBJECT_OT_duplicate={"linked":False, "mode":'TRANSLATION'}, TRANSFORM_OT_translate={"value":(0, 0, 0), "orient_type":'GLOBAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'GLOBAL', "constraint_axis":(True, True, True), "mirror":True, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False, "use_automerge_and_split":False})
+#duplicated objects now becomes selected and active
 #convert to curve
 bpy.ops.object.convert(target='CURVE')
+#don't parent, but rename to keep track 
+cross_section = bpy.context.view_layer.objects.active
+cross_section.name = Muscle + " cross section template"
+
+#now need to rotate cross section so it is roughly aligned with XY plane (otherwise, if main dimensions are along Z, cross section gets squished during beveling)
+cross_section = bpy.context.view_layer.objects.active
+matrix_orig = cross_section.matrix_world.copy()
+axis_src = matrix_orig.to_3x3() @ origin_normal 
+axis_dst = Vector((0, 0, 1))
+matrix_rotate = matrix_orig.to_3x3()
+matrix_rotate = matrix_rotate * axis_src.rotation_difference(axis_dst).to_matrix()
+matrix_translation = Matrix.Translation(matrix_orig.to_translation())
+cross_section.matrix_world = matrix_translation * matrix_rotate.to_4x4()
 
 
-#then, make nurbs path active
+# OR TRY
 
+imort mathutils
+#define direction
+
+DirectionVector = mathutils.Vector(origin_normal) 
+#apply rotation
+bpy.context.object.rotation_mode = 'QUATERNION'
+bpy.context.object.rotation_quaternion = DirectionVector.to_track_quat('X','Y')
+
+
+# OR TRY
+
+
+
+import bpy
+from mathutils import Matrix, Vector, Euler
+
+obj = bpy.context.active_object
+vec = Vector((0, 0, 1.0))
+
+# object axis to align with vector vec
+axis = Vector(origin_normal)
+
+# rotation difference
+q = axis.rotation_difference(vec)
+# or
+# track quaternion
+q = vec.to_track_quat('X', 'Z')
+
+loc, rot, scale = obj.matrix_world.decompose()
+
+obj.matrix_world = (
+    Matrix.Translation(loc) * 
+    q.to_matrix().to_4x4() * 
+    mat_scale)
+
+
+
+# Not working, try:
+https://blender.stackexchange.com/questions/93051/align-to-face-normal-vector
+
+
+
+import bpy
+from mathutils import Matrix, Vector
+
+obj = bpy.context.object
+matrix_orig = obj.matrix_world.copy()
+
+# for this example just pick the first face.
+axis_src = matrix_orig.to_3x3() * obj.data.polygons[0].normal
+# z-axis, could be any direction
+axis_dst = Vector((0, 0, 1))
+
+matrix_rotate = matrix_orig.to_3x3()
+matrix_rotate = matrix_rotate * axis_src.rotation_difference(axis_dst).to_matrix()
+matrix_translation = Matrix.Translation(matrix_orig.to_translation())
+
+obj.matrix_world = matrix_translation * matrix_rotate.to_4x4()
+
+
+
+
+
+
+
+
+#Bevel nurbs path with origin boundary curve
+
+#then, select and make nurbs path active - need to assign a name earlier though!
+bpy.ops.object.select_all(action='DESELECT')
+bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " curve"] #make curve active
+bpy.data.objects[Muscle + " origin" + " boundary"].select_set(True)
 bpy.context.object.data.bevel_mode = 'OBJECT'
-bpy.context.object.data.bevel_object = bpy.data.objects["BezierCircle"] #ADD NAME OF ORIGIN BOUNDARY CONVERTED TO CURVE 
+bpy.context.object.data.bevel_object = bpy.data.objects[cross_section.name] 
 
 #user can adjust curve shape, endpoint tilts etc
 
