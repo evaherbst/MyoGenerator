@@ -25,6 +25,11 @@ attachment_normals = [0,0]
 attachments_names=[]
 
 
+#def make_empty(Muscle):
+ #   bpy.ops.object.empty_add(type='PLAIN_AXES', align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
+  #  bpy.context.object.name = Muscle
+   # set_edit_mode()
+
 def make_empty(Muscle):
 	bpy.ops.object.mode_set(mode = 'OBJECT')
 	o = bpy.data.objects.new(Muscle, None)
@@ -32,11 +37,11 @@ def make_empty(Muscle):
 	o.empty_display_size = 2
 	o.empty_display_type = 'PLAIN_AXES'   
 
-	set_edit_mode()   #go to edit to select faces
+	#set_edit_mode()   #go to edit to select faces
 
 
 
-def create_attachment(index,Muscle): #function creates attachment as new object, parents to muscle empty, also contains functions to recenter object, get origin_centroid, create boundary, and calculate origin_normal
+def create_attachment(index,Muscle): #function creates attachment as new object,parents to muscle empty, also contains functions to recenter object, get origin_centroid, create boundary, and calculate origin_normal
 # keep track of objects in scene to later rename new objects (#can't just rename active object bc duplicated object doesn't automatically become active)
     global attachment_centroids
     global attachment_normals
