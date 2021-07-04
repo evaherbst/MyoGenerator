@@ -24,14 +24,14 @@ bl_info = {
 
 
 import bpy
+
 #from muscleCore.create_muscle_empties import *
 #import bpy.utilis
 
 
-from . test_op import Nico_Select_Muscle_Op, Nico_Select_Origins_Op
+from . test_op import Nico_Select_Muscle_Op, Nico_Select_Origin_Op,Nico_Select_Insertion_Op,
 
 from . test_panel import Nico_Test_Panel_PT_
-
 #classes =(Nico_Test_Op, Nico_Test_Panel_PT_)
 #register, unregister = bpy.utils.register_classes_factory(classes)
 
@@ -47,8 +47,14 @@ from . test_panel import Nico_Test_Panel_PT_
 
 def register():
     bpy.utils.register_class(Nico_Select_Muscle_Op)
-    bpy.utils.register_class(Nico_Select_Origins_Op)
+    bpy.utils.register_class(Nico_Select_Origin_Op)
+    bpy.utils.register_class(Nico_Select_Insertion_Op)
+
     bpy.utils.register_class(Nico_Test_Panel_PT_)
+    
+
+    
+    bpy.types.Scene.selected_object =bpy.props.PointerProperty(type=bpy.types.Object)
 
     bpy.types.Scene.muscle_Name=bpy.props.StringProperty \
         (
@@ -70,8 +76,14 @@ def register():
         )
 
 
+
+#### FOR OBJECT EYEDROPPER: https://blender.stackexchange.com/questions/30487/object-selection-box-with-eyedropper
+
 def unregister():
     bpy.utils.register_class(Nico_Select_Muscle_Op)
-    bpy.utils.register_class(Nico_Select_Origins_Op)
+    bpy.utils.register_class(Nico_Select_Origin_Op)
+    bpy.utils.register_class(Nico_Select_Insertion_Op)
+
     bpy.utils.register_class(Nico_Test_Panel_PT_)
     del bpy.types.Scene.muscle_Name
+    

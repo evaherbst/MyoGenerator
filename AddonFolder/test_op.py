@@ -27,25 +27,21 @@ class Nico_Select_Muscle_Op(bpy.types.Operator):
 
 
 
-class Nico_Select_Origins_Op(bpy.types.Operator):
-    bl_idname = "view3d.select_origins"
-    bl_label = "Select Origins"
-    
-
-    #bl_description = "Centre Cursor Test"
+class Nico_Select_Origin_Op(bpy.types.Operator):
+    bl_idname = "view3d.select_origin"
+    bl_label = "Select Origin"
 
     def execute(self,context):
-        #function to execute
-        
-        originName=bpy.context.scene.origin_Name
-        insertionName=bpy.context.scene.insertion_Name
-
-        muscleCore.attachments_names=[originName,insertionName]
-
-        print("test", bpy.context.scene.muscle_Name)
-
+        test_panel.originSelected=True
         muscleCore.create_attachment(0,bpy.context.scene.muscle_Name)
-
-        #print('executing function test')
         return{'FINISHED'}
 
+
+class Nico_Select_Insertion_Op(bpy.types.Operator):
+    bl_idname = "view3d.select_insertion"
+    bl_label = "Select Insertion"
+
+    def execute(self,context):
+
+        muscleCore.create_attachment(1,bpy.context.scene.muscle_Name)
+        return{'FINISHED'}

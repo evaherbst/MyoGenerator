@@ -1,8 +1,9 @@
 import bpy
-
-
+from bpy.props import PointerProperty
+from AddonFolder import muscleCore
 parentMuscleGenerated = False
-
+originSelected=False
+allowAttachmentSelection=False
 
 class Nico_Test_Panel_PT_(bpy.types.Panel):
 
@@ -17,6 +18,7 @@ class Nico_Test_Panel_PT_(bpy.types.Panel):
     def draw(self,context):
         layout = self.layout
 
+        layout.prop(context.scene, "theChosenObject")
         row = layout.row()
         row.prop(context.scene, "muscle_Name", text ="Muscle Name")  
         
@@ -25,13 +27,22 @@ class Nico_Test_Panel_PT_(bpy.types.Panel):
         
 
 
-        row = layout.row()
+        #row = layout.row()
         col1=layout.column()
-        col1.prop(context.scene, "origin_Name", text ="Origin Name")  
+        col1.prop(context.scene, "selected_object", text='Origin\'s Bone')
+        col1.enabled=parentMuscleGenerated    #maybe check if selected face ' is not None '
+        #row = layout.row()
+        col1=layout.column()
+        col1.operator('view3d.select_origin', text= "Select Origin")
+        col1.enabled =  allowAttachmentSelection
+
+        col1=layout.column()
+        col1.prop(context.scene, "selected_object", text='Origin\'s Bone')
         col1.enabled=parentMuscleGenerated    #maybe check if selected face ' is not None '
         col2=layout.column()
-        col2.prop(context.scene, "insertion_Name", text ="Insertion Name")  
-        row = layout.row()
-        row.operator('view3d.select_origins', text= "Select Origins")
-        row.enabled =  context.scene.origin_Name != 'Insert origin name'
+        col2.operator('view3d.select_insertion', text= "Select Insertion")
+        col2.enabled =  originSelected
+        
+
+    
         
