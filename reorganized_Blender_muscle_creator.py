@@ -130,35 +130,6 @@ def create_attachment(index): #function creates attachment as new object, parent
 
 
 
-def bezier_curve(attachment_centroids, attachment_normals):
-    global origin_centroid
-    global insertion_centroid
-    global origin_normal
-    global insertion_normal
-    origin_centroid = attachment_centroids[0]
-    insertion_centroid = attachment_centroids[1]
-    origin_normal = attachment_normals[0]
-    insertion_normal = attachment_normals[1]
-    lineLength=math.sqrt((insertion_centroid[0] - origin_centroid[0]) ** 2 + (insertion_centroid[1] - origin_centroid[1]) ** 2 + (insertion_centroid[2] - origin_centroid[2]) ** 2)
-    scaleFactor = .2*(lineLength)
-    origin_normal_unit = origin_normal/origin_normal.length
-    insertion_normal_unit = insertion_normal/insertion_normal.length
-    bpy.ops.curve.primitive_bezier_curve_add(radius=1, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
-    #Curve becomes active object after creating so can just name here
-    bpy.context.active_object.name = Muscle + " curve"
-    curve = bpy.context.active_object
-    bez_points = curve.data.splines[0].bezier_points
-    bez_points[0].co = origin_centroid
-    bez_points[0].handle_left = origin_centroid + (origin_normal_unit*scaleFactor)
-    #bez_points[0].handle_left = origin_centroid + (origin_normal_unit)
-    bez_points[0].handle_right = origin_centroid - (origin_normal_unit*scaleFactor)
-    # bez_points[0].handle_right = origin_centroid - (origin_normal_unit)
-    bez_points[1].co = insertion_centroid
-    bez_points[1].handle_left = insertion_centroid + (insertion_normal_unit*scaleFactor)
-    bez_points[1].handle_right = insertion_centroid - (insertion_normal_unit*scaleFactor)
-    # bez_points[1].handle_left = insertion_centroid + (insertion_normal_unit)
-    # bez_points[1].handle_right = insertion_centroid - (insertion_normal_unit)
-    # reset_origin(curve) #doesn't work, get error "'Curve' object has no attribute 'vertices'" but don't need this for new method anyway
 
 
 
@@ -210,19 +181,15 @@ create_attachment(1) #function creates attachment as new object, parents to musc
 
 """MUSCLE VOLUME CREATION - IN PROGRESS"""
 
-#[VERTEX COUNT SCRIPT HERE]
-
-bezier_curve(attachment_centroids,attachment_normals)
-
-### function vertex counts of origin and insertion here
-
-# create array
+change_vertex_number(originCounts,insertionCounts,origin_boundary_obj,insertion_boundary_obj) #see Vertex_Count.py
 
 
-#RESET ORIGINS BEFORE USING CURVE MODIFIER:
-#Use geometric origin of Bezier curve to the muscle origin attachment centroid, and also set geometric origin of array mesh the muscle origin attachment centroid
+#curve creator here
+
+#slider for creating extent of bevel - I think this need to be done straight in the add-on but here is some code on defining extent of bevels:
 
 
-# curve modifier function
 
 #then, maybe at end one button that runs NivaMuscleAnalyzer to export data from all muscles in scene? and it can be run separately from rest of GUI
+
+#also, *if time and after everything else works*, use NurbsPath_length.py to calculate nirbs path length and store *before* curve is converted to mesh
