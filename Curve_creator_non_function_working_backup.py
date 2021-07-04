@@ -98,7 +98,7 @@ point1 = origin_centroid + (origin_normal_unit*scaleFactor) #
 point3 = insertion_centroid + (insertion_normal_unit*scaleFactor)
 spline.points[0].co = [origin_centroid[0],origin_centroid[1],origin_centroid[2],1] #convert vector to tuple, 4th number is nurbs weight, currently set to =1
 spline.points[1].co = [point1[0],point1[1],point1[2],1]
-#spline.points[2].co = .. though about setting this to midpoint of origin and insertion but don't want that bc it would mess up curve (e.g. be straight line), so leave default for now
+#point 2 just leave at default position
 spline.points[3].co = [point3[0],point3[1],point3[2],1]
 spline.points[4].co = [insertion_centroid[0],insertion_centroid[1],insertion_centroid[2],1]
 
@@ -161,7 +161,7 @@ bpy.context.object.data.bevel_factor_end = 0.8
 
 #user will likely have to change curve tilt to align cross section to origin and attachment orientations 
 #user can adjust curve shape, endpoint tilts etc, so add a button to confirm they have made those changes (curve alignment stuff) before the next piece of code
-
+[BREAK FOR USER ADJUSTMENT]
 
 #then convert curve to mesh
 
@@ -171,20 +171,49 @@ bpy.ops.object.convert(target='MESH')
 
 #then need to join curve with origin_boundary and insertion_boundary
 
+#join origin and insertion boundaries to muscle volume mesh (duplicate origin and insertion boundaries first so that I can keep boundaries for muscle deconstruction tool)
+#duplicate and unparent
+
+#duplicate
+
+
+
+#deselect everthing, then select by name
+
+bpy.ops.object.join()
+# rename to [Muscle + "volume"]
+
+
+
+#go to edit mode
+bpy.ops.object.editmode_toggle()
+
+#select all\
+
 #select edge loops
 
+bpy.ops.mesh.select_all(action='SELECT')
+
+
+A = bpy.ops.mesh.region_to_loop() #only selects edge loops of main muscle mesh, user will have to manually select the outer ones
+#so I guess there needs to be a button here to confirm to trigger the next step
+
+bpy.ops.mesh.select_loose()
+[BREAK FUNCTION HERE FOR USER INPUT???]
+
 #bridge edge loops
+bpy.ops.mesh.bridge_edge_loops()
 
 # cap ends
+bpy.ops.mesh.region_to_loop()
+
+#triangulate mesh
+bpy.ops.mesh.quads_convert_to_tris(quad_method='BEAUTY', ngon_method='BEAUTY')
+
+
 
 #user has option to do boolean ops to get more exact ends
 
-#Things to look into
-# - nurbs weight
-# - smooth tilt
-# - smooth radius
-# - adjusting tilt of individual points - especially endpoints - can do manually for now
-# - adjusting radius - not ideal, better to do with edge loops after it's converted to a mesh
 
 
 
