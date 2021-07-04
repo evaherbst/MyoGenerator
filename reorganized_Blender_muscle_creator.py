@@ -9,7 +9,7 @@ way to get all the muscle data or whether to just save as we go along for each m
 
 import bpy
 import mathutils
-from mathutils import Vector
+from mathutils import Vector, Matrix
 import math
 import bmesh
 

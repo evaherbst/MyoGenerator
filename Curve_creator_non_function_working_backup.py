@@ -5,73 +5,50 @@
 
 
 
-import bpy
-from mathutils import Vector
-import bmesh
-import math
-
-"""""TEST FUNCTIONS ONLY """
-
-#useful functions for tests
-def calculate_centroid(obj):
-    centroid=obj.location
-    return centroid
-
-
-obj = bpy.context.view_layer.objects.active
-origin_centroid = calculate_centroid(obj)
-
-#repeat for insertion
-obj = bpy.context.view_layer.objects.active
-insertion_centroid = calculate_centroid(obj)
-
-# get normal
-boundary = bpy.context.view_layer.objects.active
-bpy.ops.object.select_all( action = 'DESELECT' ) #make sure nothing else in scene is selected
-boundary.select_set(True) #select boundary only
-bpy.ops.object.mode_set(mode = 'EDIT')
-bpy.context.tool_settings.mesh_select_mode = (False, True, False) #edge select mode
-bpy.ops.mesh.select_all(action='SELECT')
-bpy.ops.mesh.edge_face_add() 
-bm = bmesh.from_edit_mesh(boundary.data)
-normal = bm.faces[0].normal
-normal = normal[:]
-typetest = type(normal)
-print(normal)
-#for f in bm.faces:
-   # print(f.normal)
-   # normal = f.normal
-bpy.ops.mesh.delete(type='ONLY_FACE') 
-origin_normal = normal
-
-#go back to object mode
-
-# get normal
-boundary = bpy.context.view_layer.objects.active
-bpy.ops.object.select_all( action = 'DESELECT' ) #make sure nothing else in scene is selected
-boundary.select_set(True) #select boundary only
-bpy.ops.object.mode_set(mode = 'EDIT')
-bpy.context.tool_settings.mesh_select_mode = (False, True, False) #edge select mode
-bpy.ops.mesh.select_all(action='SELECT')
-bpy.ops.mesh.edge_face_add() 
-bm = bmesh.from_edit_mesh(boundary.data)
-normal = bm.faces[0].normal
-normal = normal[:]
-typetest = type(normal)
-print(normal)
-for f in bm.faces:
-    print(f.normal)
-    normal = f.normal
-bpy.ops.mesh.delete(type='ONLY_FACE')
-insertion_normal = normal
-
-"""END TEST FUNCTION"""
-
 
 import bpy
-from mathutils import Vector
-import bmesh
+from mathutils import Vector, Matrix
 import math
+import bmesh
+
+
+
+def align_with_XY(Muscle):
+    bpy.ops.object.mode_set(mode = 'OBJECT')
+    bpy.ops.object.select_all(action='DESELECT')
+    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " cross section template"] #make active 
+    bpy.data.objects[Muscle + " cross section template"].select_set(True)
+    bpy.ops.object.mode_set(mode = 'EDIT')
+    bpy.context.tool_settings.mesh_select_mode = (False, True, False)   # edge selection mode
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.edge_face_add() #add face
+    bpy.context.tool_settings.mesh_select_mode = (False, False, True) # face selection mode
+    bpy.ops.mesh.select_all(action='SELECT')
+    me = bpy.context.edit_object.data
+    #get bmesh (Object needs to be in Edit mode)
+    bm=bmesh.from_edit_mesh(me)
+    bm.select_history.add(bm.faces[0])
+    context = bpy.context
+    ob = context.edit_object
+    me = ob.data
+    bm = bmesh.from_edit_mesh(me)
+    face = bm.select_history.active
+    o = face.calc_center_median()
+    face.normal_update()
+    norm = face.normal
+    edges = sorted((e for e in face.edges), key=lambda e: abs((e.verts[1].co - e.verts[0].co).dot(face.normal)))
+    e = edges[0]
+    T = Matrix.Translation(-o)
+    up = Vector((0, 0, 1))
+    R = face.normal.rotation_difference(up).to_matrix()
+    bmesh.ops.transform(bm, verts=bm.verts, matrix=R, space=T)
+    forward = Vector((0, 1, 0))
+    R = (e.verts[1].co - e.verts[0].co).rotation_difference(forward).to_matrix()
+    bmesh.ops.transform(bm, verts=bm.verts, matrix=R, space=T)
+    T = Matrix.Translation(face.calc_center_median() - o)
+    bmesh.ops.transform(bm, verts=bm.verts, matrix=T)
+    bmesh.update_edit_mesh(me)
+
 
 def curve_creator(attachment_centroids,attachment_normals,Muscle): #need muscle name as input
     global origin_centroid
@@ -118,31 +95,21 @@ bpy.ops.curve.subdivide()
 #now create cross section for muscle from muscle origin
 bpy.ops.object.mode_set(mode = 'OBJECT')
 bpy.ops.object.select_all(action='DESELECT')
-obj = bpy.data.objects[Muscle + " origin" + " boundary"]  # select origin boundary loop for that particular muscle
+# select origin boundary loop for that particular muscle
 bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin" + " boundary"] #make active 
 bpy.data.objects[Muscle + " origin" + " boundary"].select_set(True)
 bpy.ops.object.duplicate_move(OBJECT_OT_duplicate={"linked":False, "mode":'TRANSLATION'}, TRANSFORM_OT_translate={"value":(0, 0, 0), "orient_type":'GLOBAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'GLOBAL', "constraint_axis":(True, True, True), "mirror":True, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False, "use_automerge_and_split":False})
 #duplicated objects now becomes selected and active
 
-#don't parent, but rename to keep track 
+#rename and unparent
 cross_section = bpy.context.view_layer.objects.active
 cross_section.name = Muscle + " cross section template"
+bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
 
-#now, need to take boundary and move main dimension to XY plane, so that projection on curve is correct
-
-#edit mode
-#add face
-#run function for projection to XY plane with Z up
-#FIRST TEST IF THIS WORKS WELL FOR CURVE BELEVS
-#remove face
+align_with_XY(Muscle) #take cross section and move main dimension to XY plane, so that projection on curve is correct, also converts to curve
 
 
 
-
-
-
-#convert to curve
-bpy.ops.object.convert(target='CURVE')
 
 
 
@@ -151,7 +118,7 @@ bpy.ops.object.convert(target='CURVE')
 #select and make nurbs path active 
 bpy.ops.object.select_all(action='DESELECT')
 bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " curve"] #make curve active
-bpy.data.objects[Muscle + " origin" + " boundary"].select_set(True)
+bpy.data.objects[Muscle + " cross section template"].select_set(True)
 
 #bevel
 bpy.context.object.data.bevel_mode = 'OBJECT'
@@ -169,21 +136,38 @@ bpy.ops.object.convert(target='MESH')
 
 #then user can scale some edgeloops etc to adjust more
 
-#then need to join curve with origin_boundary and insertion_boundary
 
 #join origin and insertion boundaries to muscle volume mesh (duplicate origin and insertion boundaries first so that I can keep boundaries for muscle deconstruction tool)
 #duplicate and unparent
 
-#duplicate
+bpy.ops.object.select_all(action='DESELECT')
+bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin" + " boundary"] #make active 
+bpy.data.objects[Muscle + " origin" + " boundary"].select_set(True)
+bpy.ops.object.duplicate_move(OBJECT_OT_duplicate={"linked":False, "mode":'TRANSLATION'}, TRANSFORM_OT_translate={"value":(0, 0, 0), "orient_type":'GLOBAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'GLOBAL', "constraint_axis":(True, True, True), "mirror":True, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False, "use_automerge_and_split":False})
+bpy.context.view_layer.objects.active.name = [Muscle + "origin_merge_with_volume"]
+bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
 
-[ADD INFO]
+bpy.ops.object.select_all(action='DESELECT')
+bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " insertion" + " boundary"] #make active 
+bpy.data.objects[Muscle + " origin" + " boundary"].select_set(True)
+bpy.ops.object.duplicate_move(OBJECT_OT_duplicate={"linked":False, "mode":'TRANSLATION'}, TRANSFORM_OT_translate={"value":(0, 0, 0), "orient_type":'GLOBAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'GLOBAL', "constraint_axis":(True, True, True), "mirror":True, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False, "use_automerge_and_split":False})
+bpy.context.view_layer.objects.active.name = [Muscle + "insertion_merge_with_volume"]
+bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
 
-#deselect everthing, then select by name
+
+
+#select items to join
+bpy.ops.object.select_all(action='DESELECT')
+bpy.data.objects[Muscle + " curve"].select_set(True)
+bpy.data.objects[Muscle + "origin_merge_with_volume"].select_set(True)
+bpy.data.objects[Muscle + "insertion_merge_with_volume"].select_set(True)
+
 
 bpy.ops.object.join()
 # rename to [Muscle + "volume"]
+#parent to empty
 
-###THE BELOW ALL WORKS WHEN RUN IN CHUNKS, NOW TEST AS FUNCTION
+
 
 #go to edit mode
 bpy.ops.object.editmode_toggle()
