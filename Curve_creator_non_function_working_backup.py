@@ -130,6 +130,13 @@ cross_section.name = Muscle + " cross section template"
 
 #now, need to take boundary and move main dimension to XY plane, so that projection on curve is correct
 
+#edit mode
+#add face
+#run function for projection to XY plane with Z up
+#FIRST TEST IF THIS WORKS WELL FOR CURVE BELEVS
+#remove face
+
+
 
 
 
