@@ -176,34 +176,45 @@ bpy.ops.object.convert(target='MESH')
 
 #duplicate
 
-
+[ADD INFO]
 
 #deselect everthing, then select by name
 
 bpy.ops.object.join()
 # rename to [Muscle + "volume"]
 
-
+###THE BELOW ALL WORKS WHEN RUN IN CHUNKS, NOW TEST AS FUNCTION
 
 #go to edit mode
 bpy.ops.object.editmode_toggle()
-
-#select all\
+bpy.context.tool_settings.mesh_select_mode = (True, False, False) #vertex select mode
 
 #select edge loops
-
 bpy.ops.mesh.select_all(action='SELECT')
+bpy.ops.mesh.region_to_loop() #selects edge loops of muscle mesh, saves
+obj = bpy.context.edit_object
+me = obj.data
+# Get a BMesh representation
+bm = bmesh.from_edit_mesh(me)
+edge_Vertices = []
+for v in bm.verts:
+    if v.select:
+        edge_Vertices.append(v.index)
 
+bpy.context.tool_settings.mesh_select_mode = (False, True, False) #edge select mode required for select_loose to work #throws errpr
+bpy.ops.mesh.select_loose() #select origin and attachment boundary loops
+bpy.context.tool_settings.mesh_select_mode = (True, False, False) #vertex select mode
+for v in bm.verts:
+    if v.select:
+        edge_Vertices.append(v.index)
 
-A = bpy.ops.mesh.region_to_loop() #only selects edge loops of main muscle mesh, user will have to manually select the outer ones
-#so I guess there needs to be a button here to confirm to trigger the next step
+bpy.ops.object.mode_set(mode = 'OBJECT') #now use this list to select all boundary loops that need to be bridged
+for i in edge_Vertices:
+    obj.data.vertices[i].select = True
 
-bpy.ops.mesh.select_loose()
-[BREAK FUNCTION HERE FOR USER INPUT???]
-
+bpy.ops.object.mode_set(mode = 'EDIT')
 #bridge edge loops
 bpy.ops.mesh.bridge_edge_loops()
-
 # cap ends
 bpy.ops.mesh.region_to_loop()
 

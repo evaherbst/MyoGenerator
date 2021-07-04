@@ -186,7 +186,7 @@ change_vertex_number(originCounts,insertionCounts,origin_boundary_obj,insertion_
 
 #curve creator here
 
-#slider for creating extent of bevel - I think this need to be done straight in the add-on but here is some code on defining extent of bevels:
+#add slider for creating extent of bevel - I think this need to be done straight in the add-on but here is some code on defining extent of bevels:
 
 
 
