@@ -1,6 +1,6 @@
 
 
-#NOTE- make sure centroids are calculated based on centroids of muscle attachment and not of bone - need to test this at end to make sure
+
 
 #NOW add beveling - need to set bounds, also need to convert origin boundary to curve, and at end convert it back and convert muscle curve to mesh
 
