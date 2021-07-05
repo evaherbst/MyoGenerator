@@ -109,10 +109,6 @@ bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
 align_with_XY(Muscle) #take cross section and move main dimension to XY plane, so that projection on curve is correct, also converts to curve
 
 
-
-
-
-
 #Bevel nurbs path with origin boundary curve
 
 #select and make nurbs path active 
@@ -126,17 +122,16 @@ bpy.context.object.data.bevel_object = bpy.data.objects[cross_section.name]
 bpy.context.object.data.bevel_factor_start = 0.2  #THIS NEEDS TO BE ADJUSTED BY USER SLIDER
 bpy.context.object.data.bevel_factor_end = 0.8
 
+### BREAK FOR USER ADJUSTMENT
 #user will likely have to change curve tilt to align cross section to origin and attachment orientations 
 #user can adjust curve shape, endpoint tilts etc, so add a button to confirm they have made those changes (curve alignment stuff) before the next piece of code
-[BREAK FOR USER ADJUSTMENT]
 
-#then convert curve to mesh
+bpy.ops.object.convert(target='MESH') #then convert curve to mesh
 
-bpy.ops.object.convert(target='MESH')
+### BREAK FOR USER ADJUSTMENT
+#user can scale some edgeloops etc to adjust more
 
-#then user can scale some edgeloops etc to adjust more
-
-
+def join_muscle():
 #join origin and insertion boundaries to muscle volume mesh (duplicate origin and insertion boundaries first so that I can keep boundaries for muscle deconstruction tool)
 #duplicate and unparent
 
@@ -155,7 +150,6 @@ bpy.context.view_layer.objects.active.name = [Muscle + "insertion_merge_with_vol
 bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
 
 
-
 #select items to join
 bpy.ops.object.select_all(action='DESELECT')
 bpy.data.objects[Muscle + " curve"].select_set(True)
@@ -164,9 +158,16 @@ bpy.data.objects[Muscle + "insertion_merge_with_volume"].select_set(True)
 
 
 bpy.ops.object.join()
-# rename to [Muscle + "volume"]
-#parent to empty
+muscle_volume = bpy.context.view_layer.objects.active
+muscle_volume.name = Muscle + " volume"
 
+#parent to empty
+muscle_volume.select_set = True
+bpy.context.view_layer.objects.active = bpy.data.objects[Muscle]  
+bpy.data.objects[Muscle].select_set(True)
+bpy.ops.object.parent_set(keep_transform=True)
+bpy.data.objects[Muscle].select_set(False) #make sure only origin is selected
+bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + attachmentName]
 
 
 #go to edit mode

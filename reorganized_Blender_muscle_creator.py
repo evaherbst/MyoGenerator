@@ -179,15 +179,31 @@ set_edit_mode()
 create_attachment(1) #function creates attachment as new object, parents to muscle empty, also contains functions to recenter object, get insertion_centroid, create boundary, and get insertion_normal
 
 
-"""MUSCLE VOLUME CREATION - IN PROGRESS"""
+"""MUSCLE VOLUME CREATION""" 
 
 change_vertex_number(originCounts,insertionCounts,origin_boundary_obj,insertion_boundary_obj) #see Vertex_Count.py
 
 
-#curve creator here
+#curve creator here:
+curve_creator(attachment_centroids,attachment_normals,Muscle) #see Curve_creator.py file for function
 
-#add slider for creating extent of bevel - I think this need to be done straight in the add-on but here is some code on defining extent of bevels:
+#add slider for creating extent of bevel - I think this need to be done straight in the add-on
+#for now, in lines 107 and 108 I currently hard coded the extend of the bevel so you can see the code for ii
+#in the add-on the 0.2 and 0.8 would be replaced with user input from the slider
 
+
+### USER ADJUSTMENT 
+#user can adjust curve shape and also endpoint tilts to align cross section to origin and attachment orientations 
+# so add a button to confirm they have made those changes (curve alignment stuff) before the next piece of code
+
+bpy.ops.object.convert(target='MESH') #then convert curve to mesh
+
+### BREAK FOR USER ADJUSTMENT
+#user can scale some edgeloops etc to adjust more
+
+join_muscle(Muscle) #see Curve_creator.py file for function #function joints volume to end loops, caps ends, triangulates mesh
+
+#user has option to do boolean ops to get more exact ends before exporting data, but this is not part of add-on
 
 
 #then, maybe at end one button that runs NivaMuscleAnalyzer to export data from all muscles in scene? and it can be run separately from rest of GUI
