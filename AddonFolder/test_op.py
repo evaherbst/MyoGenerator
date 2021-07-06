@@ -25,7 +25,13 @@ class Nico_Select_Muscle_Op(bpy.types.Operator):
         return{'FINISHED'}
 
 
-
+class Nico_AllowAttach_Op(bpy.types.Operator):
+    bl_idname="view3d.attch"
+    bl_label = "Test"
+    def execute(self,context):
+        test_panel.allowAttachmentSelection=True
+        muscleCore.set_edit_mode()
+        return{'FINISHED'}
 
 class Nico_Select_Origin_Op(bpy.types.Operator):
     bl_idname = "view3d.select_origin"
