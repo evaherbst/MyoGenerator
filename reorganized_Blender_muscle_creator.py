@@ -14,6 +14,7 @@ import math
 import bmesh
 
 
+selectedObjectName =''
 
 origin_centroid = mathutils.Vector()
 insertion_centroid = mathutils.Vector()

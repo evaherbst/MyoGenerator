@@ -23,6 +23,7 @@ attachment_centroids = [0,0]
 attachment_normals = [0,0]
 
 attachments_names=[]
+muscleName=''
 
 
 #def make_empty(Muscle):
@@ -31,11 +32,13 @@ attachments_names=[]
    # set_edit_mode()
 
 def make_empty(Muscle):
-	bpy.ops.object.mode_set(mode = 'OBJECT')
-	o = bpy.data.objects.new(Muscle, None)
-	bpy.context.scene.collection.objects.link( o )
-	o.empty_display_size = 2
-	o.empty_display_type = 'PLAIN_AXES'   
+    global muscleName
+    muscleName = Muscle
+    bpy.ops.object.mode_set(mode = 'OBJECT')
+    o = bpy.data.objects.new(Muscle, None)
+    bpy.context.scene.collection.objects.link( o )
+    o.empty_display_size = 2
+    o.empty_display_type = 'PLAIN_AXES'   
 
 	#set_edit_mode()   #go to edit to select faces
 
@@ -43,6 +46,11 @@ def make_empty(Muscle):
 
 def create_attachment(index,Muscle): #function creates attachment as new object,parents to muscle empty, also contains functions to recenter object, get origin_centroid, create boundary, and calculate origin_normal
 # keep track of objects in scene to later rename new objects (#can't just rename active object bc duplicated object doesn't automatically become active)
+
+    
+    #bpy.data.objects[bone].select_set(True)       #MY LINE TO SELECT MUSCLE
+
+
     global attachment_centroids
     global attachment_normals
     attachmentNames = [' origin', ' insertion']
@@ -73,11 +81,9 @@ def create_attachment(index,Muscle): #function creates attachment as new object,
     boundary = create_boundary(obj)
     attachment_normals[index] = get_normal(boundary)
 
-
-
-
-
-
+    #FOLLOWING LINES UNSURE
+    bpy.ops.object.mode_set(mode = 'OBJECT')
+    bpy.ops.object.select_all( action = 'DESELECT' )
 
 
 
