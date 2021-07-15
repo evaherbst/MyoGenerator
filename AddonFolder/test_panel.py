@@ -52,11 +52,12 @@ class Nico_Test_Panel_PT_(bpy.types.Panel):
         col2=layout.column()
         col2.operator('view3d.select_insertion', text= "Submit Insertion")
         col2.enabled =  context.scene.insertion_object is not None
-
-
         
         row = layout.row()
-        row.operator("view3d.muscle_creation", text = "Create Muscle Volume")
+        row.operator("view3d.muscle_creation", text = "Create Muscle Boundaries")
+
+        row = layout.row()
+        row.operator("view3d.curve_creation", text = "Generate Muscle Curve")
 
     
         

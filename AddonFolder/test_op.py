@@ -7,7 +7,7 @@ from AddonFolder import muscleCore
 #from Muscle_Volume_Sculptor import create_muscle_empties 
 from AddonFolder import test_panel
 from AddonFolder import vertex_Counter
-
+from AddonFolder import curve_creator
 isSubmittingOrigin = False
 
 class Nico_Select_Muscle_Op(bpy.types.Operator):
@@ -78,6 +78,15 @@ class Nico_Muscle_Creation_Op(bpy.types.Operator):
     bl_label="Muscle Creation"
 
     def execute(self,context):
-        print(bpy.context.scene.selected_object.name)
-        #vertex_Counter.OverallVertexCount()
+        print("ALL OK")
+        vertex_Counter.OverallVertexCount()
         return{'FINISHED'}
+
+
+class Nico_Curve_Creator_OP(bpy.types.Operator):
+    bl_idname="view3d.curve_creation"
+    bl_label="Curve Creation"
+    def execute(self,context):
+        curve_creator.align_with_XY
+        curve_creator(#PASS HERE ATTACH CENTROIDS,NORMALS,MUSCLE NAME)
+        return {'FINISHED'}
