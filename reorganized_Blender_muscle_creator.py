@@ -84,6 +84,8 @@ def get_normal(boundary):#fills boundary with face, gets normal, deletes face
     bpy.ops.mesh.select_all(action='SELECT')
     bpy.ops.mesh.edge_face_add() 
     bm = bmesh.from_edit_mesh(boundary.data)
+    if hasattr(bm.verts,"ensure_lookup_table"):
+        bm.verts.ensure_lookup_table()
     normal = bm.faces[0].normal
     normal = normal[:]
     typetest = type(normal)
