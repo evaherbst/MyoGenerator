@@ -101,11 +101,13 @@ def curve_creator(attachment_centroids,attachment_normals,Muscle): #need muscle 
     bpy.ops.object.select_all(action='DESELECT')
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " curve"] #make curve active
     bpy.data.objects[Muscle + " cross section template"].select_set(True)
+    bpy.ops.object.convert(target='CURVE')
     #bevel
     bpy.context.object.data.bevel_mode = 'OBJECT'
     bpy.context.object.data.bevel_object = bpy.data.objects[cross_section.name] 
     bpy.context.object.data.bevel_factor_start = 0.2  #THIS NEEDS TO BE ADJUSTED BY USER SLIDER
     bpy.context.object.data.bevel_factor_end = 0.8
+
 
 ### BREAK FOR USER ADJUSTMENT
 #user will likely have to change curve tilt to align cross section to origin and attachment orientations 

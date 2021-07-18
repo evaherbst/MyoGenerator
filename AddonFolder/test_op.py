@@ -134,7 +134,7 @@ class Nico_Join_Muscle_Op(bpy.types.Operator):
     def execute(self,context):
 
         print(bpy.context.scene.muscle_Name, "JOINMUSCLE")
-        curve_creator.join_muscle(bpy.context.scene.muscle_Name)
+        muscleCore.join_muscle(bpy.context.scene.muscle_Name)
         
         return{"FINISHED"}
 
