@@ -131,26 +131,31 @@ def create_boundary(obj): #this works well - makes boundary, parents to attachme
     return boundary
 
 def get_normal(boundary):#fills boundary with face, gets normal, deletes face
-	bpy.ops.object.select_all( action = 'DESELECT' ) #make sure nothing else in scene is selected
-	boundary.select_set(True) #select boundary only
-	bpy.ops.object.mode_set(mode = 'EDIT')
-	bpy.context.tool_settings.mesh_select_mode = (False, True, False) #edge select mode
-	bpy.ops.mesh.select_all(action='SELECT')
-	bpy.ops.mesh.edge_face_add() 
-	bm = bmesh.from_edit_mesh(boundary.data)
-	normal = bm.faces[0].normal
-	normal = normal[:]
-	typetest = type(normal)
-	print(normal)
-	for f in bm.faces:
-		print(f.normal)
-		normal = f.normal
-	bpy.ops.mesh.delete(type='ONLY_FACE')
-	return normal
+    bpy.ops.object.select_all( action = 'DESELECT' ) #make sure nothing else in scene is selected
+    boundary.select_set(True) #select boundary only
+    bpy.ops.object.mode_set(mode = 'EDIT')
+    bpy.context.tool_settings.mesh_select_mode = (False, True, False) #edge select mode
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.edge_face_add() 
+
+    bm = bmesh.from_edit_mesh(boundary.data)
+
+    if hasattr(bm.faces,"ensure_lookup_table"):
+        bm.faces.ensure_lookup_table()
+    normal = bm.faces[0].normal
+
+    normal = normal[:]
+    typetest = type(normal)
+    print(normal)
+    for f in bm.faces:
+        print(f.normal)
+        normal = f.normal
+    bpy.ops.mesh.delete(type='ONLY_FACE')
+    return normal
 
 def calculate_centroid(obj):
-	centroid=obj.location
-	return centroid
+    centroid=obj.location
+    return centroid
 
 #endregion
 

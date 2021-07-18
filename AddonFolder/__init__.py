@@ -29,7 +29,7 @@ import bpy
 #import bpy.utilis
 
 
-from . test_op import Nico_Select_Muscle_Op, Nico_Select_Origin_Op,Nico_Select_Insertion_Op,Nico_AllowAttach_Op, Nico_Muscle_Creation_Op,Nico_Curve_Creator_OP
+from . test_op import Nico_Select_Muscle_Op, Nico_Select_Origin_Op,Nico_Select_Insertion_Op,Nico_AllowAttach_Op, Nico_Muscle_Creation_Op,Nico_Curve_Creator_Op
 
 from . test_panel import Nico_Test_Panel_PT_
 #classes =(Nico_Test_Op, Nico_Test_Panel_PT_)
@@ -52,7 +52,7 @@ def register():
     bpy.utils.register_class(Nico_AllowAttach_Op)
     bpy.utils.register_class(Nico_Test_Panel_PT_)
     bpy.utils.register_class( Nico_Muscle_Creation_Op)
-    bpy.utils.register_class(Nico_Curve_Creator_OP)
+    bpy.utils.register_class(Nico_Curve_Creator_Op)
     
 
     
@@ -110,6 +110,6 @@ def unregister():
     bpy.utils.register_class(Nico_AllowAttach_Op)
     bpy.utils.register_class(Nico_Test_Panel_PT_)
     bpy.utils.register_class( Nico_Muscle_Creation_Op)
-    bpy.utils.register_class(Nico_Curve_Creator_OP)
+    bpy.utils.register_class(Nico_Curve_Creator_Op)
     del bpy.types.Scene.muscle_Name
     

@@ -8,6 +8,7 @@ from AddonFolder import muscleCore
 from AddonFolder import test_panel
 from AddonFolder import vertex_Counter
 from AddonFolder import curve_creator
+
 isSubmittingOrigin = False
 
 class Nico_Select_Muscle_Op(bpy.types.Operator):
@@ -83,10 +84,14 @@ class Nico_Muscle_Creation_Op(bpy.types.Operator):
         return{'FINISHED'}
 
 
-class Nico_Curve_Creator_OP(bpy.types.Operator):
-    bl_idname="view3d.curve_creation"
-    bl_label="Curve Creation"
+class Nico_Curve_Creator_Op(bpy.types.Operator):
+    bl_idname="view3d.curve_creator"
+    bl_label="Curve Creator"
     def execute(self,context):
-        curve_creator.align_with_XY
-        curve_creator(#PASS HERE ATTACH CENTROIDS,NORMALS,MUSCLE NAME)
+        
+        #print(muscleCore.attachment_centroids,muscleCore.attachment_normals,muscleCore.muscleName)
+
+        curve_creator.align_with_XY(muscleCore.muscleName)
+       
+       # curve_creator(muscleCore.attachment_centroids,muscleCore.attachment_normals,muscleCore.muscleName)#PASS HERE ATTACH CENTROIDS,NORMALS,MUSCLE NAME)
         return {'FINISHED'}
