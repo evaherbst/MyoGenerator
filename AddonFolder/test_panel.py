@@ -58,5 +58,7 @@ class Nico_Test_Panel_PT_(bpy.types.Panel):
 
         row = layout.row()
         row.operator("view3d.curve_creator", text = "Create Muscle Curve")
-    
+
+        row=layout.row()
+        row.operator("view3d.join_muscle", text = "Join Muscle")
         

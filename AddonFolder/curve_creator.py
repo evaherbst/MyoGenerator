@@ -102,3 +102,76 @@ def align_with_XY(Muscle):
     T = Matrix.Translation(face.calc_center_median() - o)
     bmesh.ops.transform(bm, verts=bm.verts, matrix=T)
     bmesh.update_edit_mesh(me)
+
+
+
+
+def join_muscle(Muscle):
+#join origin and insertion boundaries to muscle volume mesh (duplicate origin and insertion boundaries first so that I can keep boundaries for muscle deconstruction tool)
+#duplicate and unparent
+
+
+    attachmentName =  str(Muscle + " origin")
+
+    bpy.ops.object.select_all(action='DESELECT')
+    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin" + " boundary"] #make active 
+    bpy.data.objects[Muscle + " origin" + " boundary"].select_set(True)
+    bpy.ops.object.duplicate_move(OBJECT_OT_duplicate={"linked":False, "mode":'TRANSLATION'}, TRANSFORM_OT_translate={"value":(0, 0, 0), "orient_type":'GLOBAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'GLOBAL', "constraint_axis":(True, True, True), "mirror":True, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False, "use_automerge_and_split":False})
+    bpy.context.view_layer.objects.active.name = (Muscle + "origin_merge_with_volume")
+    bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
+    bpy.ops.object.select_all(action='DESELECT')
+    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " insertion" + " boundary"] #make active 
+    bpy.data.objects[Muscle + " origin" + " boundary"].select_set(True)
+    bpy.ops.object.duplicate_move(OBJECT_OT_duplicate={"linked":False, "mode":'TRANSLATION'}, TRANSFORM_OT_translate={"value":(0, 0, 0), "orient_type":'GLOBAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'GLOBAL', "constraint_axis":(True, True, True), "mirror":True, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False, "use_automerge_and_split":False})
+    bpy.context.view_layer.objects.active.name = str(Muscle + "insertion_merge_with_volume")
+    bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
+    #select items to join
+    bpy.ops.object.select_all(action='DESELECT')
+    bpy.data.objects[str(Muscle + " curve")].select_set(True)
+    bpy.data.objects[str(Muscle + "origin_merge_with_volume")].select_set(True)
+    bpy.data.objects[str(Muscle + "insertion_merge_with_volume")].select_set(True)
+    bpy.ops.object.join()
+    muscle_volume = bpy.context.view_layer.objects.active
+    muscle_volume.name = Muscle + " volume"
+    #parent to empty
+    #muscle_volume.selected=True
+    muscle_volume.select_set = True
+    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle]  
+    bpy.data.objects[Muscle].select_set(True)
+    bpy.ops.object.parent_set(keep_transform=True)
+    bpy.data.objects[Muscle].select_set(False) #make sure only origin is selected
+    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " volume"]
+    #go to edit mode
+    bpy.ops.object.editmode_toggle()
+    bpy.context.tool_settings.mesh_select_mode = (True, False, False) #vertex select mode
+    #select edge loops
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.region_to_loop() #selects edge loops of muscle mesh, saves
+    obj = bpy.context.edit_object
+    me = obj.data
+    # Get a BMesh representation
+    bm = bmesh.from_edit_mesh(me)
+    edge_Vertices = []
+    for v in bm.verts:
+        if v.select:
+            edge_Vertices.append(v.index)
+    bpy.context.tool_settings.mesh_select_mode = (False, True, False) #edge select mode required for select_loose to work #throws errpr
+    bpy.ops.mesh.select_loose() #select origin and attachment boundary loops
+    bpy.context.tool_settings.mesh_select_mode = (True, False, False) #vertex select mode
+    for v in bm.verts:
+        if v.select:
+            edge_Vertices.append(v.index)
+    bpy.ops.object.mode_set(mode = 'OBJECT') #now use this list to select all boundary loops that need to be bridged
+    for i in edge_Vertices:
+        obj.data.vertices[i].select = True
+    bpy.ops.object.mode_set(mode = 'EDIT')
+    #bridge edge loops
+    bpy.ops.mesh.bridge_edge_loops()
+    # cap ends
+    bpy.ops.mesh.region_to_loop()
+    #triangulate mesh
+    bpy.ops.mesh.quads_convert_to_tris(quad_method='BEAUTY', ngon_method='BEAUTY')
+
+
+
+    

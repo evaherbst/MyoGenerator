@@ -127,6 +127,16 @@ class Nico_Curve_Creator_Op(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class Nico_Join_Muscle_Op(bpy.types.Operator):
+    bl_idname="view3d.join_muscle"
+    bl_label = "Join Muscle"
+
+    def execute(self,context):
+
+        print(bpy.context.scene.muscle_Name, "JOINMUSCLE")
+        curve_creator.join_muscle(bpy.context.scene.muscle_Name)
+        
+        return{"FINISHED"}
 
 
 def SetAttach (index, thisValue):
