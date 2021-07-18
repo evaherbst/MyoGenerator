@@ -23,6 +23,7 @@ bl_info = {
 }
 
 
+from AddonFolder.muscleCore import curve_creator
 import bpy
 
 #from muscleCore.create_muscle_empties import *

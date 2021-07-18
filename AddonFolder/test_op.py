@@ -1,15 +1,28 @@
 import bpy
 import sys 
-
+import mathutils
+from mathutils import Vector
+import math
+import bmesh
 
 #from . muscleCore import make_muscle_empties
 from AddonFolder import muscleCore
+
+
 #from Muscle_Volume_Sculptor import create_muscle_empties 
 from AddonFolder import test_panel
 from AddonFolder import vertex_Counter
 from AddonFolder import curve_creator
 
+
+
 isSubmittingOrigin = False
+
+
+testAttch0="baseAttch0"
+testAttch1="baseAttch1"
+
+testList=["list"]
 
 class Nico_Select_Muscle_Op(bpy.types.Operator):
     bl_idname = "view3d.submit_button"
@@ -58,6 +71,7 @@ class Nico_Select_Origin_Op(bpy.types.Operator):
 
     def execute(self,context):
         test_panel.originSelected=True
+
         muscleCore.create_attachment(0,bpy.context.scene.muscle_Name)
        
         return{'FINISHED'}
@@ -90,8 +104,28 @@ class Nico_Curve_Creator_Op(bpy.types.Operator):
     def execute(self,context):
         
         #print(muscleCore.attachment_centroids,muscleCore.attachment_normals,muscleCore.muscleName)
+        print("TEST ATTCH",testAttch0,testAttch1,testList)
 
-        curve_creator.align_with_XY(muscleCore.muscleName)
+        #muscleCore.curve_creator(muscleCore.attachment_centroids,[Vector((0.56, 0.7, )),muscleCore.attachment_normals[1]],muscleCore.muscleName)
        
        # curve_creator(muscleCore.attachment_centroids,muscleCore.attachment_normals,muscleCore.muscleName)#PASS HERE ATTACH CENTROIDS,NORMALS,MUSCLE NAME)
         return {'FINISHED'}
+
+
+
+
+def SetAttach (index, thisValue):
+
+    print(thisValue, "VALUEPASSED")
+
+    global testAttch1
+    global testAttch0
+
+    if(index==1):
+        testAttch0=thisValue
+        print(testAttch0, "FROMWONKY FUN")
+    else:
+        testAttch1=thisValue
+        print(testAttch1,"FROMWONKY FUN")
+
+    testList.append(thisValue)
