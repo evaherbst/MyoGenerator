@@ -27,11 +27,9 @@ origin_normal=0
 insertion_centroid=0
 insertion_normal=0
 
-attachment_centroids=[]
-attachment_normals=[]
-attachmentNames=[]
+attachment_centroids=[0,0]
+attachment_normals=[0,0]
 
-attachments_names=[]
 muscleName=''
 
 
@@ -165,7 +163,7 @@ def create_attachment(index,Muscle): #function creates attachment as new object,
 
     global attachment_centroids
     global attachment_normals
-    global attachmentNames
+  
 
      
 
@@ -200,15 +198,8 @@ def create_attachment(index,Muscle): #function creates attachment as new object,
     print("NORM VALUE FROM CORE", norm,"BOUNDARY", boundary)
     attachment_normals[index]=norm
 
-    if(index==0):
-        attchNorm0.append(norm)
-        test_op.SetAttach(0,norm)
+  
         
-    else:
-        attchNorm1.append(norm)
-        test_op.SetAttach(1,norm)
-        
-    print("GLOBALATTACH", attchNorm0,attchNorm1)
     
     #FOLLOWING LINES UNSURE
     bpy.ops.object.mode_set(mode = 'OBJECT')
@@ -234,7 +225,6 @@ def object_Recenter(obj):
 
 def create_boundary(obj): #this works well - makes boundary, parents to attachment area area
 
-   
 
     name = obj.name
     # keep track of objects in scene to later rename new objects
@@ -275,14 +265,14 @@ def get_normal(boundary):#fills boundary with face, gets normal, deletes face
         bm.faces.ensure_lookup_table()
     normal = bm.faces[0].normal
 
-    normal = normal[:]
-    typetest = type(normal)
-    print("normal face",normal)
-    for f in bm.faces:
-        print(f.normal)
-        normal = f.normal
-    bpy.ops.mesh.delete(type='ONLY_FACE')
-    return normal
+    # normal = normal[:]
+    # typetest = type(normal)
+    # print("normal face",normal)
+    # for f in bm.faces:
+    #     print(f.normal)
+    #     normal = f.normal
+    # bpy.ops.mesh.delete(type='ONLY_FACE')
+    return str(normal)
 
 def calculate_centroid(obj):
     centroid=obj.location
@@ -367,6 +357,9 @@ def align_with_XY(Muscle):
     me = bpy.context.edit_object.data
     #get bmesh (Object needs to be in Edit mode)
     bm=bmesh.from_edit_mesh(me)
+    if hasattr(bm.faces,"ensure_lookup_table"):
+        bm.faces.ensure_lookup_table()
+    normal = bm.faces[0].normal
     bm.select_history.add(bm.faces[0])
     context = bpy.context
     ob = context.edit_object
