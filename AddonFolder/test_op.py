@@ -72,8 +72,8 @@ class Nico_Select_Origin_Op(bpy.types.Operator):
     def execute(self,context):
         test_panel.originSelected=True
 
-        muscleCore.create_attachment(0,bpy.context.scene.muscle_Name)
-       
+       # muscleCore.create_attachment(0,bpy.context.scene.muscle_Name)
+        muscleCore.create_orig(bpy.context.scene.muscle_Name)
         return{'FINISHED'}
 
 
@@ -83,7 +83,8 @@ class Nico_Select_Insertion_Op(bpy.types.Operator):
 
     def execute(self,context):
 
-        muscleCore.create_attachment(1,bpy.context.scene.muscle_Name)
+        #muscleCore.create_attachment(1,bpy.context.scene.muscle_Name)
+        muscleCore.create_insertion(bpy.context.scene.muscle_Name)
         bpy.ops.object.mode_set(mode='OBJECT')
         return{'FINISHED'}
         
@@ -98,13 +99,17 @@ class Nico_Muscle_Creation_Op(bpy.types.Operator):
         return{'FINISHED'}
 
 
+    
+
 class Nico_Curve_Creator_Op(bpy.types.Operator):
     bl_idname="view3d.curve_creator"
     bl_label="Curve Creator"
     def execute(self,context):
         
         #print(muscleCore.attachment_centroids,muscleCore.attachment_normals,muscleCore.muscleName)
-        print("TEST ATTCH",testAttch0,testAttch1,testList)
+        print("TEST ATTCH",muscleCore.origin_centroid,muscleCore.origin_normal,muscleCore.insertion_centroid,muscleCore.insertion_normal)
+
+        muscleCore.curve_creator([muscleCore.origin_centroid,muscleCore.insertion_centroid],[muscleCore.origin_normal,muscleCore.insertion_normal],muscleCore.muscleName)
 
         #muscleCore.curve_creator(muscleCore.attachment_centroids,[Vector((0.56, 0.7, )),muscleCore.attachment_normals[1]],muscleCore.muscleName)
        
