@@ -34,7 +34,7 @@ class Nico_Test_Panel_PT_(bpy.types.Panel):
         #col1.enabled=allowAttachmentSelection    #maybe check if selected face ' is not None '
        
         row = layout.row()
-        row.operator( "view3d.attch", text="Select Origin")
+        row.operator( "view3d.attch", text="Start Origin Selection")
         row.enabled=context.scene.origin_object is not None
         
         row = layout.row()
@@ -47,7 +47,7 @@ class Nico_Test_Panel_PT_(bpy.types.Panel):
         #col1.enabled=allowAttachmentSelection   
 
         row = layout.row()
-        row.operator( "view3d.attch", text="Select Insertion")
+        row.operator( "view3d.attch", text="Start Insertion Selection")
       
         col2=layout.column()
         col2.operator('view3d.select_insertion', text= "Submit Insertion")
@@ -58,6 +58,9 @@ class Nico_Test_Panel_PT_(bpy.types.Panel):
 
         row = layout.row()
         row.operator("view3d.curve_creator", text = "Create Muscle Curve")
+
+        row=layout.row()
+        row.operator("view3d.convert_to_mesh", text ="Convert Curve To Mesh")
 
         row=layout.row()
         row.operator("view3d.join_muscle", text = "Join Muscle")

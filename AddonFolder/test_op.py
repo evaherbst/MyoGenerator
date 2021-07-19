@@ -139,6 +139,17 @@ class Nico_Join_Muscle_Op(bpy.types.Operator):
         return{"FINISHED"}
 
 
+
+class Nico_Transform_To_Mesh_Op(bpy.types.Operator):
+    bl_idname="view3d.convert_to_mesh"
+    bl_label="Convert To Mesh"
+
+    def execute(self,context):
+
+        muscleCore.Transform_to_Mesh(bpy.context.scene.muscle_Name)
+        return{"FINISHED"}
+
+
 def SetAttach (index, thisValue):
 
     print(thisValue, "VALUEPASSED")

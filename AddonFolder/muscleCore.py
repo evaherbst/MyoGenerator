@@ -415,7 +415,7 @@ def join_muscle(Muscle):
 #duplicate and unparent
 
 
-    Transform_to_Mesh(Muscle)
+    #Transform_to_Mesh(Muscle)
     attachmentName =  str(Muscle + " origin")
 
     bpy.ops.object.select_all(action='DESELECT')
