@@ -49,6 +49,8 @@ def change_vertex_number(originCount,insertionCount,origin_boundary_obj,insertio
   elif (originCount > insertionCount):
     print("ORIGIN > INSERTION")
     increment = math.floor((insertionCount)/vertexDiff) #rounds down to nearest whole number increment
+    if(increment == 0):
+      increment+=1 
     print(increment)
     insertion_boundary_obj.select_set(True)
     bpy.ops.object.mode_set(mode = 'EDIT')
