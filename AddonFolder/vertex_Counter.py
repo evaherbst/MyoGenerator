@@ -26,7 +26,9 @@ def change_vertex_number(originCount,insertionCount,origin_boundary_obj,insertio
   print(type(originCount))
   if (originCount < insertionCount):
     print("ORIGIN < INSERTION")
-    increment = math.floor((originCount)/vertexDiff) #rounds down 
+    increment = math.floor((originCount)/vertexDiff) #rounds down
+    if(increment == 0):
+      increment+=1 
     origin_boundary_obj.select_set(True)
     bpy.ops.object.mode_set(mode = 'EDIT')
     bpy.context.tool_settings.mesh_select_mode = (False, True, False) #edge select mode
