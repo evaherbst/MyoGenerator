@@ -197,7 +197,6 @@ def create_attachment(index,Muscle): #function creates attachment as new object,
     att=calculate_centroid(obj)
     attachment_centroids[index]=att
     boundary = create_boundary(obj)
-    norm = get_normal(boundary)
 
 
 
