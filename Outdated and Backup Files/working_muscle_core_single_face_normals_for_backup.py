@@ -47,7 +47,7 @@ def make_empty(Muscle):
     o.empty_display_size = 2
     o.empty_display_type = 'PLAIN_AXES'   
 
-	#set_edit_mode()   #go to edit to select faces
+    #set_edit_mode()   #go to edit to select faces
 
 def create_orig(Muscle): #function creates attachment as new object,parents to muscle empty, also contains functions to recenter object, get origin_centroid, create boundary, and calculate origin_normal
 # keep track of objects in scene to later rename new objects (#can't just rename active object bc duplicated object doesn't automatically become active)
@@ -191,15 +191,12 @@ def create_attachment(index,Muscle): #function creates attachment as new object,
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + attachmentName]
     obj = bpy.context.view_layer.objects.active
     object_Recenter(obj)
-    norm = get_normal(obj)
-    attachment_normals[index]=norm
-    bpy.ops.object.mode_set(mode = 'OBJECT')
     att=calculate_centroid(obj)
     attachment_centroids[index]=att
     boundary = create_boundary(obj)
     norm = get_normal(boundary)
-
-
+    print("NORM VALUE FROM CORE", norm,"BOUNDARY", boundary)
+    attachment_normals[index]=norm
 
   
         
@@ -221,7 +218,7 @@ def set_edit_mode(): #sets edit mode
 
 #region SPECIFIC FOR create_attachment 
 def object_Recenter(obj): 
-	# center origin of object on center of mass
+    # center origin of object on center of mass
     bpy.ops.object.select_all( action = 'DESELECT' ) #make sure nothing else in scene is selected
     obj.select_set(True) #select obj only
     bpy.ops.object.origin_set( type = 'ORIGIN_GEOMETRY' ) #need to set origin to geometry, otherwise all muscles will still have same origin as bone
@@ -254,21 +251,28 @@ def create_boundary(obj): #this works well - makes boundary, parents to attachme
         boundary = bpy.context.view_layer.objects.active
     return boundary
 
-def get_normal(obj):
+def get_normal(boundary):#fills boundary with face, gets normal, deletes face
+    bpy.ops.object.select_all( action = 'DESELECT' ) #make sure nothing else in scene is selected
+    boundary.select_set(True) #select boundary only
     bpy.ops.object.mode_set(mode = 'EDIT')
-    bpy.context.tool_settings.mesh_select_mode = (False, False, True)
+    bpy.context.tool_settings.mesh_select_mode = (False, True, False) #edge select mode
     bpy.ops.mesh.select_all(action='SELECT')
-    bm = bmesh.from_edit_mesh( obj.data )
-    # Reference selected face indices
-    bm.faces.ensure_lookup_table()
-    selFaces = [ f.index for f in bm.faces if f.select ]
-    # Calculate the average normal vector
-    avgNormal = Vector()
-    for i in selFaces: avgNormal += bm.faces[i].normal
-    avgNormal = avgNormal / len( selFaces )
-    normal = avgNormal
-    return str(normal)
+    bpy.ops.mesh.edge_face_add() 
 
+    bm = bmesh.from_edit_mesh(boundary.data)
+
+    if hasattr(bm.faces,"ensure_lookup_table"):
+        bm.faces.ensure_lookup_table()
+    normal = bm.faces[0].normal
+
+    # normal = normal[:]
+    # typetest = type(normal)
+    # print("normal face",normal)
+    # for f in bm.faces:
+    #     print(f.normal)
+    #     normal = f.normal
+    bpy.ops.mesh.delete(type='ONLY_FACE')
+    return str(normal)
 
 def calculate_centroid(obj):
     centroid=obj.location
