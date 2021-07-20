@@ -50,7 +50,7 @@ def calculate_centroid(obj):
     return centroid
 
 #to be used for each muscle origins
-def create_boundary(obj): #this works well - makes boundary, parents to attachment area area
+def create_boundary(obj): #this works well - makes boundary, parents to attachment area area 
     name = obj.name
     # keep track of objects in scene to later rename new objects
     scn = bpy.context.scene
@@ -77,24 +77,20 @@ def create_boundary(obj): #this works well - makes boundary, parents to attachme
     return boundary
 
 #to be used for each muscle origins
-def get_normal(boundary):#fills boundary with face, gets normal, deletes face
-    bpy.ops.object.select_all( action = 'DESELECT' ) #make sure nothing else in scene is selected
-    boundary.select_set(True) #select boundary only
+
+def get_normal(obj):
     bpy.ops.object.mode_set(mode = 'EDIT')
-    bpy.context.tool_settings.mesh_select_mode = (False, True, False) #edge select mode
+    bpy.context.tool_settings.mesh_select_mode = (False, False, True)
     bpy.ops.mesh.select_all(action='SELECT')
-    bpy.ops.mesh.edge_face_add() 
-    bm = bmesh.from_edit_mesh(boundary.data)
-    if hasattr(bm.faces,"ensure_lookup_table"):
-        bm.faces.ensure_lookup_table()
-    normal = bm.faces[0].normal
-    # normal = normal[:]
-    # typetest = type(normal)
-    # print(normal)
-    # for f in bm.faces:
-    #     print(f.normal)
-    #     normal = f.normal
-    bpy.ops.mesh.delete(type='ONLY_FACE')
+    bm = bmesh.from_edit_mesh( obj.data )
+    # Reference selected face indices
+    bm.faces.ensure_lookup_table()
+    selFaces = [ f.index for f in bm.faces if f.select ]
+    # Calculate the average normal vector
+    avgNormal = Vector()
+    for i in selFaces: avgNormal += bm.faces[i].normal
+    avgNormal = avgNormal / len( selFaces )
+    normal = avgNormal
     return str(normal)
 
 
@@ -126,9 +122,11 @@ def create_attachment(index): #function creates attachment as new object, parent
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + attachmentName]
     obj = bpy.context.view_layer.objects.active
     object_Recenter(obj)
+    attachment_normals[index] = get_normal(obj)
+    bpy.ops.object.mode_set(mode = 'OBJECT')
     attachment_centroids[index]=calculate_centroid(obj)
     boundary = create_boundary(obj)
-    attachment_normals[index] = get_normal(boundary)
+
 
 
 
