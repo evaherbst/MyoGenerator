@@ -12,8 +12,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 bl_info = {
-    "name" : "Test_Addon",
-    "author" : "Niccolo Fioritti",
+    "name" : "Muscle Volume Sculptor",
+    "author" : "Niccolo Fioritti and Eva Herbst",
     "description" : "TestAddon",
     "blender" : (2, 80, 0),
     "version" : (0, 0, 1),
