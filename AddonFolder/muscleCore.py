@@ -297,7 +297,7 @@ def curve_creator(attachment_centroids,attachment_normals,Muscle): #need muscle 
     spline = bpy.data.objects[curve.name].data.splines[0]
     point1 = origin_centroid + (origin_normal_unit*scaleFactor) #
     point3 = insertion_centroid + (insertion_normal_unit*scaleFactor)
-    point2 = (point1[0]+point2[0])/2,(point1[1]+point2[1])/2,(point1[2]+point2[2])/2
+    point2 = (point1[0]+point3[0])/2,(point1[1]+point3[1])/2,(point1[2]+point3[2])/2
     spline.points[0].co = [origin_centroid[0],origin_centroid[1],origin_centroid[2],1] #convert vector to tuple, 4th number is nurbs weight, currently set to =1
     spline.points[1].co = [point1[0],point1[1],point1[2],1]
     spline.points[2].co = [point2[0],point2[1],point2[2],1]
