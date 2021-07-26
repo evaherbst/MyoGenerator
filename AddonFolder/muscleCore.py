@@ -328,6 +328,8 @@ def curve_creator(attachment_centroids,attachment_normals,Muscle): #need muscle 
     cross_section = bpy.context.view_layer.objects.active
     cross_section.name = Muscle + " cross section template"
     bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
+    bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
+
 
     align_with_XY(Muscle) #take cross section and move main dimension to XY plane, so that projection on curve is correct, also converts to curve
     #Bevel nurbs path with origin boundary curve
