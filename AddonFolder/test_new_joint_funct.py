@@ -1,3 +1,41 @@
+#get edge loop by selecting closest n vertices on muscle volume to origin loop, where n = number of vertices in origin loop
+
+n = 32 #later as function have n be an input of number of vertices in origin boundary (maybe with loop and length, or extract from renumber vertices function)
+#on origin loop copy, set origin to geometry, set 3D cursor here
+#[select origin loop copy]
+bpy.ops.object.mode_set(mode = 'OBJECT')
+bpy.ops.object.select_all(action='DESELECT')
+bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + "origin_merge_with_volume"] #make active 
+bpy.data.objects[Muscle + "origin_merge_with_volume"].select_set(True)
+bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
+bpy.ops.view3d.snap_cursor_to_selected()
+bpy.ops.object.mode_set(mode = 'EDIT')
+bpy.context.tool_settings.mesh_select_mode = (True, False, False) #vertex select mode
+bpy.ops.object.select_all(action='DESELECT')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
