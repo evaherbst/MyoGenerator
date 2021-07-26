@@ -20,13 +20,13 @@ def duplicate_boundaries():
     bpy.ops.object.select_all(action='DESELECT')
 
 #get edge loop by selecting closest n vertices on muscle volume to origin loop, where n = number of vertices in origin loop
-def get_volume_perimeter(Muscle,n):
+def get_volume_perimeter(Muscle,index,n):
     global vertices_loop
-    #[select origin loop copy]
+    boundaryName = boundaryNames[index]
     bpy.ops.object.mode_set(mode = 'OBJECT')
     bpy.ops.object.select_all(action='DESELECT')
-    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin_merge_with_volume"] #make active 
-    bpy.data.objects[Muscle + " origin_merge_with_volume"].select_set(True)
+    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + boundaryName] #make active 
+    bpy.data.objects[Muscle + boundaryName].select_set(True)
     bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
     for area in bpy.context.screen.areas:
         if area.type == 'VIEW_3D':
@@ -57,7 +57,7 @@ def get_volume_perimeter(Muscle,n):
         #print(index)
         vertices_loop.append(index)
     bpy.ops.object.mode_set(mode = 'OBJECT')
-    bpy.data.objects[Muscle + " origin_merge_with_volume"].select_set(True)
+    bpy.data.objects[Muscle + boundaryName].select_set(True)
     bpy.ops.object.join()
     muscle_volume = bpy.context.view_layer.objects.active
     muscle_volume.name = Muscle + " volume"
@@ -80,9 +80,10 @@ def get_volume_perimeter(Muscle,n):
 
 vertices_loop = []
 Muscle = "Muscle"
+boundaryNames = [' origin_merge_with_volume', ' insertion_merge_with_volume']
 n = 32 #later as function have n be an input of number of vertices in origin boundary (maybe with loop and length, or extract from renumber vertices function)
 #on origin loop copy, set origin to geometry, set 3D cursor here
-get_volume_perimeter(Muscle,n)
+get_volume_perimeter(Muscle,0,n)
 
 
 
