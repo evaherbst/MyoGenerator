@@ -79,6 +79,7 @@ def get_volume_perimeter(Muscle,index,n):
     bpy.ops.mesh.bridge_edge_loops()
     bpy.ops.mesh.select_all(action='DESELECT')
 
+duplicate_boundaries(Muscle)
 vertices_loop = []
 boundaryNames = [' origin_merge_with_volume', ' insertion_merge_with_volume']
 Muscle = "Muscle"
@@ -87,11 +88,21 @@ obj = bpy.context.view_layer.objects.active
 mesh = obj.data
 n = len(mesh.vertices)
 print(n)
-
 get_volume_perimeter(Muscle,0,n)
 get_volume_perimeter(Muscle,1,n)
 muscle_volume = bpy.context.view_layer.objects.active
 muscle_volume.name = Muscle + " volume"
+#parent to empty
+muscle_volume.select_set(state=True)
+bpy.context.view_layer.objects.active = bpy.data.objects[Muscle]  
+bpy.data.objects[Muscle].select_set(True)
+bpy.ops.object.parent_set(keep_transform=True)
+bpy.data.objects[Muscle].select_set(False) #make sure only origin is selected
+bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " volume"]
+
+
+
+
 
 def duplicate_attachment_areas(Muscle):
     bpy.ops.object.select_all(action='DESELECT')
@@ -123,5 +134,8 @@ bpy.ops.mesh.remove_doubles()
 #then parent?
 
 
+#then triangulate mesh
+
+bpy.ops.mesh.quads_convert_to_tris(quad_method='BEAUTY', ngon_method='BEAUTY')
 
 
