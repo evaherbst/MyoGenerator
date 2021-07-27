@@ -45,19 +45,14 @@ def make_empty(Muscle):
     o = bpy.data.objects.new(Muscle, None)
     o.empty_display_size = 2
     o.empty_display_type = 'PLAIN_AXES'
-    objs = bpy.context.selected_objects
     # Set target collection to a known collection 
     coll_target = bpy.context.scene.collection.children.get("Collection")
     # If target found and object list not empty
-    if coll_target and objs:
-        # Loop through all objects
-        for ob in objs:
-            # Loop through all collections the obj is linked to
-            for coll in ob.users_collection:
-                # Unlink the object
-                coll.objects.unlink(ob)
-            # Link each object to the target collection
-            coll_target.objects.link(ob)
+    for coll in o.users_collection:
+        # Unlink the object
+        coll.objects.unlink(o)
+    # Link each object to the target collection
+    coll_target.objects.link(o)
 
 
 def create_orig(Muscle): #function creates attachment as new object,parents to muscle empty, also contains functions to recenter object, get origin_centroid, create boundary, and calculate origin_normal
