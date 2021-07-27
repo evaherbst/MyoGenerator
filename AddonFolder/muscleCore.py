@@ -237,7 +237,7 @@ def create_boundary(obj): #this works well - makes boundary, parents to attachme
     #select outer loop, duplicate, separate
     bpy.ops.mesh.region_to_loop()
     bpy.ops.mesh.duplicate()
-    bpy.ops.mesh.separate(type='SELECTED')
+    bpy.ops.mesh.separate(type='BY LOOSE PARTS')
     bpy.ops.object.mode_set(mode = 'OBJECT')
     bpy.ops.object.select_all(action='DESELECT') 
     new_objs = [ obj for obj in scn.objects if not obj.name in names]
