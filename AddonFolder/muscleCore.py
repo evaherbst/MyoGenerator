@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# # -*- coding: utf-8 -*-
 """
 Created on Fri Apr  2 12:47:46 2021
 
@@ -237,7 +237,7 @@ def create_boundary(obj): #this works well - makes boundary, parents to attachme
     #select outer loop, duplicate, separate
     bpy.ops.mesh.region_to_loop()
     bpy.ops.mesh.duplicate()
-    bpy.ops.mesh.separate(type='BY LOOSE PARTS')
+    bpy.ops.mesh.separate(type='LOOSE')
     bpy.ops.object.mode_set(mode = 'OBJECT')
     bpy.ops.object.select_all(action='DESELECT') 
     new_objs = [ obj for obj in scn.objects if not obj.name in names]
@@ -251,8 +251,6 @@ def create_boundary(obj): #this works well - makes boundary, parents to attachme
         bpy.ops.object.parent_set(keep_transform=True) #parents new loop to the attachment area 
         bpy.context.view_layer.objects.active = bpy.data.objects[name + " boundary"]
         boundary = bpy.context.view_layer.objects.active
-    bpy.ops.object.mode_set(mode = 'EDIT')
-    bpy.ops.mesh.delete(type='ONLY_FACE')
     bpy.ops.object.mode_set(mode = 'OBJECT')
     return boundary
 
