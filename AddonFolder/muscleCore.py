@@ -251,7 +251,9 @@ def create_boundary(obj): #this works well - makes boundary, parents to attachme
         bpy.ops.object.parent_set(keep_transform=True) #parents new loop to the attachment area 
         bpy.context.view_layer.objects.active = bpy.data.objects[name + " boundary"]
         boundary = bpy.context.view_layer.objects.active
+    bpy.ops.object.mode_set(mode = 'EDIT')
     bpy.ops.mesh.delete(type='ONLY_FACE')
+    bpy.ops.object.mode_set(mode = 'OBJECT')
     return boundary
 
 def get_normal(obj):
