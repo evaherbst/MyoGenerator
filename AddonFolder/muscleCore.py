@@ -441,6 +441,7 @@ def duplicate_boundaries(Muscle):
     bpy.ops.object.select_all(action='DESELECT')
 
 def duplicate_attachment_areas(Muscle):
+    bpy.ops.object.mode_set(mode='OBJECT')
     bpy.ops.object.select_all(action='DESELECT')
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin"] #make active 
     bpy.data.objects[Muscle + " origin"].select_set(True)
@@ -571,17 +572,19 @@ def join_muscle(Muscle):
     bpy.data.objects[Muscle].select_set(False)
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " volume"]
     # then duplicate origin and insertions (with faces) and merge
-    # duplicate_attachment_areas()
-    # bpy.ops.object.select_all(action='DESELECT')
-    # bpy.data.objects[str(Muscle + " volume")].select_set(True)
-    # bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " volume"] #make active
-    # bpy.data.objects[str(Muscle + " origin_area_merge_with_volume")].select_set(True)
-    # bpy.data.objects[str(Muscle + " insertion_area_merge_with_volume")].select_set(True)
-    # bpy.ops.object.join()
-    # #get rid of edge duplicates
-    # bpy.ops.mesh.remove_doubles()
-    # #then triangulate mesh
-    # bpy.ops.mesh.quads_convert_to_tris(quad_method='BEAUTY', ngon_method='BEAUTY')
+    duplicate_attachment_areas(Muscle)
+    bpy.ops.object.select_all(action='DESELECT')
+    bpy.data.objects[str(Muscle + " volume")].select_set(True)
+    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " volume"] #make active
+    bpy.data.objects[str(Muscle + " origin_area_merge_with_volume")].select_set(True)
+    bpy.data.objects[str(Muscle + " insertion_area_merge_with_volume")].select_set(True)
+    bpy.ops.object.join()
+    bpy.ops.object.mode_set(mode='EDIT')
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.remove_doubles() #get rid of edge duplicates
+    #then triangulate mesh
+    #bpy.ops.mesh.quads_convert_to_tris(quad_method='BEAUTY', ngon_method='BEAUTY') #made a non-manifold mesh!
+
 
 
 
