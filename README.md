@@ -1,14 +1,6 @@
 #  Muscle_Volume_Sculptor
  Blender add-on to create volumetric muscles 
  
- 
- **NOTE: Before entering the muscle name, make sure an object in the scene (does not matter which one) is selected. Otherwise you will get the error:
-RuntimeError: Operator bpy.ops.object.mode_set.poll() failed, context is incorrect**
-
-location: <unknown location>:-1
-
-
- 
 # Niva Muscle Analyzer
  This add-on exports muscle metrics 
  Note that for this add-on to work, muscles need to follow a specific naming system and parent-child hierarchy. 
