@@ -5,7 +5,10 @@
  **NOTE: Before entering the muscle name, make sure an object in the scene (does not matter which one) is selected. Otherwise you will get the error:
 RuntimeError: Operator bpy.ops.object.mode_set.poll() failed, context is incorrect**
 
-location: <unknown location>:-1
+
+
+adjusting muscle tilt:
+Tab (to get to edit mode) - A to select all points - Item > Mean Tilt
 
 
  
