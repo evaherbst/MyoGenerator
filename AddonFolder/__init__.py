@@ -106,15 +106,15 @@ def register():
 #### FOR OBJECT EYEDROPPER: https://blender.stackexchange.com/questions/30487/object-selection-box-with-eyedropper
 
 def unregister():
-    bpy.utils.register_class(Nico_Select_Muscle_Op)
-    bpy.utils.register_class(Nico_Select_Origin_Op)
-    bpy.utils.register_class(Nico_Select_Insertion_Op)
-    bpy.utils.register_class(Nico_AllowAttach_Op)
-    bpy.utils.register_class(Nico_Test_Panel_PT_)
-    bpy.utils.register_class( Nico_Muscle_Creation_Op)
-    bpy.utils.register_class(Nico_Curve_Creator_Op)
-    bpy.utils.register_class(Nico_Join_Muscle_Op)
-    bpy.utils.register_class(Nico_Transform_To_Mesh_Op)
+    bpy.utils.unregister_class(Nico_Select_Muscle_Op)
+    bpy.utils.unregister_class(Nico_Select_Origin_Op)
+    bpy.utils.unregister_class(Nico_Select_Insertion_Op)
+    bpy.utils.unregister_class(Nico_AllowAttach_Op)
+    bpy.utils.unregister_class(Nico_Test_Panel_PT_)
+    bpy.utils.unregister_class( Nico_Muscle_Creation_Op)
+    bpy.utils.unregister_class(Nico_Curve_Creator_Op)
+    bpy.utils.unregister_class(Nico_Join_Muscle_Op)
+    bpy.utils.unregister_class(Nico_Transform_To_Mesh_Op)
 
     del bpy.types.Scene.muscle_Name
     
