@@ -311,16 +311,16 @@ def curve_creator(attachment_centroids,attachment_normals,Muscle): #need muscle 
     spline.points[2].co = [point2[0],point2[1],point2[2],1]
     spline.points[3].co = [point3[0],point3[1],point3[2],1]
     spline.points[4].co = [insertion_centroid[0],insertion_centroid[1],insertion_centroid[2],1]
-    # add two more points for more refined control - or do this beforehand?
+    # add two more points for more refined control 
     bpy.ops.object.mode_set(mode = 'EDIT')
     bpy.ops.curve.select_all(action='DESELECT')
-    spline.points[1].select = True
-    spline.points[2].select = True
+    curve.data.splines.active.points[1].select = True
+    curve.data.splines.active.points[2].select = True
     bpy.ops.curve.subdivide()
     bpy.ops.object.mode_set(mode = 'EDIT')
     bpy.ops.curve.select_all(action='DESELECT') #note this changes the numbers so now need to select 3 and 4
-    spline.points[3].select = True
-    spline.points[4].select = True 
+    curve.data.splines.active.points[3].select = True
+    curve.data.splines.active.points[4].select = True 
     bpy.ops.curve.subdivide()
     #now create cross section for muscle from muscle origin
     bpy.ops.object.mode_set(mode = 'OBJECT')
