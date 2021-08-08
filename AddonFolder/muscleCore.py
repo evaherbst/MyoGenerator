@@ -323,12 +323,13 @@ def curve_creator(attachment_centroids,attachment_normals,Muscle): #need muscle 
     curve.data.splines.active.points[4].select = True 
     bpy.ops.curve.subdivide()
     #now create cross section for muscle from muscle origin
-    bpy.ops.object.mode_set(mode = 'OBJECT')
+
+    bpy.ops.object.editmode_toggle() #somehow mode_set (mode = 'OBJECT') did not work but this worked
     bpy.ops.object.select_all(action='DESELECT')
     # select origin boundary loop for that particular muscle
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin" + " boundary"] #make active 
     bpy.data.objects[Muscle + " origin" + " boundary"].select_set(True)
-    bpy.ops.object.duplicate_move(OBJECT_OT_duplicate={"linked":False, "mode":'TRANSLATION'}, TRANSFORM_OT_translate={"value":(0, 0, 0), "orient_type":'GLOBAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'GLOBAL', "constraint_axis":(True, True, True), "mirror":True, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False, "use_automerge_and_split":False})
+    bpy.ops.object.duplicate()
     #duplicated objects now becomes selected and active
     #rename and unparent
     

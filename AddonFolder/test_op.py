@@ -12,7 +12,7 @@ from AddonFolder import muscleCore
 #from Muscle_Volume_Sculptor import create_muscle_empties 
 from AddonFolder import test_panel
 from AddonFolder import vertex_Counter
-from AddonFolder import curve_creator
+#from AddonFolder import curve_creator
 
 
 
