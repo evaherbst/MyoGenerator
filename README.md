@@ -2,7 +2,7 @@
  Blender add-on to create volumetric muscles 
  
  
-## NOTES FOR USE:** 
+## NOTES FOR USE:
 - Ensure bone meshes are clean (manifold) and of suitably high res to be able to select attachment areas with the desired precision
 - Before entering the muscle name, make sure an object in the scene (does not matter which one) is selected. Otherwise you will get the error:
 RuntimeError: Operator bpy.ops.object.mode_set.poll() failed, context is incorrect**
