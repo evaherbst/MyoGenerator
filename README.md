@@ -20,7 +20,7 @@ RuntimeError: Operator bpy.ops.object.mode_set.poll() failed, context is incorre
 5. User draws on muscle origin by selecting faces, submits 
 6. Code duplicates these faces, separates from bone to create new object representing attachment area, renames this object as “[muscle name] origin”. Then, code selects outer edges, duplicates, makes new object to create boundary loop of attachment, renames this as “[muscle name] origin boundary”. Objects are parented to muscle empty.
 7. Repeat steps 4-6 for insertion
-8. Curve is created by making a nurbs path between the centroids of the origin and insertion attachment sites. Curve is beveled with the origin boundary loop as a cross section (origin boundary loop is first duplicates and reoriented so that it maintains most of its shape when projected into 2D 
+8.Curve is created by making a nurbs path between the centroids of the origin and insertion attachment sites. Curve is beveled with the origin boundary loop as a cross section (origin boundary loop is first duplicated and reoriented so that it maintains most of its shape when projected into 2D, then converted to a curve)
 9. The curve template has 5 points - beginning and end at centroids of origins and insertions , then points along average normal of origin and insertion, at a distance of .2L from centroid, where L is linear distance between centroids. The 5th point is generated between the points along the normals.
 10. The user adjusts tilt of curve, making sure the cross section shape aligns with the origin shape.
 11. User adjusts points of curve to get desired curvature (do not move endpoints!)
