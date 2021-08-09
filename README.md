@@ -11,7 +11,7 @@ RuntimeError: Operator bpy.ops.object.mode_set.poll() failed, context is incorre
 - Ensure meshes are clean (manifold) and of suitably high res to be able to select attachment areas with the desired precision
 
 
-## Summary of Add-on Steps**
+## Summary of Add-on Steps
 
 1. User enters muscle name
 2. Code creates empty with that muscle name
