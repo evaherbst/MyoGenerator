@@ -1,5 +1,5 @@
 import bpy
-from bpy.props import PointerProperty
+from bpy.props import PointerProperty,FloatProperty
 from AddonFolder import muscleCore
 parentMuscleGenerated = False
 originSelected=False
@@ -64,4 +64,8 @@ class Nico_Test_Panel_PT_(bpy.types.Panel):
 
         row=layout.row()
         row.operator("view3d.join_muscle", text = "Join Muscle")
+
+        row = layout.row()
+        row.prop(context.scene, "bevel", slider=True)  
+
         

@@ -30,7 +30,7 @@ import bpy
 #import bpy.utilis
 
 
-from . test_op import Nico_Select_Muscle_Op, Nico_Select_Origin_Op,Nico_Select_Insertion_Op,Nico_AllowAttach_Op, Nico_Muscle_Creation_Op,Nico_Curve_Creator_Op,Nico_Join_Muscle_Op,Nico_Transform_To_Mesh_Op
+from . test_op import Nico_Select_Muscle_Op, Nico_Select_Origin_Op,Nico_Select_Insertion_Op,Nico_AllowAttach_Op, Nico_Muscle_Creation_Op,Nico_Curve_Creator_Op,Nico_Join_Muscle_Op,Nico_Transform_To_Mesh_Op,SetBevel_Op
 
 from . test_panel import Nico_Test_Panel_PT_
 #classes =(Nico_Test_Op, Nico_Test_Panel_PT_)
@@ -56,7 +56,11 @@ def register():
     bpy.utils.register_class(Nico_Curve_Creator_Op)
     bpy.utils.register_class(Nico_Join_Muscle_Op)
     bpy.utils.register_class(Nico_Transform_To_Mesh_Op)
+    bpy.utils.register_class(SetBevel_Op)
+        
 
+
+ 
     
     bpy.types.Scene.origin_object =bpy.props.PointerProperty \
     (
@@ -97,7 +101,14 @@ def register():
         )
 
 
-
+    bpy.types.Scene.bevel =bpy.props.FloatProperty \
+        (
+                    
+         
+            name = "bevel"
+        # description = "asd",
+            #default ='asd'
+        )
 
     #NEED TO ADD PROPERTY Scene.theChosenObject
 
@@ -115,6 +126,8 @@ def unregister():
     bpy.utils.unregister_class(Nico_Curve_Creator_Op)
     bpy.utils.unregister_class(Nico_Join_Muscle_Op)
     bpy.utils.unregister_class(Nico_Transform_To_Mesh_Op)
+    bpy.utils.unregister_class(SetBevel_Op)
 
     del bpy.types.Scene.muscle_Name
+    del bpy.types.Scene.bevel
     

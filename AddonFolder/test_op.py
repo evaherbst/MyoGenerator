@@ -164,4 +164,16 @@ def SetAttach (index, thisValue):
         testAttch1=thisValue
         print(testAttch1,"FROMWONKY FUN")
 
-    testList.append(thisValue)
+#     testList.append(thisValue)
+
+class SetBevel_Op(bpy.types.Operator):
+    bl_idname = "view3d.set_bevel"
+    bl_label="SetBevel"
+
+    def execute(self,context):
+
+        # props = self.properties
+        # self.report({'INFO'}, "The value of the slider: " + str(self.properties))
+        #return value that tells blender we finished without failure
+        return {'FINISHED'}
+
