@@ -170,8 +170,18 @@ class SetBevel_Op(bpy.types.Operator):
     bl_idname = "view3d.set_bevel"
     bl_label="SetBevel"
 
+
+
+
+   
+
     def execute(self,context):
 
+        
+        print("wprked?! ", bpy.context.scene.bevel )
+        muscleCore.bpy.context.object.data.bevel_factor_start =  bpy.context.scene.bevel
+        # bpy.context.scene.bevel=bpy.props.FloatProperty(update=test)
+        
         # props = self.properties
         # self.report({'INFO'}, "The value of the slider: " + str(self.properties))
         #return value that tells blender we finished without failure

@@ -105,7 +105,10 @@ def register():
         (
                     
          
-            name = "bevel"
+            name = "bevel",
+            min=0,
+            max=1,
+            update=SetBevel_Op.execute
         # description = "asd",
             #default ='asd'
         )
