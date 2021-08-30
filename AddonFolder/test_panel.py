@@ -68,6 +68,12 @@ class Nico_Test_Panel_PT_(bpy.types.Panel):
         row.prop(context.scene, "bevel2",text="Bevel End", slider=True) 
         row.enabled=curveCreated
         
+        row = layout.row()
+        row.prop(context.scene, "tilt",text="Set Tilt", slider=True) 
+        row.enabled=curveCreated
+        
+
+
         row=layout.row()
         row.operator("view3d.convert_to_mesh", text ="Convert Curve To Mesh")
 

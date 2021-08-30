@@ -195,3 +195,15 @@ class SetBevel2_Op(bpy.types.Operator):
         return {'FINISHED'}
 
 
+
+class SetTilt_Op(bpy.types.Operator):
+    bl_idname="view3s.set_tilt"
+    bl_label="SetTilt"
+
+
+    
+    def execute(self,context):
+   
+      
+        bpy.ops.curve.select_all(action='SELECT')
+        return {'FINISHED'}
