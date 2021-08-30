@@ -121,6 +121,7 @@ class Nico_Curve_Creator_Op(bpy.types.Operator):
        
         muscleCore.curve_creator(muscleCore.attachment_centroids,[originNormal, attachNormal],muscleCore.muscleName)
 
+        test_panel.curveCreated=True
         #muscleCore.curve_creator(muscleCore.attachment_centroids,[Vector((0.56, 0.7, )),muscleCore.attachment_normals[1]],muscleCore.muscleName)
        
        # curve_creator(muscleCore.attachment_centroids,muscleCore.attachment_normals,muscleCore.muscleName)#PASS HERE ATTACH CENTROIDS,NORMALS,MUSCLE NAME)
@@ -171,14 +172,9 @@ class SetBevel_Op(bpy.types.Operator):
     bl_label="SetBevel"
 
 
-
-
-   
-
     def execute(self,context):
-
-        
-        print("wprked?! ", bpy.context.scene.bevel )
+   
+        print("worked?! ", bpy.context.scene.bevel )
         muscleCore.bpy.context.object.data.bevel_factor_start =  bpy.context.scene.bevel
         # bpy.context.scene.bevel=bpy.props.FloatProperty(update=test)
         
@@ -186,4 +182,16 @@ class SetBevel_Op(bpy.types.Operator):
         # self.report({'INFO'}, "The value of the slider: " + str(self.properties))
         #return value that tells blender we finished without failure
         return {'FINISHED'}
+
+class SetBevel2_Op(bpy.types.Operator):
+    bl_idname = "view3d.set_bevel2"
+    bl_label="SetBevel"
+
+
+    def execute(self,context):
+   
+      
+        muscleCore.bpy.context.object.data.bevel_factor_end =  bpy.context.scene.bevel2
+        return {'FINISHED'}
+
 

@@ -4,6 +4,7 @@ from AddonFolder import muscleCore
 parentMuscleGenerated = False
 originSelected=False
 allowAttachmentSelection=False
+curveCreated=False
 
 class Nico_Test_Panel_PT_(bpy.types.Panel):
 
@@ -59,13 +60,19 @@ class Nico_Test_Panel_PT_(bpy.types.Panel):
         row = layout.row()
         row.operator("view3d.curve_creator", text = "Create Muscle Curve")
 
+        row = layout.row()
+        row.prop(context.scene, "bevel",text="Bevel Start", slider=True) 
+        row.enabled=curveCreated
+
+        row = layout.row()
+        row.prop(context.scene, "bevel2",text="Bevel End", slider=True) 
+        row.enabled=curveCreated
+        
         row=layout.row()
         row.operator("view3d.convert_to_mesh", text ="Convert Curve To Mesh")
 
         row=layout.row()
         row.operator("view3d.join_muscle", text = "Join Muscle")
 
-        row = layout.row()
-        row.prop(context.scene, "bevel", slider=True)  
 
         
