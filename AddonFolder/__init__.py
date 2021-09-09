@@ -133,7 +133,7 @@ def register():
          
             name = "tilt",
             min=0,
-            max=1,
+            max=360,
             update=SetTilt_Op.execute
         # description = "asd",
             #default ='asd'

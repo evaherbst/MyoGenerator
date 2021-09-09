@@ -204,6 +204,15 @@ class SetTilt_Op(bpy.types.Operator):
     
     def execute(self,context):
    
-      
+
+        if(not bpy.context.active_object.mode == 'EDIT'):
+            bpy.ops.object.editmode_toggle()
+
+
         bpy.ops.curve.select_all(action='SELECT')
+        tilt=bpy.context.scene.tilt*0.0174533
+
+        bpy.ops.curve.tilt_clear()
+        bpy.ops.transform.tilt(value=tilt)
+
         return {'FINISHED'}

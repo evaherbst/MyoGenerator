@@ -70,7 +70,7 @@ class Nico_Test_Panel_PT_(bpy.types.Panel):
         
         row = layout.row()
         row.prop(context.scene, "tilt",text="Set Tilt", slider=True) 
-        row.enabled=curveCreated
+        # row.enabled=curveCreated
         
 
 
