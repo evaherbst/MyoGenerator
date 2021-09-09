@@ -34,10 +34,6 @@ attachment_normals=[0,0]
 muscleName=''
 
 
-#def make_empty(Muscle):
- #   bpy.ops.object.empty_add(type='PLAIN_AXES', align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
-  #  bpy.context.object.name = Muscle
-   # set_edit_mode()
 
 def make_empty(Muscle):
     global muscleName
@@ -56,116 +52,13 @@ def make_empty(Muscle):
     coll_target.objects.link(o)
 
 
-def create_orig(Muscle): #function creates attachment as new object,parents to muscle empty, also contains functions to recenter object, get origin_centroid, create boundary, and calculate origin_normal
-# keep track of objects in scene to later rename new objects (#can't just rename active object bc duplicated object doesn't automatically become active)
-
-    
-    #bpy.data.objects[bone].select_set(True)       #MY LINE TO SELECT MUSCLE
-
-
-   # global attachment_centroids
-   # global attachment_normals
-   # global attachmentNames
-
-    global origin_centroid
-    global origin_normal
-
-    attachmentName = ' origin'
-    scn = bpy.context.scene
-    names = [ obj.name for obj in scn.objects]
-    #select faces, duplicate, separate
-    bpy.ops.mesh.duplicate()
-    bpy.ops.mesh.separate(type='SELECTED')
-    bpy.ops.object.mode_set(mode = 'OBJECT')
-    bpy.ops.object.select_all(action='DESELECT') 
-    new_objs = [ obj for obj in scn.objects if not obj.name in names] 
-    #rename new object and select and make active
-    for obj in new_objs:
-        obj.name = Muscle + attachmentName
-        obj.data.name = obj.name #set mesh name to object name
-        obj.select_set(True)
-        bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + attachmentName]
-    #Parent to the muscle empty 
-    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle]   #This works!
-    bpy.data.objects[Muscle].select_set(True)
-    bpy.ops.object.parent_set(keep_transform=True)
-    bpy.data.objects[Muscle].select_set(False) #make sure only origin is selected
-    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + attachmentName]
-    obj = bpy.context.view_layer.objects.active
-    object_Recenter(obj)
-    att=calculate_centroid(obj)
-    origin_centroid=att
-    boundary = create_boundary(obj)
-    norm = get_normal(boundary)
-    print("NORM VALUE FROM CORE", norm,"BOUNDARY", boundary)
-    origin_normal=norm
-    
-    attachment_centroids.append(origin_centroid)
-    attachment_normals.append(origin_normal)
-    #FOLLOWING LINES UNSURE
-    bpy.ops.object.mode_set(mode = 'OBJECT')
-    bpy.ops.object.select_all( action = 'DESELECT' )
-
-    print("List first Step",attachment_centroids, attachment_normals)
-
-def create_insertion(Muscle): #function creates attachment as new object,parents to muscle empty, also contains functions to recenter object, get origin_centroid, create boundary, and calculate origin_normal
-# keep track of objects in scene to later rename new objects (#can't just rename active object bc duplicated object doesn't automatically become active)
-
-    
-    #bpy.data.objects[bone].select_set(True)       #MY LINE TO SELECT MUSCLE
-
-    global insertion_centroid
-    global insertion_normal
-
-    attachmentName = ' insertion'
-    scn = bpy.context.scene
-    names = [ obj.name for obj in scn.objects]
-    #select faces, duplicate, separate
-    bpy.ops.mesh.duplicate()
-    bpy.ops.mesh.separate(type='SELECTED')
-    bpy.ops.object.mode_set(mode = 'OBJECT')
-    bpy.ops.object.select_all(action='DESELECT') 
-    new_objs = [ obj for obj in scn.objects if not obj.name in names] 
-    #rename new object and select and make active
-    for obj in new_objs:
-        obj.name = Muscle + attachmentName
-        obj.data.name = obj.name #set mesh name to object name
-        obj.select_set(True)
-        bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + attachmentName]
-    #Parent to the muscle empty 
-    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle]   #This works!
-    bpy.data.objects[Muscle].select_set(True)
-    bpy.ops.object.parent_set(keep_transform=True)
-    bpy.data.objects[Muscle].select_set(False) #make sure only origin is selected
-    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + attachmentName]
-    obj = bpy.context.view_layer.objects.active
-    object_Recenter(obj)
-    att=calculate_centroid(obj)
-    insertion_centroid=att
-    boundary = create_boundary(obj)
-    nnorm = get_normal(boundary)
-    print("NORM VALUE FROM CORE", nnorm,"BOUNDARY", boundary)
-    insertion_normal=nnorm
-    
-    attachment_centroids.append(insertion_centroid)
-    attachment_normals.append(insertion_normal)
-    print(attachment_centroids,attachment_normals,"ALL VAR",origin_normal)
-    #FOLLOWING LINES UNSURE
-    bpy.ops.object.mode_set(mode = 'OBJECT')
-    bpy.ops.object.select_all( action = 'DESELECT' )
-
-
-
-
-
 
 
 
 def create_attachment(index,Muscle): #function creates attachment as new object,parents to muscle empty, also contains functions to recenter object, get origin_centroid, create boundary, and calculate origin_normal
 # keep track of objects in scene to later rename new objects (#can't just rename active object bc duplicated object doesn't automatically become active)
 
-    
-    #bpy.data.objects[bone].select_set(True)       #MY LINE TO SELECT MUSCLE
+   
 
 
     global attachment_centroids
@@ -205,10 +98,6 @@ def create_attachment(index,Muscle): #function creates attachment as new object,
     attachment_centroids[index]=att
     boundary = create_boundary(obj)
 
-
-
-  
-        
     
     #FOLLOWING LINES UNSURE
     bpy.ops.object.mode_set(mode = 'OBJECT')
@@ -274,6 +163,7 @@ def get_normal(obj):
     for i in selFaces: avgNormal += bm.faces[i].normal
     avgNormal = avgNormal / len( selFaces )
     normal = avgNormal
+    
     return str(normal)
 
 
@@ -382,7 +272,6 @@ def align_with_XY(Muscle):
     bm=bmesh.from_edit_mesh(me)
     if hasattr(bm.faces,"ensure_lookup_table"):
         bm.faces.ensure_lookup_table()
-    normal = bm.faces[0].normal
     bm.select_history.add(bm.faces[0])
     context = bpy.context
     ob = context.edit_object
@@ -391,7 +280,6 @@ def align_with_XY(Muscle):
     face = bm.select_history.active
     o = face.calc_center_median()
     face.normal_update()
-    norm = face.normal
     edges = sorted((e for e in face.edges), key=lambda e: abs((e.verts[1].co - e.verts[0].co).dot(face.normal)))
     e = edges[0]
     T = Matrix.Translation(-o)

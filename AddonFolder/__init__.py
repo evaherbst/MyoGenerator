@@ -106,7 +106,6 @@ def register():
     bpy.types.Scene.bevel =bpy.props.FloatProperty \
         (
                     
-         
             name = "bevel",
             min=0,
             max=1,
