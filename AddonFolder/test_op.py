@@ -131,6 +131,9 @@ class Nico_Curve_Creator_Op(bpy.types.Operator):
         #muscleCore.curve_creator(muscleCore.attachment_centroids,[Vector((0.56, 0.7, )),muscleCore.attachment_normals[1]],muscleCore.muscleName)
        
        # curve_creator(muscleCore.attachment_centroids,muscleCore.attachment_normals,muscleCore.muscleName)#PASS HERE ATTACH CENTROIDS,NORMALS,MUSCLE NAME)
+
+       
+
         return {'FINISHED'}
 
 
@@ -153,6 +156,7 @@ class Nico_Transform_To_Mesh_Op(bpy.types.Operator):
 
     def execute(self,context):
 
+        muscleCore.get_length()             #ASSIGN NURBS LENGTH TO DICTIONARY
         muscleCore.Transform_to_Mesh(bpy.context.scene.muscle_Name)
         return{"FINISHED"}
 
@@ -222,3 +226,4 @@ class SetTilt_Op(bpy.types.Operator):
         bpy.ops.transform.tilt(value=tilt)
 
         return {'FINISHED'}
+

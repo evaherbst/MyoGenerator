@@ -39,8 +39,17 @@ muscleName=''
 
 
 def make_empty(Muscle):
+
+    from AddonFolder import globalVariables
+
     global muscleName
+    globalVariables.muscleName=Muscle
     muscleName = Muscle
+
+    globalVariables.allMuscleParameters[muscleName]=[0,0,0,0,0,0,0] #assigning to dict()
+
+
+
     bpy.ops.object.mode_set(mode = 'OBJECT')
     o = bpy.data.objects.new(Muscle, None)
     o.empty_display_size = 2
@@ -479,7 +488,35 @@ def join_muscle(Muscle):
 
 
 
+def get_length():       #pass in musclename
 
+    from AddonFolder import globalVariables
+
+    length=0
+
+    name = globalVariables.muscleName + " curve" 
+
+ 
+
+    obj = bpy.data.objects[name]  # particular object by name
+    bpy.ops.object.mode_set(mode = 'OBJECT')
+    bpy.ops.object.select_all(action='DESELECT')
+    obj.select_set(True) #selects obj
+    bpy.context.view_layer.objects.active = bpy.data.objects[obj.name] #sets obj as active mesh
+    bpy.ops.object.mode_set(mode = 'EDIT')
+    bpy.context.tool_settings.mesh_select_mode = (False, True, False) #edges select mode
+    bpy.ops.mesh.select_all(action='DESELECT') #select all edges
+    bpy.ops.mesh.select_all(action='SELECT') #select all edges
+    me = bpy.context.object.data
+    bm = bmesh.from_edit_mesh(me)
+    if hasattr(bm.verts,"ensure_lookup_table"):
+        bm.edges.ensure_lookup_table()
+    for i in bm.edges:
+        length+=i.calc_length()
+    print(length)
+
+    globalVariables.allMuscleParameters[globalVariables.muscleName][0]=length  
+    print(globalVariables.allMuscleParameters[globalVariables.muscleName])
 
 
 
