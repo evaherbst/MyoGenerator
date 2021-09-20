@@ -309,15 +309,30 @@ def align_with_XY(Muscle):
 
 
 
+# def Transform_to_Mesh(Muscle):
+
+#     bpy.ops.object.mode_set(mode = 'OBJECT')
+#     bpy.ops.object.select_all(action='DESELECT')
+#     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " curve"]
+#     bpy.data.objects[Muscle + " curve"].select_set(True)
+
+#     bpy.ops.object.convert(target="MESH")
+
+
+
 def Transform_to_Mesh(Muscle):
 
-    bpy.ops.object.mode_set(mode = 'OBJECT')
+    try:
+        bpy.ops.object.mode_set(mode='OBJECT')
+    except:
+        pass
     bpy.ops.object.select_all(action='DESELECT')
+    # make curve copy to get length
+   
+
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " curve"]
     bpy.data.objects[Muscle + " curve"].select_set(True)
-
     bpy.ops.object.convert(target="MESH")
-
 
 
 ##### NRE JOIN
@@ -496,9 +511,21 @@ def get_length():       #pass in musclename
 
     name = globalVariables.muscleName + " curve" 
 
- 
 
-    obj = bpy.data.objects[name]  # particular object by name
+    bpy.context.view_layer.objects.active = bpy.data.objects[globalVariables.muscleName + " curve"]
+    bpy.data.objects[globalVariables.muscleName + " curve"].select_set(True)
+    bpy.ops.object.duplicate_move(OBJECT_OT_duplicate={"linked":False, "mode":'TRANSLATION'}, TRANSFORM_OT_translate={"value":(0, 0, 0), "orient_type":'GLOBAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'GLOBAL', "constraint_axis":(True, True, True), "mirror":True, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False, "use_automerge_and_split":False})
+    bpy.context.view_layer.objects.active.name = "curve_copy" 
+    bpy.ops.object.select_all(action='DESELECT')
+    bpy.context.view_layer.objects.active = bpy.data.objects["curve_copy"]
+    bpy.data.objects["curve_copy"].select_set(True)
+    bpy.ops.object.convert(target="MESH")
+    # get_length("curve copy")
+
+
+
+
+    obj = bpy.data.objects["curve_copy"]  # particular object by name
     bpy.ops.object.mode_set(mode = 'OBJECT')
     bpy.ops.object.select_all(action='DESELECT')
     obj.select_set(True) #selects obj
@@ -514,6 +541,15 @@ def get_length():       #pass in musclename
     for i in bm.edges:
         length+=i.calc_length()
     print(length)
+
+
+    try:
+        bpy.ops.object.mode_set(mode='OBJECT')
+    except:
+        pass
+
+    
+    bpy.ops.object.delete()
 
     globalVariables.allMuscleParameters[globalVariables.muscleName][0]=length  
     print(globalVariables.allMuscleParameters[globalVariables.muscleName])
