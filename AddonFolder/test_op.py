@@ -13,7 +13,7 @@ from AddonFolder import muscleCore
 from AddonFolder import test_panel
 from AddonFolder import vertex_Counter
 #from AddonFolder import curve_creator
-
+# from AddonFolder import globalVariables
 
 
 isSubmittingOrigin = False
@@ -102,24 +102,30 @@ class Nico_Muscle_Creation_Op(bpy.types.Operator):
     
 
 class Nico_Curve_Creator_Op(bpy.types.Operator):
+
+
+
     bl_idname="view3d.curve_creator"
     bl_label="Curve Creator"
     def execute(self,context):
         
+        from AddonFolder import globalVariables 
         #print(muscleCore.attachment_centroids,muscleCore.attachment_normals,muscleCore.muscleName)
        # print("TEST ATTCH",muscleCore.origin_centroid,muscleCore.origin_normal,muscleCore.insertion_centroid,muscleCore.insertion_normal)
-        print("FINAL OVERALL TEST", muscleCore.attachment_normals)
+        print("FINAL OVERALL TEST", globalVariables.attachment_normals)
         
         
         #newVector = mathutils.Vector(muscleCore.attachment_normals[0].strip('<Vector ()>')
-        originNormal = mathutils.Vector((float(muscleCore.attachment_normals[0].strip('\'<Vector ()>\'').split(',')[0]),float(muscleCore.attachment_normals[0].strip('\'<Vector ()>\'').split(',')[1]),float(muscleCore.attachment_normals[0].strip('\'<Vector ()>\'').split(',')[2])))
-        attachNormal = mathutils.Vector((float(muscleCore.attachment_normals[1].strip('\'<Vector ()>\'').split(',')[0]),float(muscleCore.attachment_normals[1].strip('\'<Vector ()>\'').split(',')[1]),float(muscleCore.attachment_normals[1].strip('\'<Vector ()>\'').split(',')[2])))
-        print(muscleCore.attachment_centroids[0],muscleCore.attachment_centroids[1],originNormal, attachNormal)
+        # originNormal = mathutils.Vector((float(muscleCore.attachment_normals[0].strip('\'<Vector ()>\'').split(',')[0]),float(muscleCore.attachment_normals[0].strip('\'<Vector ()>\'').split(',')[1]),float(muscleCore.attachment_normals[0].strip('\'<Vector ()>\'').split(',')[2])))
+        # attachNormal = mathutils.Vector((float(muscleCore.attachment_normals[1].strip('\'<Vector ()>\'').split(',')[0]),float(muscleCore.attachment_normals[1].strip('\'<Vector ()>\'').split(',')[1]),float(muscleCore.attachment_normals[1].strip('\'<Vector ()>\'').split(',')[2])))
+        originNormal = globalVariables.attachment_normals[0]
+        attachNormal = globalVariables.attachment_normals[1]
+        print(globalVariables.attachment_centroids[0],globalVariables.attachment_centroids[1],originNormal, attachNormal)
        
         #print(mathutils.Vector((4,4,4)))
        
        
-        muscleCore.curve_creator(muscleCore.attachment_centroids,[originNormal, attachNormal],muscleCore.muscleName)
+        muscleCore.curve_creator(globalVariables.attachment_centroids,[originNormal, attachNormal],muscleCore.muscleName)
 
         test_panel.curveCreated=True
         #muscleCore.curve_creator(muscleCore.attachment_centroids,[Vector((0.56, 0.7, )),muscleCore.attachment_normals[1]],muscleCore.muscleName)

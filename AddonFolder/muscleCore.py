@@ -15,7 +15,10 @@ import math
 import bmesh
 from operator import itemgetter
 
+# from AddonFolder import globalVariables
 from AddonFolder.test_op import testAttch0,testAttch1
+
+
 
 
 origin_centroid = mathutils.Vector()
@@ -28,8 +31,8 @@ origin_normal=0
 insertion_centroid=0
 insertion_normal=0
 
-attachment_centroids=[0,0]
-attachment_normals=[0,0]
+# attachment_centroids=[0,0]
+# attachment_normals=[0,0]
 
 muscleName=''
 
@@ -58,11 +61,11 @@ def make_empty(Muscle):
 def create_attachment(index,Muscle): #function creates attachment as new object,parents to muscle empty, also contains functions to recenter object, get origin_centroid, create boundary, and calculate origin_normal
 # keep track of objects in scene to later rename new objects (#can't just rename active object bc duplicated object doesn't automatically become active)
 
-   
+    from AddonFolder import globalVariables
 
 
-    global attachment_centroids
-    global attachment_normals
+    # global attachment_centroids
+    # global attachment_normals
   
 
      
@@ -92,10 +95,10 @@ def create_attachment(index,Muscle): #function creates attachment as new object,
     obj = bpy.context.view_layer.objects.active
     object_Recenter(obj)
     norm = get_normal(obj)
-    attachment_normals[index]=norm
+    globalVariables.attachment_normals[index]=norm
     bpy.ops.object.mode_set(mode = 'OBJECT')
     att=calculate_centroid(obj)
-    attachment_centroids[index]=att
+    globalVariables.attachment_centroids[index]=att
     boundary = create_boundary(obj)
 
     
@@ -164,7 +167,7 @@ def get_normal(obj):
     avgNormal = avgNormal / len( selFaces )
     normal = avgNormal
     
-    return str(normal)
+    return normal
 
 
 def calculate_centroid(obj):

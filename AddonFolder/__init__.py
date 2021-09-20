@@ -59,11 +59,7 @@ def register():
     bpy.utils.register_class(SetBevel_Op)
     bpy.utils.register_class(SetBevel2_Op)
     bpy.utils.register_class(SetTilt_Op)
-        
-
-
- 
-    
+             
     bpy.types.Scene.origin_object =bpy.props.PointerProperty \
     (
                 
