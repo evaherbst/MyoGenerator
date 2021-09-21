@@ -519,11 +519,8 @@ def get_length():       #pass in musclename
     bpy.ops.object.select_all(action='DESELECT')
     bpy.context.view_layer.objects.active = bpy.data.objects["curve_copy"]
     bpy.data.objects["curve_copy"].select_set(True)
+    bpy.context.object.data.bevel_object = None
     bpy.ops.object.convert(target="MESH")
-    # get_length("curve copy")
-
-
-
 
     obj = bpy.data.objects["curve_copy"]  # particular object by name
     bpy.ops.object.mode_set(mode = 'OBJECT')
