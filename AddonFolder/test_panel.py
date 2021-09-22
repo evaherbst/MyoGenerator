@@ -10,9 +10,9 @@ class Nico_Test_Panel_PT_(bpy.types.Panel):
 
     
 
-    bl_idname = "Nico_Test_Panel"
-    bl_label = "Test Panel Label"
-    bl_category = "Test Addon"
+    bl_idname = "MyoGenerator"
+    bl_label = "MyoGenerator: create muscle"
+    bl_category = "MyoGenerator"
     bl_space_type ="VIEW_3D"
     bl_region_type = "UI"
 

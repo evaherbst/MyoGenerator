@@ -111,6 +111,16 @@ def create_attachment(index,Muscle): #function creates attachment as new object,
     boundary = create_boundary(obj)
 
     
+    if(index ==0):
+        centroidIdx=2
+    else:
+        centroidIdx=3
+
+    #Store the centroid values int the dictionary. 
+    globalVariables.allMuscleParents[globalVariables.muscleName][centroidIdx]=att
+    
+
+
     #FOLLOWING LINES UNSURE
     bpy.ops.object.mode_set(mode = 'OBJECT')
     bpy.ops.object.select_all( action = 'DESELECT' )
@@ -187,6 +197,9 @@ def calculate_centroid(obj):
 
 #endregion
 def curve_creator(attachment_centroids,attachment_normals,Muscle): #need muscle name as input
+    
+
+    
     global origin_centroid
     global insertion_centroid
     global origin_normal
@@ -548,7 +561,7 @@ def get_length():       #pass in musclename
     
     bpy.ops.object.delete()
 
-    globalVariables.allMuscleParameters[globalVariables.muscleName][0]=length  
+    globalVariables.allMuscleParameters[globalVariables.muscleName][5]=length  
     print(globalVariables.allMuscleParameters[globalVariables.muscleName])
 
 
