@@ -13,7 +13,7 @@ import mathutils
 from mathutils import Vector, Matrix
 import math
 import bmesh
-from operator import itemgetter
+from operator import itemgetter, truediv
 
 # from AddonFolder import globalVariables
 from AddonFolder.test_op import testAttch0,testAttch1
@@ -110,23 +110,46 @@ def create_attachment(index,Muscle): #function creates attachment as new object,
     globalVariables.attachment_centroids[index]=att
     boundary = create_boundary(obj)
 
+
+    area = get_attachment_area(obj)
     
     if(index ==0):
         centroidIdx=2
+        areaIdx=0
     else:
         centroidIdx=3
+        areaIdx=1
+
 
     #Store the centroid values int the dictionary. 
     globalVariables.allMuscleParameters[globalVariables.muscleName][centroidIdx]=att
-    
+    globalVariables.allMuscleParameters[globalVariables.muscleName][areaIdx]=area
 
-
-    #FOLLOWING LINES UNSURE
+    if(index == 1): #calculate linear length only once both centroids are calculated
+        a = globalVariables.allMuscleParameters[globalVariables.muscleName][2]
+        b = globalVariables.allMuscleParameters[globalVariables.muscleName][3]
+        linearLength = math.sqrt((a[0]-b[0])**2 + (a[1]-b[1])**2 + (a[2]-b[2])**2) 
+        globalVariables.allMuscleParameters[globalVariables.muscleName][4]=linearLength
+        print("a = ",a)
+        print("b = ",b)
     bpy.ops.object.mode_set(mode = 'OBJECT')
     bpy.ops.object.select_all( action = 'DESELECT' )
 
 
 
+#calculate muscle attachment 
+def get_attachment_area(obj):
+    
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)  #set scale = 1 to get correct area values
+    objName=obj.name 
+    me = obj.data
+    me.name=objName
+    # Get a BMesh representation
+    bm = bmesh.new()# create an empty BMesh
+    bm.from_mesh(me)# fill it in from a Mesh
+    area = sum(f.calc_area() for f in bm.faces)
+    print("area = " + str(area))
+    return area
 
 
 #region GENERAL FUNCTIONALITIES: 
@@ -563,8 +586,28 @@ def get_length():       #pass in musclename
 
     globalVariables.allMuscleParameters[globalVariables.muscleName][5]=length  
     print(globalVariables.allMuscleParameters[globalVariables.muscleName])
+    DictionaryExporter(globalVariables.allMuscleParameters, "C:/Users/evach/Dropbox/program installers/Blender addons", "test_csv")
+    
+def DictionaryExporter(d, path, fileName):
+    import csv
+    import os
+    fileNameConv = fileName+'.csv'
+    directory = os.sep.join([path, fileNameConv])
+    row = []
+    for key in d:
+        row.append(key)
+        row = row + d[key]
+    print(row)
+    print(directory)
+    header = ['muscle_name', 'origin_area', 'insertion_area', 'origin_centroid', 'insertion_centroid', 'liner_length', 'muscle_length', 'muscle_volume']
+    with open(directory, "a", newline='') as f:
+        writer = csv.writer(f)
+        #if file exists
+        if not os.path.isfile(directory) :
+            writer.writerow(header)
+        writer.writerow(row)
 
-
+        
 
 ## DEPRECATED
 # def join_muscle(Muscle):
