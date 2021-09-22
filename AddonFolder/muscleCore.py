@@ -117,7 +117,7 @@ def create_attachment(index,Muscle): #function creates attachment as new object,
         centroidIdx=3
 
     #Store the centroid values int the dictionary. 
-    globalVariables.allMuscleParents[globalVariables.muscleName][centroidIdx]=att
+    globalVariables.allMuscleParameters[globalVariables.muscleName][centroidIdx]=att
     
 
 
