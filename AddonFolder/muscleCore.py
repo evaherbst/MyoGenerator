@@ -363,8 +363,6 @@ def Transform_to_Mesh(Muscle):
     except:
         pass
     bpy.ops.object.select_all(action='DESELECT')
-    # make curve copy to get length
-   
 
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " curve"]
     bpy.data.objects[Muscle + " curve"].select_set(True)
@@ -539,7 +537,7 @@ def join_muscle(Muscle):
 
 
 
-def get_length():       #pass in musclename
+def get_length():
 
     from AddonFolder import globalVariables
 
@@ -547,7 +545,10 @@ def get_length():       #pass in musclename
 
     name = globalVariables.muscleName + " curve" 
 
-
+    try:
+        bpy.ops.object.mode_set(mode='OBJECT')
+    except:
+        pass
     bpy.context.view_layer.objects.active = bpy.data.objects[globalVariables.muscleName + " curve"]
     bpy.data.objects[globalVariables.muscleName + " curve"].select_set(True)
     bpy.ops.object.duplicate_move(OBJECT_OT_duplicate={"linked":False, "mode":'TRANSLATION'}, TRANSFORM_OT_translate={"value":(0, 0, 0), "orient_type":'GLOBAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'GLOBAL', "constraint_axis":(True, True, True), "mirror":True, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False, "use_automerge_and_split":False})
@@ -586,7 +587,7 @@ def get_length():       #pass in musclename
 
     globalVariables.allMuscleParameters[globalVariables.muscleName][5]=length  
     print(globalVariables.allMuscleParameters[globalVariables.muscleName])
-    DictionaryExporter(globalVariables.allMuscleParameters, "C:/Users/evach/Dropbox/program installers/Blender addons", "test_csv")
+    DictionaryExporter(globalVariables.allMuscleParameters, "D:/Users/eherbst/Dropbox/Blender Myogenerator and Reconstruction Paper", "test_csv")
     
 def DictionaryExporter(d, path, fileName):
     import csv
