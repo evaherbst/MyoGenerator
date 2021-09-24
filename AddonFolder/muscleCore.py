@@ -598,7 +598,7 @@ def DictionaryExporter(d, path, fileName):
         row.append(key)
         row = row + d[key]
     print(row)
-    print(directory)
+    pr:int(directory)
     header = ['muscle_name', 'origin_area', 'insertion_area', 'origin_centroid', 'insertion_centroid', 'liner_length', 'muscle_length', 'muscle_volume']
     with open(directory, "a", newline='') as f:
         writer = csv.writer(f)
@@ -607,10 +607,67 @@ def DictionaryExporter(d, path, fileName):
             writer.writerow(header)
         writer.writerow(row)
 
-        
+
+
+def measure_muscle_volume(obj):
+    bpy.ops.object.transform_apply(location = False, scale = True, rotation = False) #set scale = 1 to get correct volume values
+    me = obj.data
+    # Get a BMesh representation
+    bm = bmesh.new() # create an empty BMesh
+    bm.from_mesh(me) # fill it in from a Mesh
+    # triangulate prior makes the difference
+    bmesh.ops.triangulate(bm, faces=bm.faces)
+    print("Volume")
+    volume = bm.calc_volume()
+    print(volume)
+    return volume
+    #bm.clear()
+
+def updateVolumes(d, path, fileName):
+    import pandas as pd
+    import csv
+    import os
+    fileNameConv = fileName+'.csv'
+    directory = os.sep.join([path, fileNameConv])
+    r = csv.reader(open(directory)) # Here your csv file
+    lines = list(r)
+    # reading the csv file
+    df = pd.read_csv(directory)
+
+    # recalculate muscle volumes
+    fileNameConv = fileName+'.csv'
+    directory = os.sep.join([path, fileNameConv])
+
+    #get list of muscle names and their volumes - or store in dictionary? or list?
+    for obj in bpy.context.selected_objects:
+            print(obj)
+            if obj.type == 'EMPTY':
+                muscle_name=obj.name
+                print(muscleName)
+                children = []
+                children = obj.children
+                for obj in children:
+                    if "volume" in obj.name:
+                        muscle_volume=measure_muscle_volume(obj)
+
+                    #make dictionary with key = muscleName and value = muscle_volume
+    
+    
+    
+    
+    for key in dictionary:
+        df.loc[key, 7] =  #ADD KEY VALUE HERE 
+
+
+    
+    # writing into the file
+    df.to_csv("AllDetails.csv", index=False)
+  
+    print(df)
+
+
 
 ## DEPRECATED
-# def join_muscle(Muscle):
 # #join origin and insertion boundaries to muscle volume mesh (duplicate origin and insertion boundaries first so that I can keep boundaries for muscle deconstruction tool)
 # #duplicate and unparent
 
