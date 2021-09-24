@@ -624,7 +624,7 @@ def measure_muscle_volume(obj):
     return volume
     #bm.clear()
 
-def updateVolumes(d, path, fileName):
+def updateVolumes(path, fileName):
     import pandas as pd
     import csv
     import os
@@ -634,38 +634,28 @@ def updateVolumes(d, path, fileName):
     lines = list(r)
     # reading the csv file
     df = pd.read_csv(directory)
-
-    # recalculate muscle volumes
     fileNameConv = fileName+'.csv'
     directory = os.sep.join([path, fileNameConv])
-
+    muscleVolumeDict=dict()
     #get list of muscle names and their volumes - or store in dictionary? or list?
     for obj in bpy.context.selected_objects:
             print(obj)
             if obj.type == 'EMPTY':
-                muscle_name=obj.name
+                mmuscleName=obj.name
                 print(muscleName)
                 children = []
                 children = obj.children
                 for obj in children:
                     if "volume" in obj.name:
-                        muscle_volume=measure_muscle_volume(obj)
-
+                        muscleVolume=measure_muscle_volume(obj)
+                        muscleVolumeDict[muscleName]=muscleVolume
                     #make dictionary with key = muscleName and value = muscle_volume
-    
-    
-    
-    
-    for key in dictionary:
-        df.loc[key, 7] =  #ADD KEY VALUE HERE 
-
-
-    
+    for key in muscleVolumeDict:
+        df.loc[key, 7] =  muscleVolumeDict[key] 
     # writing into the file
     df.to_csv("AllDetails.csv", index=False)
-  
-    print(df)
 
+updateVolumes("C:/Users/evach/Dropbox/Blender Myogenerator and Reconstruction Paper","test_csv.csv")
 
 
 ## DEPRECATED
