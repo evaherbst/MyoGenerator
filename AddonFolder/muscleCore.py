@@ -598,7 +598,7 @@ def DictionaryExporter(d, path, fileName):
         row.append(key)
         row = row + d[key]
     print(row)
-    pr:int(directory)
+    print(directory)
     header = ['muscle_name', 'origin_area', 'insertion_area', 'origin_centroid', 'insertion_centroid', 'linear_length', 'muscle_length', 'muscle_volume']
     with open(directory, "a",  newline='') as f:
         writer = csv.writer(f)
