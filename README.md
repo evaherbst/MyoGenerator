@@ -5,7 +5,7 @@
 ## NOTES FOR USE:
 - Ensure bone meshes are clean (manifold) and of suitably high res to be able to select attachment areas with the desired precision
 - Before entering the muscle name, make sure an object in the scene (does not matter which one) is selected. Otherwise you will get the error:
-RuntimeError: Operator bpy.ops.object.mode_set.poll() failed, context is incorrect**
+RuntimeError: *Operator bpy.ops.object.mode_set.poll() failed, context is incorrect*
 - Make sure a continuous area is selected for your muscle attachments (no accidental unselected faces in the general attachment area, no faces only conected to other faces by single vertex)
 - For attachment select, we recommend using the lasso tool, which can be accessed by left clicking on the select box and selecting the lasso tool
 - Ensure meshes are clean (manifold) and of suitably high res to be able to select attachment areas with the desired precision
