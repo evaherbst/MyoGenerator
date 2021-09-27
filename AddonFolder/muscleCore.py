@@ -582,9 +582,8 @@ def get_length():
     except:
         pass
 
-    
-    bpy.ops.object.delete()
 
+    bpy.ops.object.delete()
     globalVariables.allMuscleParameters[globalVariables.muscleName][5]=length  
     print(globalVariables.allMuscleParameters[globalVariables.muscleName])
     DictionaryExporter(globalVariables.allMuscleParameters, "D:/Users/eherbst/Dropbox/Blender Myogenerator and Reconstruction Paper", "test_csv")
@@ -600,7 +599,7 @@ def DictionaryExporter(d, path, fileName):
         row = row + d[key]
     print(row)
     pr:int(directory)
-    header = ['muscle_name', 'origin_area', 'insertion_area', 'origin_centroid', 'insertion_centroid', 'liner_length', 'muscle_length', 'muscle_volume']
+    header = ['muscle_name', 'origin_area', 'insertion_area', 'origin_centroid', 'insertion_centroid', 'linear_length', 'muscle_length', 'muscle_volume']
     with open(directory, "a", newline='') as f:
         writer = csv.writer(f)
         #if file exists
@@ -624,43 +623,42 @@ def measure_muscle_volume(obj):
     return volume
     #bm.clear()
 
-def updateVolumes(path, fileName):
-    import pandas as pd
+#def updateVolumes(path, fileName):
+def updateVolumes():
     import csv
     import os
-    fileNameConv = fileName+'.csv'
-    directory = os.sep.join([path, fileNameConv])
-    r = csv.reader(open(directory)) # Here your csv file
-    lines = list(r)
-    # reading the csv file
-    df = pd.read_csv(directory)
-    fileNameConv = fileName+'.csv'
-    directory = os.sep.join([path, fileNameConv])
-    muscleVolumeDict=dict()
-    #get list of muscle names and their volumes - or store in dictionary? or list?
+    #fileNameConv = fileName+'.csv'
+    #directory = os.sep.join([path, fileNameConv])
+    directory = "D:/Users/eherbst/Dropbox/Blender Myogenerator and Reconstruction Paper/test_csv.csv"
+    muscleMetrics= {}
+    #Open the file in read mode
+    with open(directory, mode='r') as infile:
+    #Open a reader to the csv, the delimiter is a single space
+        reader = csv.reader(infile, delimiter=';') #double check if Add-on produces ; delimited file
+    #Read into the dictionary using dictionary comprehension, key is the first column and row are rest of the columns
+        muscleMetrics = { key: row for key, *row in reader } #create dictionary where key = muscle name, value = all values
+    print("muscle metrics from csv: " + muscleMetrics)
+
     for obj in bpy.context.selected_objects:
             print(obj)
             if obj.type == 'EMPTY':
-                mmuscleName=obj.name
+                muscleName=obj.name
                 print(muscleName)
                 children = []
                 children = obj.children
                 for obj in children:
                     if "volume" in obj.name:
                         muscleVolume=measure_muscle_volume(obj)
-                        muscleVolumeDict[muscleName]=muscleVolume
+                        muscleMetrics[muscleName][6]=muscleVolume
                     #make dictionary with key = muscleName and value = muscle_volume
-    for key in muscleVolumeDict:
-        df.loc[key, 7] =  muscleVolumeDict[key] 
-    # writing into the file
-    df.to_csv("AllDetails.csv", index=False)
-
-updateVolumes("C:/Users/evach/Dropbox/Blender Myogenerator and Reconstruction Paper","test_csv.csv")
+                print("updated values: " + muscleMetrics)
 
 
 ## DEPRECATED
 # #join origin and insertion boundaries to muscle volume mesh (duplicate origin and insertion boundaries first so that I can keep boundaries for muscle deconstruction tool)
 # #duplicate and unparent
+
+
 
 
 #     #Transform_to_Mesh(Muscle)
