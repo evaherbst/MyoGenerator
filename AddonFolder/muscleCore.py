@@ -664,7 +664,16 @@ def updateVolumes():
                     muscleMetrics[muscleName][6]=muscleVolume
                 #make dictionary with key = muscleName and value = muscle_volume
             print("updated values: " + str(muscleMetrics))
-
+    header = ['muscle_name', 'origin_area', 'insertion_area', 'origin_centroid', 'insertion_centroid', 'linear_length', 'muscle_length', 'muscle_volume']
+    row = []
+    d = muscleMetrics
+    for key in d:
+        row.append(key)
+        row = row + d[key]
+    with open(directory, "w",  newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(header) # since we are overwriting file with new metrics, rewrite header even if file exists (unlike in DictionaryExporter)
+        writer.writerow(row)
 
 ## DEPRECATED
 # #join origin and insertion boundaries to muscle volume mesh (duplicate origin and insertion boundaries first so that I can keep boundaries for muscle deconstruction tool)
