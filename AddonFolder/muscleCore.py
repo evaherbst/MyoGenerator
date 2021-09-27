@@ -294,8 +294,8 @@ def curve_creator(attachment_centroids,attachment_normals,Muscle): #need muscle 
     #bevel
     bpy.context.object.data.bevel_mode = 'OBJECT'
     bpy.context.object.data.bevel_object = bpy.data.objects[cross_section.name] 
-    bpy.context.object.data.bevel_factor_start = 0.2  #THIS NEEDS TO BE ADJUSTED BY USER SLIDER
-    bpy.context.object.data.bevel_factor_end = 0.8
+    bpy.context.object.data.bevel_factor_start = 0  #user can adjust this in add-on
+    bpy.context.object.data.bevel_factor_end = 1
     bpy.ops.object.select_all(action='DESELECT')
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " cross section template"] #make curve active
     bpy.data.objects[Muscle + " cross section template"].select_set(True)
