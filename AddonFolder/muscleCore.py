@@ -491,7 +491,7 @@ def join_muscle(Muscle):
         if v.select:
             both_ends.append([v.index, v.co])
     print(len(both_ends))  # works till here
-    print("vertex list both ends" + both_ends)
+    print("vertex list both ends" + str(both_ends))
     n = int(len(both_ends)/2)
     print(n)
     get_volume_perimeter(Muscle, 0, n, both_ends)
