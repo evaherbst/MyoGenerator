@@ -476,8 +476,6 @@ def get_volume_perimeter(Muscle, index, n, both_ends):
 def join_muscle(Muscle):
     duplicate_boundaries(Muscle)
     both_ends = []
-    boundaryNames = [' origin_merge_with_volume',
-                     ' insertion_merge_with_volume']
     bpy.ops.object.select_all(action='DESELECT')
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " curve"]
     bpy.data.objects[Muscle + " curve"].select_set(True)
@@ -493,6 +491,7 @@ def join_muscle(Muscle):
         if v.select:
             both_ends.append([v.index, v.co])
     print(len(both_ends))  # works till here
+    print("vertex list both ends" + both_ends)
     n = int(len(both_ends)/2)
     print(n)
     get_volume_perimeter(Muscle, 0, n, both_ends)
