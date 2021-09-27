@@ -601,11 +601,14 @@ def DictionaryExporter(d, path, fileName):
     print(directory)
     header = ['muscle_name', 'origin_area', 'insertion_area', 'origin_centroid', 'insertion_centroid', 'linear_length', 'muscle_length', 'muscle_volume']
     with open(directory, "a",  newline='') as f:
-        writer = csv.writer(f, delimiter=',')
+        writer = csv.writer(f)
         #if file exists
-        if not os.path.isfile(directory) :
+        if os.path.isfile(directory):
+            writer.writerow(row)
+        else:
             writer.writerow(header)
-        writer.writerow(row)
+            writer.writerow(row)
+    
 
 
 
@@ -630,6 +633,11 @@ def updateVolumes():
     import os
     import bmesh
     import bpy
+    try:
+        bpy.ops.object.mode_set(mode='OBJECT')
+    except:
+        pass
+    bpy.ops.object.select_all(action='DESELECT')
     #fileNameConv = fileName+'.csv'
     #directory = os.sep.join([path, fileNameConv])
     directory = "D:/Users/eherbst/Dropbox/Blender Myogenerator and Reconstruction Paper/test_csv.csv"
@@ -639,22 +647,23 @@ def updateVolumes():
     #Open a reader to the csv
         reader = csv.reader(infile, delimiter=',') #double check if Add-on produces ; delimited file
     #Read into the dictionary using dictionary comprehension, key is the first column and row are rest of the columns
-        muscleMetrics = { key: row for key, *row in reader } #create dictionary where key = muscle name, value = all values
+        for row in reader:
+            muscleMetrics = { key: row for key, *row in reader } #create dictionary where key = muscle name, value = all values
     print("muscle metrics from csv: " + str(muscleMetrics))
     bpy.ops.object.select_all(action='SELECT')
     for obj in bpy.context.selected_objects:
-            print(obj)
-            if obj.type == 'EMPTY':
-                muscleName=obj.name
-                print(muscleName)
-                children = []
-                children = obj.children
-                for obj in children:
-                    if "volume" in obj.name:
-                        muscleVolume=measure_muscle_volume(obj)
-                        muscleMetrics[muscleName][6]=muscleVolume
-                    #make dictionary with key = muscleName and value = muscle_volume
-                print("updated values: " + str(muscleMetrics))
+        print(obj)
+        if obj.type == 'EMPTY':
+            muscleName=obj.name
+            print(muscleName)
+            children = []
+            children = obj.children
+            for obj in children:
+                if "volume" in obj.name:
+                    muscleVolume=measure_muscle_volume(obj)
+                    muscleMetrics[muscleName][6]=muscleVolume
+                #make dictionary with key = muscleName and value = muscle_volume
+            print("updated values: " + str(muscleMetrics))
 
 
 ## DEPRECATED
