@@ -600,7 +600,7 @@ def DictionaryExporter(d, path, fileName):
     print(row)
     pr:int(directory)
     header = ['muscle_name', 'origin_area', 'insertion_area', 'origin_centroid', 'insertion_centroid', 'linear_length', 'muscle_length', 'muscle_volume']
-    with open(directory, "a", newline='') as f:
+    with open(directory, "a",  newline='') as f:
         writer = csv.writer(f)
         #if file exists
         if not os.path.isfile(directory) :
@@ -623,8 +623,8 @@ def measure_muscle_volume(obj):
     return volume
     #bm.clear()
 
-#def updateVolumes(path, fileName):
-def updateVolumes():
+#def updateVolumes(path, fileName): #want inputs in final add-on instead of hard coding directory
+def updateVolumes(): 
     import csv
     import os
     #fileNameConv = fileName+'.csv'
@@ -633,8 +633,8 @@ def updateVolumes():
     muscleMetrics= {}
     #Open the file in read mode
     with open(directory, mode='r') as infile:
-    #Open a reader to the csv, the delimiter is a single space
-        reader = csv.reader(infile, delimiter=';') #double check if Add-on produces ; delimited file
+    #Open a reader to the csv
+        reader = csv.reader(infile, delimiter=',') #double check if Add-on produces ; delimited file
     #Read into the dictionary using dictionary comprehension, key is the first column and row are rest of the columns
         muscleMetrics = { key: row for key, *row in reader } #create dictionary where key = muscle name, value = all values
     print("muscle metrics from csv: " + muscleMetrics)
