@@ -13,6 +13,7 @@ import mathutils
 from mathutils import Vector, Matrix
 import math
 import bmesh
+import csv
 from operator import itemgetter, truediv
 
 # from AddonFolder import globalVariables
@@ -220,8 +221,6 @@ def calculate_centroid(obj):
 
 #endregion
 def curve_creator(attachment_centroids,attachment_normals,Muscle): #need muscle name as input
-    
-
     
     global origin_centroid
     global insertion_centroid
@@ -587,18 +586,21 @@ def get_length():
         bpy.ops.object.mode_set(mode='OBJECT')
     except:
         pass
-
-
     bpy.ops.object.delete()
     globalVariables.allMuscleParameters[globalVariables.muscleName][5]=length  
     print(globalVariables.allMuscleParameters[globalVariables.muscleName])
-    DictionaryExporter(globalVariables.allMuscleParameters, "C:/Users/evach/Dropbox/Blender Myogenerator and Reconstruction Paper", "test_csv")
+
+
+
+
+    dir=globalVariables.csvDir       #"C:/Users/evach/Dropbox/Blender Myogenerator and Reconstruction Paper"
+
+    DictionaryExporter(globalVariables.allMuscleParameters, dir, "test_csv")
     
-def DictionaryExporter(d, path, fileName):
+def DictionaryExporter(d, dir):
     import csv
     import os
-    fileNameConv = fileName+'.csv'
-    directory = os.sep.join([path, fileNameConv])
+    directory = dir
     row = []
     for key in d:
         row.append(key)
@@ -635,10 +637,11 @@ def measure_muscle_volume(obj):
 
 #def updateVolumes(path, fileName): #want inputs in final add-on instead of hard coding directory
 def updateVolumes():
-    import csv
-    import os
-    import bmesh
-    import bpy
+    from AddonFolder import globalVariables
+    
+
+
+
     try:
         bpy.ops.object.mode_set(mode='OBJECT')
     except:
@@ -646,7 +649,7 @@ def updateVolumes():
     bpy.ops.object.select_all(action='DESELECT')
     #fileNameConv = fileName+'.csv'
     #directory = os.sep.join([path, fileNameConv])
-    directory = "C:/Users/evach/Dropbox/Blender Myogenerator and Reconstruction Paper/test_csv.csv"
+    directory = globalVariables.csvDir
     muscleMetrics= {}
     #Open the file in read mode
     with open(directory, mode='r') as infile:

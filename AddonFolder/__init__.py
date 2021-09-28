@@ -12,7 +12,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 bl_info = {
-    "name" : "Muscle Volume Sculptor",
+    "name" : "MyoGenerator",
     "author" : "Niccolo Fioritti and Eva Herbst",
     "description" : "TestAddon",
     "blender" : (2, 80, 0),
@@ -30,7 +30,7 @@ import bpy
 #import bpy.utilis
 
 
-from . test_op import Nico_Select_Muscle_Op, Nico_Select_Origin_Op,Nico_Select_Insertion_Op,Nico_AllowAttach_Op, Nico_Muscle_Creation_Op,Nico_Curve_Creator_Op,Nico_Join_Muscle_Op,Nico_Transform_To_Mesh_Op,SetBevel_Op,SetBevel2_Op,SetTilt_Op
+from . test_op import Nico_Select_Muscle_Op, Nico_Select_Origin_Op,Nico_Select_Insertion_Op,Nico_AllowAttach_Op, Nico_Muscle_Creation_Op,Nico_Curve_Creator_Op,Nico_Join_Muscle_Op,Nico_Transform_To_Mesh_Op,SetBevel_Op,SetBevel2_Op,SetTilt_Op, Calculate_Volume_Op
 
 from . test_panel import Nico_Test_Panel_PT_
 #classes =(Nico_Test_Op, Nico_Test_Panel_PT_)
@@ -59,7 +59,28 @@ def register():
     bpy.utils.register_class(SetBevel_Op)
     bpy.utils.register_class(SetBevel2_Op)
     bpy.utils.register_class(SetTilt_Op)
+    bpy.utils.register_class(Calculate_Volume_Op)
              
+
+
+    bpy.types.Scene.conf_path = bpy.props.StringProperty \
+        (
+            name = "Path",
+            default = "",
+            #update = lambda s,c: make_path_absolute('conf_path'),
+            description = "Select where to save your file...",
+            subtype = "DIR_PATH"
+        )
+    bpy.types.Scene.file_name = bpy.props.StringProperty \
+        (
+            name = "File_Name",
+            default = "",
+            #update = lambda s,c: make_path_absolute('conf_path'),
+            description = "Your file name. It will be exported as .csv",
+            subtype = "FILE_NAME"
+        )
+
+    
     bpy.types.Scene.origin_object =bpy.props.PointerProperty \
     (
                 
@@ -83,7 +104,7 @@ def register():
         (
             name = "Muscle Name",
             description = "Insert your muscle name",
-            default ='Insert  muscle name'
+            default ='Insert muscle name'
         )
     bpy.types.Scene.origin_Name=bpy.props.StringProperty \
         (
@@ -123,8 +144,7 @@ def register():
 
     bpy.types.Scene.tilt =bpy.props.FloatProperty \
         (
-                    
-         
+
             name = "tilt",
             min=0,
             max=360,
@@ -152,7 +172,10 @@ def unregister():
     bpy.utils.unregister_class(SetBevel_Op)
     bpy.utils.unregister_class(SetBevel2_Op)
     bpy.utils.unregister_class(SetTilt_Op)
+    bpy.utils.unregister_class(Calculate_Volume_Op)
 
     del bpy.types.Scene.muscle_Name
     del bpy.types.Scene.bevel
+    del bpy.types.Scene.conf_path
+    del bpy.types.Scene.file_name
     

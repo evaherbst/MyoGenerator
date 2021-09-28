@@ -4,6 +4,8 @@ import mathutils
 from mathutils import Vector
 import math
 import bmesh
+import os
+
 
 #from . muscleCore import make_muscle_empties
 from AddonFolder import muscleCore
@@ -30,6 +32,8 @@ class Nico_Select_Muscle_Op(bpy.types.Operator):
     bl_description = "Centre Cursor Test"
 
     def execute(self,context):
+
+
         #function to execute
         objName = bpy.context.scene.muscle_Name
         muscleCore.make_empty(objName)
@@ -155,6 +159,13 @@ class Nico_Transform_To_Mesh_Op(bpy.types.Operator):
     bl_label="Convert To Mesh"
 
     def execute(self,context):
+     
+        from AddonFolder import globalVariables 
+
+
+        globalVariables.csvDir = os.path.join(context.scene.conf_path, (context.scene.file_name+".csv"))
+       
+
 
         muscleCore.get_length()             #ASSIGN NURBS LENGTH TO DICTIONARY
         muscleCore.Transform_to_Mesh(bpy.context.scene.muscle_Name)
@@ -207,7 +218,7 @@ class SetBevel2_Op(bpy.types.Operator):
 
 
 class SetTilt_Op(bpy.types.Operator):
-    bl_idname="view3s.set_tilt"
+    bl_idname="view3d.set_tilt"
     bl_label="SetTilt"
 
 
@@ -226,4 +237,19 @@ class SetTilt_Op(bpy.types.Operator):
         bpy.ops.transform.tilt(value=tilt)
 
         return {'FINISHED'}
+
+
+
+class Calculate_Volume_Op(bpy.types.Operator):
+    bl_idname="view3d.calculate_volume"
+    bl_label="CalculateVolume"
+
+    def execute(self,context):
+
+        #ADD HERE THE FUNCTION YOu WANNA CALL
+
+        muscleCore.updateVolumes()
+        return {'FINISHED'}
+        
+            
 
