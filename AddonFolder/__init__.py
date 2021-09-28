@@ -30,7 +30,7 @@ import bpy
 #import bpy.utilis
 
 
-from . test_op import Nico_Select_Muscle_Op, Nico_Select_Origin_Op,Nico_Select_Insertion_Op,Nico_AllowAttach_Op, Nico_Muscle_Creation_Op,Nico_Curve_Creator_Op,Nico_Join_Muscle_Op,Nico_Transform_To_Mesh_Op,SetBevel_Op,SetBevel2_Op,SetTilt_Op, Calculate_Volume_Op
+from . test_op import Nico_Select_Muscle_Op, Nico_Select_Origin_Op,Nico_Select_Insertion_Op,Nico_AllowAttach_Op, Nico_Muscle_Creation_Op,Nico_Curve_Creator_Op,Nico_Join_Muscle_Op,Nico_Transform_To_Mesh_Op,SetBevel_Op,SetBevel2_Op,SetTilt_Op, Calculate_Volume_Op,Reset_Variables_Op
 
 from . test_panel import Nico_Test_Panel_PT_
 #classes =(Nico_Test_Op, Nico_Test_Panel_PT_)
@@ -60,6 +60,7 @@ def register():
     bpy.utils.register_class(SetBevel2_Op)
     bpy.utils.register_class(SetTilt_Op)
     bpy.utils.register_class(Calculate_Volume_Op)
+    bpy.utils.register_class(Reset_Variables_Op)
              
 
 
@@ -173,6 +174,7 @@ def unregister():
     bpy.utils.unregister_class(SetBevel2_Op)
     bpy.utils.unregister_class(SetTilt_Op)
     bpy.utils.unregister_class(Calculate_Volume_Op)
+    bpy.utils.unregister_class(Reset_Variables_Op)
 
     del bpy.types.Scene.muscle_Name
     del bpy.types.Scene.bevel

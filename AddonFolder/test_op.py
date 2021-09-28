@@ -246,10 +246,29 @@ class Calculate_Volume_Op(bpy.types.Operator):
 
     def execute(self,context):
 
-        #ADD HERE THE FUNCTION YOu WANNA CALL
-
         muscleCore.updateVolumes()
         return {'FINISHED'}
         
             
+class Reset_Variables_Op(bpy.types.Operator):
+    bl_idname="view3d.reset_variables"
+    bl_label="ResetVariables"
+
+    def execute(self,context):
+
+        from AddonFolder import globalVariables
+
+        globalVariables.muscleName=''
+        globalVariables.attachment_centroids=[0,0]
+        globalVariables.attachment_normals=[0,0]
+        globalVariables.allMuscleParameters.clear()
+
+        bpy.context.scene.muscle_Name="Insert muscle name"
+        bpy.context.scene.origin_object = None
+        bpy.context.scene.insertion_object = None
+        bpy.context.scene.tilt=0
+        bpy.context.scene.bevel=0
+        bpy.context.scene.bevel2=0
+
+        return {'FINISHED'}
 

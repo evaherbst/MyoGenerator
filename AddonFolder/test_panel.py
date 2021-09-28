@@ -25,10 +25,7 @@ class Nico_Test_Panel_PT_(bpy.types.Panel):
         row=layout.row()  #creates a col within the row previosuly defined
         row.prop(context.scene, "file_name", text ="")              #we dont have properties yet
         #print (context.scene)
-
-
-
-        
+       
         row = layout.row()
         row.prop(context.scene, "muscle_Name", text ="Muscle Name")
         row.enabled= (context.scene.file_name!= "")
@@ -64,7 +61,7 @@ class Nico_Test_Panel_PT_(bpy.types.Panel):
         col2.enabled =  context.scene.insertion_object is not None
         
         row = layout.row()
-        row.operator("view3d.muscle_creation", text = "Create Muscle Boundaries")
+        row.operator("view3d.muscle_creation", text = "Match Attachment Vertex Counts")
 
         row = layout.row()
         row.operator("view3d.curve_creator", text = "Create Muscle Curve")
@@ -91,6 +88,10 @@ class Nico_Test_Panel_PT_(bpy.types.Panel):
         row=layout.row()
         row.operator("view3d.join_muscle", text = "Join Muscle")
 
+        row=layout.row()
+        row.operator("view3d.reset_variables", text = "Next Muscle")
+
+        layout.separator()
 
         row=layout.row()
-        row.operator("view3d.calculate_volume", text = "Calculate Volume")
+        row.operator("view3d.calculate_volume", text = "Calculate Volumes")
