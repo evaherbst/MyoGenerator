@@ -420,7 +420,8 @@ def get_volume_perimeter(Muscle, index, n, both_ends):
     # make active
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + boundaryName]
     bpy.data.objects[Muscle + boundaryName].select_set(True)
-    bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
+    #snap 3D cursor to m
+    bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS') #can set to medium or bounds, try both
     for area in bpy.context.screen.areas:
         if area.type == 'VIEW_3D':
             override = bpy.context.copy()
@@ -435,16 +436,22 @@ def get_volume_perimeter(Muscle, index, n, both_ends):
     bpy.context.tool_settings.mesh_select_mode = (
         True, False, False)  # vertex select mode
     bpy.ops.mesh.select_all(action='DESELECT')
-    distance_list = []
+    #distance_list = []
     for point in both_ends:
         co = point[1]
+        print("coordinate is" + str(co))
         distance = math.sqrt(
             (co[0] - cursor[0]) ** 2 + (co[1] - cursor[1]) ** 2 + (co[2] - cursor[2]) ** 2)
         point.append(distance)
-    distance_list_ascending = sorted((both_ends), key=itemgetter(2))
+        print(point)
+    distance_list_ascending = sorted((both_ends), key=itemgetter(2)) #rank distances between points and cursor
+    print(distance_list_ascending)
     shortest_n= distance_list_ascending[0:n]
-    vertices_loop = [item[0] for item in shortest_n]
+    print(shortest_n)
+    vertices_loop = [item[0] for item in shortest_n] 
+    print("vertices loop is " + str(vertices_loop)) #gets correct vertices on muscle curve, closest to origin
     bpy.ops.object.mode_set(mode='OBJECT')
+    bpy.ops.mesh.select_all(action='DESELECT')
     bpy.data.objects[Muscle + boundaryName].select_set(True)
     bpy.ops.object.join()
     bpy.ops.object.mode_set(mode='EDIT')
@@ -493,7 +500,7 @@ def join_muscle(Muscle):
     print(len(both_ends))  # works till here
     print("vertex list both ends" + str(both_ends))
     n = int(len(both_ends)/2)
-    print(n)
+    print("num of vertices on each end" + str(n))
     get_volume_perimeter(Muscle, 0, n, both_ends)
     both_ends = []
     bpy.context.tool_settings.mesh_select_mode = (
@@ -506,9 +513,9 @@ def join_muscle(Muscle):
     for v in bm.verts:
         if v.select:
             both_ends.append([v.index, v.co])
-    print(len(both_ends))  # works till here
-    n = int(len(both_ends)/2)
-    print(n)
+    #print(len(both_ends))  # works till here
+    #n = int(len(both_ends)/2)
+    #print(n)
     get_volume_perimeter(Muscle, 1, n, both_ends)
     muscle_volume = bpy.context.view_layer.objects.active
     muscle_volume.name = Muscle + " volume"
@@ -585,7 +592,7 @@ def get_length():
     bpy.ops.object.delete()
     globalVariables.allMuscleParameters[globalVariables.muscleName][5]=length  
     print(globalVariables.allMuscleParameters[globalVariables.muscleName])
-    DictionaryExporter(globalVariables.allMuscleParameters, "D:/Users/eherbst/Dropbox/Blender Myogenerator and Reconstruction Paper", "test_csv")
+    DictionaryExporter(globalVariables.allMuscleParameters, "C:/Users/evach/Dropbox/Blender Myogenerator and Reconstruction Paper", "test_csv")
     
 def DictionaryExporter(d, path, fileName):
     import csv
@@ -639,7 +646,7 @@ def updateVolumes():
     bpy.ops.object.select_all(action='DESELECT')
     #fileNameConv = fileName+'.csv'
     #directory = os.sep.join([path, fileNameConv])
-    directory = "D:/Users/eherbst/Dropbox/Blender Myogenerator and Reconstruction Paper/test_csv.csv"
+    directory = "C:/Users/evach/Dropbox/Blender Myogenerator and Reconstruction Paper/test_csv.csv"
     muscleMetrics= {}
     #Open the file in read mode
     with open(directory, mode='r') as infile:
@@ -647,7 +654,11 @@ def updateVolumes():
         reader = csv.reader(infile, delimiter=',') #double check if Add-on produces ; delimited file
     #Read into the dictionary using dictionary comprehension, key is the first column and row are rest of the columns
         for row in reader:
-            muscleMetrics = { key: row for key, *row in reader } #create dictionary where key = muscle name, value = all values
+            row[3] = row[3].replace("<Vector (","")
+            row[3] = row[3].replace(")>","")
+            row[4] = row[4].replace("<Vector (","")
+            row[4] = row[4].replace(")>","")
+            muscleMetrics[row[0]] = row[1:]#create dictionary where key = muscle name, value = all values
     print("muscle metrics from csv: " + str(muscleMetrics))
     bpy.ops.object.select_all(action='SELECT')
     for obj in bpy.context.selected_objects:

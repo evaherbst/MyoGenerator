@@ -191,7 +191,7 @@ class SetBevel_Op(bpy.types.Operator):
         # props = self.properties
         # self.report({'INFO'}, "The value of the slider: " + str(self.properties))
         #return value that tells blender we finished without failure
-        return {'FINISHED'}
+        #return {'FINISHED'}
 
 class SetBevel2_Op(bpy.types.Operator):
     bl_idname = "view3d.set_bevel2"
@@ -202,7 +202,7 @@ class SetBevel2_Op(bpy.types.Operator):
    
       
         muscleCore.bpy.context.object.data.bevel_factor_end =  bpy.context.scene.bevel2
-        return {'FINISHED'}
+        #return {'FINISHED'}
 
 
 
