@@ -654,10 +654,8 @@ def updateVolumes():
         reader = csv.reader(infile, delimiter=',') #double check if Add-on produces ; delimited file
     #Read into the dictionary using dictionary comprehension, key is the first column and row are rest of the columns
         for row in reader:
-            row[3] = row[3].replace("<Vector (","")
-            row[3] = row[3].replace(")>","")
-            row[4] = row[4].replace("<Vector (","")
-            row[4] = row[4].replace(")>","")
+            row[3] = row[3].replace("<Vector()>","")
+            row[4] = row[4].replace("<Vector()>","")
             muscleMetrics[row[0]] = row[1:]#create dictionary where key = muscle name, value = all values
     print("muscle metrics from csv: " + str(muscleMetrics))
     bpy.ops.object.select_all(action='SELECT')
