@@ -100,7 +100,7 @@ def create_attachment(index,Muscle): #function creates attachment as new object,
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle]   #This works!
     bpy.data.objects[Muscle].select_set(True)
     bpy.ops.object.parent_set(keep_transform=True)
-    bpy.data.objects[Muscle].select_set(False) #make sure only origin is selected
+    bpy.data.objects[Muscle].select_set(False) #make sure only origin is selected  #DOUBLE CHECK
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + attachmentName]
     obj = bpy.context.view_layer.objects.active
     object_Recenter(obj)
@@ -174,6 +174,7 @@ def create_boundary(obj): #this works well - makes boundary, parents to attachme
     # keep track of objects in scene to later rename new objects
     scn = bpy.context.scene
     names = [ obj.name for obj in scn.objects]
+    bpy.context.view_layer.objects.active = bpy.data.objects[name]
     bpy.ops.object.mode_set(mode = 'EDIT')
     bpy.ops.mesh.select_all(action='SELECT')
     #select outer loop, duplicate, separate
@@ -192,6 +193,10 @@ def create_boundary(obj): #this works well - makes boundary, parents to attachme
         bpy.data.objects[name].select_set(True)
         bpy.ops.object.parent_set(keep_transform=True) #parents new loop to the attachment area 
         bpy.context.view_layer.objects.active = bpy.data.objects[name + " boundary"]
+        bpy.ops.object.mode_set(mode = 'EDIT')
+        bpy.context.tool_settings.mesh_select_mode = (False, False, True)
+        bpy.ops.mesh.select_all(action='SELECT')
+        bpy.ops.mesh.delete(type='ONLY_FACE') #TRIED TO REMOVE FACES IN BOUNDARY, BUT SOMEHOW IT ALSO REMOVED FACES IN ORIGINAL ATTACHMENT AREA OBJECT!
         boundary = bpy.context.view_layer.objects.active
     bpy.ops.object.mode_set(mode = 'OBJECT')
     return boundary
@@ -259,6 +264,7 @@ def curve_creator(attachment_centroids,attachment_normals,Muscle): #need muscle 
     curve.data.splines.active.points[3].select = True
     curve.data.splines.active.points[4].select = True 
     bpy.ops.curve.subdivide()
+
     #now create cross section for muscle from muscle origin
 
     bpy.ops.object.editmode_toggle() #somehow mode_set (mode = 'OBJECT') did not work but this worked
@@ -270,10 +276,10 @@ def curve_creator(attachment_centroids,attachment_normals,Muscle): #need muscle 
     #duplicated objects now becomes selected and active
     #rename and unparent
     
-
     cross_section = bpy.context.view_layer.objects.active
     cross_section.name = Muscle + " cross section template"
     bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
+
 
     align_with_XY(Muscle) #take cross section and move main dimension to XY plane, so that projection on curve is correct, also converts to curve
     #Bevel nurbs path with origin boundary curve
@@ -308,10 +314,11 @@ def align_with_XY(Muscle):
     bpy.ops.object.select_all(action='DESELECT')
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " cross section template"] #make active 
     bpy.data.objects[Muscle + " cross section template"].select_set(True)
+    bpy.data.objects[Muscle + " origin" + " boundary"].select_set(False)
     bpy.ops.object.mode_set(mode = 'EDIT')
     bpy.context.tool_settings.mesh_select_mode = (False, True, False)   # edge selection mode
     bpy.ops.mesh.select_all(action='SELECT')
-    bpy.ops.mesh.edge_face_add() #add face
+    bpy.ops.mesh.edge_face_add() #add face   
     bpy.context.tool_settings.mesh_select_mode = (False, False, True) # face selection mode
     bpy.ops.mesh.select_all(action='SELECT')
     me = bpy.context.edit_object.data
@@ -415,12 +422,13 @@ def get_volume_perimeter(Muscle, index, n, both_ends):
                      ' insertion_merge_with_volume']
     boundaryName = boundaryNames[index]
     bpy.ops.object.mode_set(mode='OBJECT')
-    bpy.ops.object.select_all(action='DESELECT')
     # make active
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + boundaryName]
     bpy.data.objects[Muscle + boundaryName].select_set(True)
+    bpy.data.objects[Muscle + " curve"].select_set(False)
     #snap 3D cursor to m
-    bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS') #can set to medium or bounds, try both
+    bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS') #set object origin to geometry
+    #set 3D cursor to object
     for area in bpy.context.screen.areas:
         if area.type == 'VIEW_3D':
             override = bpy.context.copy()
@@ -428,7 +436,6 @@ def get_volume_perimeter(Muscle, index, n, both_ends):
             override['region'] = area.regions[4]
             bpy.ops.view3d.snap_cursor_to_selected(override)
     cursor = bpy.context.scene.cursor.location
-    bpy.ops.object.select_all(action='DESELECT')
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " curve"]
     bpy.data.objects[Muscle + " curve"].select_set(True)
     bpy.ops.object.mode_set(mode='EDIT')
@@ -537,8 +544,7 @@ def join_muscle(Muscle):
     bpy.ops.object.mode_set(mode='EDIT')
     bpy.ops.mesh.select_all(action='SELECT')
     bpy.ops.mesh.remove_doubles() #get rid of edge duplicates
-    #then triangulate mesh
-    #bpy.ops.mesh.quads_convert_to_tris(quad_method='BEAUTY', ngon_method='BEAUTY') #made a non-manifold mesh!
+
 
 
 
@@ -595,7 +601,7 @@ def get_length():
 
     dir=globalVariables.csvDir       #"C:/Users/evach/Dropbox/Blender Myogenerator and Reconstruction Paper"
 
-    DictionaryExporter(globalVariables.allMuscleParameters, dir, "test_csv")
+    DictionaryExporter(globalVariables.allMuscleParameters, dir)
     
 def DictionaryExporter(d, dir):
     import csv
