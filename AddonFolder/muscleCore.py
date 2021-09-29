@@ -185,10 +185,10 @@ def create_boundary(obj): #this works well - makes boundary, parents to attachme
     bpy.ops.object.select_all(action='DESELECT') 
     new_objs = [ obj for obj in scn.objects if not obj.name in names]
     #rename new object and select and make active
-    for obj in new_objs:
-        obj.name = name + " boundary"
-        obj.data.name = obj.name #set mesh name to object name
-        obj.select_set(True)
+    for new_obj in new_objs:
+        new_obj.name = name + " boundary"
+        new_obj.data.name = new_obj.name #set mesh name to object name
+        new_obj.select_set(True)
         bpy.context.view_layer.objects.active = bpy.data.objects[name]
         bpy.data.objects[name].select_set(True)
         bpy.ops.object.parent_set(keep_transform=True) #parents new loop to the attachment area 
