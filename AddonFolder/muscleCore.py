@@ -183,21 +183,28 @@ def create_boundary(obj): #this works well - makes boundary, parents to attachme
     bpy.ops.mesh.separate(type='LOOSE')
     bpy.ops.object.mode_set(mode = 'OBJECT')
     bpy.ops.object.select_all(action='DESELECT') 
-    new_objs = [ obj for obj in scn.objects if not obj.name in names]
+    #for item in scn.objects:
+        #if obj.name in names:
+           # print("skip")
+        #else:
+            #print(obj.name + " is new")
+    new_objs = [ obj for obj in scn.objects if not obj.name in names]#
     #rename new object and select and make active
-    for new_obj in new_objs:
-        new_obj.name = name + " boundary"
-        new_obj.data.name = new_obj.name #set mesh name to object name
-        new_obj.select_set(True)
-        bpy.context.view_layer.objects.active = bpy.data.objects[name]
-        bpy.data.objects[name].select_set(True)
-        bpy.ops.object.parent_set(keep_transform=True) #parents new loop to the attachment area 
-        bpy.context.view_layer.objects.active = bpy.data.objects[name + " boundary"]
-        bpy.ops.object.mode_set(mode = 'EDIT')
-        bpy.context.tool_settings.mesh_select_mode = (False, False, True)
-        bpy.ops.mesh.select_all(action='SELECT')
-        bpy.ops.mesh.delete(type='ONLY_FACE') #TRIED TO REMOVE FACES IN BOUNDARY, BUT SOMEHOW IT ALSO REMOVED FACES IN ORIGINAL ATTACHMENT AREA OBJECT!
-        boundary = bpy.context.view_layer.objects.active
+    for item in new_objs:
+            print(item.name + " is a new item")
+            item.name = name + " boundary"
+            item.data.name = item.name #set mesh name to object name
+            item.select_set(True)
+            bpy.context.view_layer.objects.active = bpy.data.objects[name]
+            bpy.data.objects[name].select_set(True)
+            bpy.ops.object.parent_set(keep_transform=True) #parents new loop to the attachment area 
+            bpy.ops.object.select_all(action='DESELECT') 
+            bpy.context.view_layer.objects.active = bpy.data.objects[name + " boundary"]
+            bpy.ops.object.mode_set(mode = 'EDIT')
+            bpy.context.tool_settings.mesh_select_mode = (False, False, True)
+            bpy.ops.mesh.select_all(action='SELECT')
+            bpy.ops.mesh.delete(type='ONLY_FACE')
+            boundary = bpy.context.view_layer.objects.active
     bpy.ops.object.mode_set(mode = 'OBJECT')
     return boundary
 
