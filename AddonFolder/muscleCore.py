@@ -461,11 +461,9 @@ def get_volume_perimeter(Muscle, index, n, both_ends):
     print(distance_list_ascending)
     shortest_n= distance_list_ascending[0:n]
     print(shortest_n)
-    vertices_loop = [item[0] for item in shortest_n] 
-    print("vertices loop is " + str(vertices_loop)) #gets correct vertices on muscle curve, closest to origin
+    vertices_loop = [item[1] for item in shortest_n] #gets correct vertices on muscle curve, closest to origin
     bpy.ops.object.mode_set(mode='OBJECT')
-    bpy.ops.mesh.select_all(action='DESELECT')
-    bpy.data.objects[Muscle + boundaryName].select_set(True)
+    bpy.data.objects[Muscle + boundaryName].select_set(True) 
     bpy.ops.object.join()
     bpy.ops.object.mode_set(mode='EDIT')
     obj = bpy.context.edit_object
@@ -482,11 +480,10 @@ def get_volume_perimeter(Muscle, index, n, both_ends):
     for v in bm.verts:
         if v.select:
             vertices_loop.append(v.index)
-    print(vertices_loop)
     # now use this list to select all boundary loops that need to be bridged
     bpy.ops.object.mode_set(mode='OBJECT')
     for i in vertices_loop:
-        obj.data.vertices[i].select = True
+        obj.data.vertices[0].select = True
     bpy.ops.object.mode_set(mode='EDIT')
     # bridge edge loops
     bpy.ops.mesh.bridge_edge_loops()
