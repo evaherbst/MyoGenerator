@@ -28,7 +28,7 @@ class Nico_Test_Panel_PT_(bpy.types.Panel):
        
         row = layout.row()
         row.prop(context.scene, "muscle_Name", text ="Muscle Name")
-        row.enabled= (context.scene.file_name!= "")
+        # row.enabled= (context.scene.file_name!= "")     ##TO UNCOMMENT!!!!!!!
         
         row = layout.row()
         row.operator('view3d.submit_button', text= "Submit Muscle")    # operator idname . it'll invoce the execute function of operator
