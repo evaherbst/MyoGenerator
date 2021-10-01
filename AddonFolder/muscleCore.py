@@ -530,32 +530,6 @@ def get_volume_perimeter(Muscle, index, n,both_ends):
     bpy.ops.mesh.select_all(action='DESELECT')
 
 
-    # bpy.ops.object.mode_set(mode='EDIT')
-    # obj = bpy.context.edit_object
-    # bpy.context.tool_settings.mesh_select_mode = (
-    #     True, False, False)  # vertex select mode
-    # bpy.ops.mesh.select_all(action='DESELECT')
-    # me = obj.data
-    # bm = bmesh.from_edit_mesh(me)
-    # bpy.context.tool_settings.mesh_select_mode = (
-    #     False, True, False)  # edgeselect mode
-    # bpy.ops.mesh.select_loose()  # select origin boundary loop
-    # bpy.context.tool_settings.mesh_select_mode = (
-    #     True, False, False)  # vertex select mode
-    # for v in bm.verts:
-    #     if v.select:
-    #         vertices_loop.append(v.index)
-    # # now use this list to select all boundary loops that need to be bridged
-    # bpy.ops.object.mode_set(mode='OBJECT')
-    # for i in vertices_loop:
-    #     obj.data.vertices[0].select = True
-    # bpy.ops.object.mode_set(mode='EDIT')
-
-    # bridge edge loops
-    # bpy.ops.mesh.bridge_edge_loops()
-    # bpy.ops.mesh.select_all(action='DESELECT')
-
-
 def join_muscle(Muscle):
     duplicate_boundaries(Muscle)
     both_ends_A = []
@@ -679,21 +653,35 @@ def DictionaryExporter(d, dir):
     import csv
     import os
     directory = dir
-    row = []
-    for key in d:
-        row.append(key)
-        row = row + d[key]
-    print(row)
-    print(directory)
-    header = ['muscle_name', 'origin_area', 'insertion_area', 'origin_centroid', 'insertion_centroid', 'linear_length', 'muscle_length', 'muscle_volume']
+    rows = []
+    # for key in d:
+    #     temp =[]
+    #     temp.append(key)
+    #     temp = temp + d[key]
+    #     # temp.append(d[key])
+    #     rows.append(temp)
+    print(rows)
+    #print(directory)
+    # header = ['muscle_name', 'origin_area', 'insertion_area', 'origin_centroid', 'insertion_centroid', 'linear_length', 'muscle_length', 'muscle_volume']
     with open(directory, "a",  newline='') as f:
+        
         writer = csv.writer(f)
-        #if file exists
-        if os.path.isfile(directory):
+        
+        for key in d:
+            row = []
+            row.append(key)
+            row = row + d[key]
             writer.writerow(row)
-        else:
-            writer.writerow(header)
-            writer.writerow(row)
+          
+
+        # with open(directory, "a",  newline='') as f:
+        #     writer = csv.writer(f)
+            # writer.writerow(header)
+
+        # #if file exists
+        # if os.path.isfile(directory):
+        #     writer.writerows(d.items())
+        # else:
     
 
 
@@ -716,9 +704,6 @@ def measure_muscle_volume(obj):
 #def updateVolumes(path, fileName): #want inputs in final add-on instead of hard coding directory
 def updateVolumes():
     from AddonFolder import globalVariables
-    
-
-
 
     try:
         bpy.ops.object.mode_set(mode='OBJECT')
@@ -762,7 +747,7 @@ def updateVolumes():
     with open(directory, "w",  newline='') as f:
         writer = csv.writer(f)
         writer.writerow(header) # since we are overwriting file with new metrics, rewrite header even if file exists (unlike in DictionaryExporter)
-        writer.writerow(row)
+        writer.writerows(d)
 
 ## DEPRECATED
 # #join origin and insertion boundaries to muscle volume mesh (duplicate origin and insertion boundaries first so that I can keep boundaries for muscle deconstruction tool)

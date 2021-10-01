@@ -270,5 +270,10 @@ class Reset_Variables_Op(bpy.types.Operator):
         bpy.context.scene.bevel=0
         bpy.context.scene.bevel2=0
 
+        test_panel.parentMuscleGenerated = False
+        test_panel.originSelected=False
+        test_panel.allowAttachmentSelection=False
+        test_panel.curveCreated=False
+
         return {'FINISHED'}
 

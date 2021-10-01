@@ -24,18 +24,16 @@ class Nico_Test_Panel_PT_(bpy.types.Panel):
 
         row=layout.row()  #creates a col within the row previosuly defined
         row.prop(context.scene, "file_name", text ="")              #we dont have properties yet
-        #print (context.scene)
+
        
         row = layout.row()
         row.prop(context.scene, "muscle_Name", text ="Muscle Name")
-        # row.enabled= (context.scene.file_name!= "")     ##TO UNCOMMENT!!!!!!!
+        row.enabled= (context.scene.file_name!= "")   
         
         row = layout.row()
         row.operator('view3d.submit_button', text= "Submit Muscle")    # operator idname . it'll invoce the execute function of operator
         row.enabled= context.scene.muscle_Name != "Insert muscle name"
 
-
-        #row = layout.row()
         col1=layout.column()
         col1.prop(context.scene, "origin_object", text='Origin\'s Bone')
         #col1.enabled=allowAttachmentSelection    #maybe check if selected face ' is not None '
@@ -78,10 +76,6 @@ class Nico_Test_Panel_PT_(bpy.types.Panel):
         row.prop(context.scene, "bevel2",text="Bevel End", slider=True) 
         row.enabled=curveCreated
         
-        # row.enabled=curveCreated
-        
-
-
         row=layout.row()
         row.operator("view3d.convert_to_mesh", text ="Convert Curve To Mesh")
 
