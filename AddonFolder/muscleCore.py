@@ -743,20 +743,21 @@ def updateVolumes():
                 #make dictionary with key = muscleName and value = muscle_volume
             print("updated values: " + str(muscleMetrics))
     header = ['muscle_name', 'origin_area', 'insertion_area', 'origin_centroid', 'insertion_centroid', 'linear_length', 'muscle_length', 'muscle_volume']
-    row = []
+
     d_new = muscleMetrics
-    for key in d_new:
-        row.append(key)
-        row = row + d_new[key]
 
     with open(directory, "w",  newline='') as f:
         writer = csv.writer(f)
         if d_new.get("muscle_name"):
-            print("header already written")
+            print("header already written") #header will already exist *if* volumes were already calculated, this checks and only writes if header doesn't exist
         else:
-            writer.writerow(header) # header will already exist *if* volumes were already calculated - but hard to check for this, just checking if file exists not sufficient
-        #if d_new[muscle_name] exists, don't write header..
-        writer.writerow(row)
+            writer.writerow(header) 
+        #writer.writerow(row)
+        for key in d_new:
+            row = []
+            row.append(key)
+            row = row + d_new[key]
+            writer.writerow(row)
 
 ## DEPRECATED
 # #join origin and insertion boundaries to muscle volume mesh (duplicate origin and insertion boundaries first so that I can keep boundaries for muscle deconstruction tool)
