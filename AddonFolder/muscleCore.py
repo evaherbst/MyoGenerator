@@ -460,7 +460,7 @@ def get_volume_perimeter(Muscle, index, n,both_ends):
     bpy.ops.mesh.select_all(action='DESELECT')
     #find points on curve that are closest to boundary loop
 
-    #try doing this after joining if vertex groups donät work
+
     print(str(both_ends) + ".. printing both ends")
 
     for point in both_ends:
@@ -486,11 +486,8 @@ def get_volume_perimeter(Muscle, index, n,both_ends):
     vertices= [e for e in bm.verts]
     oa = bpy.context.active_object
 
-    for i in vertices_loop:
-        
+    for i in vertices_loop: 
         vertices[i].select=True
-        # bpy.ops.mesh.select
-        # obj.data.vertices[i].select = True
 
 
     bpy.ops.object.vertex_group_set_active(group='CURVE_VERTS'+vertexGroupId[index])
@@ -507,7 +504,7 @@ def get_volume_perimeter(Muscle, index, n,both_ends):
     bpy.ops.mesh.select_all(action='DESELECT')
     bpy.context.tool_settings.mesh_select_mode = (
         False, True, False)  # edge select mode required to select loose
-    bpy.ops.mesh.select_loose()  # select origin boundary loop  
+    bpy.ops.mesh.select_all()  # select vertices in boundary loop  
     bpy.context.tool_settings.mesh_select_mode = (
     True, False, False)  # vertex select mode required to add groups
     bpy.context.active_object.vertex_groups.new(name='BOUNDARY_VERTS'+vertexGroupId[index])
@@ -519,6 +516,7 @@ def get_volume_perimeter(Muscle, index, n,both_ends):
     bpy.ops.object.join()
     bpy.ops.object.mode_set(mode='EDIT')
     #select vertex group (merged from 2 original objects)
+    bpy.ops.mesh.select_all(action='DESELECT')
     bpy.ops.object.vertex_group_set_active(group='CURVE_VERTS'+vertexGroupId[index])
     bpy.ops.object.vertex_group_select()
     bpy.ops.object.vertex_group_set_active(group='BOUNDARY_VERTS'+vertexGroupId[index])
@@ -565,10 +563,8 @@ def join_muscle(Muscle):
     for v in bm.verts:
         if v.select:
             both_ends_B.append([v.index, v.co])
-    #print(len(both_ends))  # works till here
-    #n = int(len(both_ends)/2)
-    #print(n)
     get_volume_perimeter(Muscle, 1, n, both_ends_B)
+    bpy.ops.object.mode_set(mode='OBJECT')
     muscle_volume = bpy.context.view_layer.objects.active
     muscle_volume.name = Muscle + " volume"
     # parent to empty
