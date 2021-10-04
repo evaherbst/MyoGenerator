@@ -720,11 +720,15 @@ def updateVolumes():
         reader = csv.reader(infile, delimiter=',') #double check if Add-on produces ; delimited file
     #Read into the dictionary using dictionary comprehension, key is the first column and row are rest of the columns
         for row in reader:
-            row[3] = row[3].replace("<Vector()>","")
-            row[4] = row[4].replace("<Vector()>","")
+            print(row)
+            row[3] = row[3].replace("<Vector (","")
+            row[3] = row[3].replace(")>","")
+            row[4] = row[4].replace("<Vector (","")
+            row[3] = row[3].replace(")>","")
             muscleMetrics[row[0]] = row[1:]#create dictionary where key = muscle name, value = all values
     print("muscle metrics from csv: " + str(muscleMetrics))
     bpy.ops.object.select_all(action='SELECT')
+    #now calculate muscle volumes for all volumes in scence
     for obj in bpy.context.selected_objects:
         print(obj)
         if obj.type == 'EMPTY':
@@ -740,14 +744,19 @@ def updateVolumes():
             print("updated values: " + str(muscleMetrics))
     header = ['muscle_name', 'origin_area', 'insertion_area', 'origin_centroid', 'insertion_centroid', 'linear_length', 'muscle_length', 'muscle_volume']
     row = []
-    d = muscleMetrics
-    for key in d:
+    d_new = muscleMetrics
+    for key in d_new:
         row.append(key)
-        row = row + d[key]
+        row = row + d_new[key]
+
     with open(directory, "w",  newline='') as f:
         writer = csv.writer(f)
-        writer.writerow(header) # since we are overwriting file with new metrics, rewrite header even if file exists (unlike in DictionaryExporter)
-        writer.writerows(d)
+        if d_new.get("muscle_name"):
+            print("header already written")
+        else:
+            writer.writerow(header) # header will already exist *if* volumes were already calculated - but hard to check for this, just checking if file exists not sufficient
+        #if d_new[muscle_name] exists, don't write header..
+        writer.writerow(row)
 
 ## DEPRECATED
 # #join origin and insertion boundaries to muscle volume mesh (duplicate origin and insertion boundaries first so that I can keep boundaries for muscle deconstruction tool)
