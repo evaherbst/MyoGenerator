@@ -440,6 +440,12 @@ def get_volume_perimeter(Muscle, index, n,both_ends):
     #snap 3D cursor to boundary centre
     bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS') #set object origin to geometry
     #set 3D cursor to object
+    
+    
+    ##REPLACE CURSOR POSITION (cursor => loc) 
+    # # # # boundary = bpy.context.view_layer.objects.active
+    # # # # bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS') #set object origin to geometry
+    # # # # loc = boundary.location
 
    
     for area in bpy.context.screen.areas:
@@ -547,8 +553,7 @@ def join_muscle(Muscle):
     bpy.ops.mesh.select_all(action='DESELECT')
     bpy.ops.mesh.select_non_manifold()
 
-
-    bpy.ops.mesh.separate(type='LOOSE')
+    #bpy.ops.mesh.separate(type='LOOSE')
 
 
     vertList=[]
@@ -565,13 +570,13 @@ def join_muscle(Muscle):
     # # print(both_ends_A, " both_ends_a")
     # # get_volume_perimeter(Muscle, 0, len(both_ends_A)/2, both_ends_A)
     
-    # #TEST NEW FUNCTION
-
+    # #TEST NEW FUNCTION                   
+                                        
     # #NEED TO BE EDIT MODE
 
     # #GENERATE LIST PAIRING ADJ VERTICES
 
-    connectedList=[]
+    connectedList=[]            #connectecdList=[[adVertices]]
 
    ## vertList=[]
     for v in vertList:
@@ -599,6 +604,11 @@ def join_muscle(Muscle):
         else:
             refBooleanList.append(False)
 
+# [abc] [abd] [2] [3] [4] [5] [6] [7]
+
+# T     f   f   t   f   f   f   f
+#f      t   t 
+
 
     for listToCheck in connectedList:
         booleanList=[]
@@ -624,7 +634,10 @@ def join_muscle(Muscle):
 
 
 
-                
+#Check which base is closest
+
+distance =0
+#distance with vertices_A[0] 
 
 
 
