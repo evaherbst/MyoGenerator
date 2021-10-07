@@ -541,55 +541,62 @@ def join_muscle(Muscle):
         True, False, False)  # vertex select mode
     bpy.ops.mesh.select_all(action='DESELECT')
     bpy.ops.mesh.select_non_manifold()
+
+
     obj = bpy.context.edit_object
     me = obj.data
     bm = bmesh.from_edit_mesh(me)
     for v in bm.verts:
         if v.select:
             both_ends_A.append([v.index, v.co])  
-    print(len(both_ends_A))  # works till here
-    print("vertex list both ends" + str(both_ends_A))
-    n = int(len(both_ends_A)/2)
-    print("num of vertices on each end" + str(n))
-    get_volume_perimeter(Muscle, 0, n, both_ends_A)
 
 
-    both_ends_B = [] 
-    bpy.context.tool_settings.mesh_select_mode = (
-        True, False, False)  # vertex select mode
-    bpy.ops.mesh.select_all(action='DESELECT')
-    bpy.ops.mesh.select_non_manifold()
-    obj = bpy.context.edit_object #test if works in edit mode
-    me = obj.data
-    bm = bmesh.from_edit_mesh(me)
-    for v in bm.verts:
-        if v.select:
-            both_ends_B.append([v.index, v.co])
-    #print(len(both_ends))  # works till here
-    #n = int(len(both_ends)/2)
-    #print(n)
-    get_volume_perimeter(Muscle, 1, n, both_ends_B)
-    muscle_volume = bpy.context.view_layer.objects.active
-    muscle_volume.name = Muscle + " volume"
-    # parent to empty
-    muscle_volume.select_set(state=True)
-    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle]
-    bpy.data.objects[Muscle].select_set(True)
-    bpy.ops.object.parent_set(keep_transform=True)
-    # make sure only origin is selected
-    bpy.data.objects[Muscle].select_set(False)
-    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " volume"]
-    # then duplicate origin and insertions (with faces) and merge
-    duplicate_attachment_areas(Muscle)
-    bpy.ops.object.select_all(action='DESELECT')
-    bpy.data.objects[str(Muscle + " volume")].select_set(True)
-    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " volume"] #make active
-    bpy.data.objects[str(Muscle + " origin_area_merge_with_volume")].select_set(True)
-    bpy.data.objects[str(Muscle + " insertion_area_merge_with_volume")].select_set(True)
-    bpy.ops.object.join()
-    bpy.ops.object.mode_set(mode='EDIT')
-    bpy.ops.mesh.select_all(action='SELECT')
-    bpy.ops.mesh.remove_doubles() #get rid of edge duplicates
+    print(both_ends_A, " both_ends_a")
+    get_volume_perimeter(Muscle, 0, len(both_ends_A)/2, both_ends_A)
+    
+    # print(len(both_ends_A))  # works till here
+    # print("vertex list both ends" + str(both_ends_A))
+    # n = int(len(both_ends_A)/2)
+    # print("num of vertices on each end" + str(n))
+    # get_volume_perimeter(Muscle, 0, n, both_ends_A)
+
+
+    # both_ends_B = [] 
+    # bpy.context.tool_settings.mesh_select_mode = (
+    #     True, False, False)  # vertex select mode
+    # bpy.ops.mesh.select_all(action='DESELECT')
+    # bpy.ops.mesh.select_non_manifold()
+    # obj = bpy.context.edit_object #test if works in edit mode
+    # me = obj.data
+    # bm = bmesh.from_edit_mesh(me)
+    # for v in bm.verts:
+    #     if v.select:
+    #         both_ends_B.append([v.index, v.co])
+    # #print(len(both_ends))  # works till here
+    # #n = int(len(both_ends)/2)
+    # #print(n)
+    # get_volume_perimeter(Muscle, 1, n, both_ends_B)
+    # muscle_volume = bpy.context.view_layer.objects.active
+    # muscle_volume.name = Muscle + " volume"
+    # # parent to empty
+    # muscle_volume.select_set(state=True)
+    # bpy.context.view_layer.objects.active = bpy.data.objects[Muscle]
+    # bpy.data.objects[Muscle].select_set(True)
+    # bpy.ops.object.parent_set(keep_transform=True)
+    # # make sure only origin is selected
+    # bpy.data.objects[Muscle].select_set(False)
+    # bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " volume"]
+    # # then duplicate origin and insertions (with faces) and merge
+    # duplicate_attachment_areas(Muscle)
+    # bpy.ops.object.select_all(action='DESELECT')
+    # bpy.data.objects[str(Muscle + " volume")].select_set(True)
+    # bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " volume"] #make active
+    # bpy.data.objects[str(Muscle + " origin_area_merge_with_volume")].select_set(True)
+    # bpy.data.objects[str(Muscle + " insertion_area_merge_with_volume")].select_set(True)
+    # bpy.ops.object.join()
+    # bpy.ops.object.mode_set(mode='EDIT')
+    # bpy.ops.mesh.select_all(action='SELECT')
+    # bpy.ops.mesh.remove_doubles() #get rid of edge duplicates
 
 
 
