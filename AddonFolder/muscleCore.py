@@ -449,6 +449,7 @@ def get_volume_perimeter(Muscle, index, n,both_ends):
             override['region'] = area.regions[4]
             bpy.ops.view3d.snap_cursor_to_selected(override)
     cursor = bpy.context.scene.cursor.location
+    print("cursor coord" + str(cursor))
 
 
     bpy.ops.object.select_all(action='DESELECT')
@@ -461,11 +462,9 @@ def get_volume_perimeter(Muscle, index, n,both_ends):
     #find points on curve that are closest to boundary loop
 
 
-    print(str(both_ends) + ".. printing both ends")
-
     for point in both_ends:
         co = point[1]           #point = [ind,vector,dist]
-        print("coordinate is" + str(co))
+        print("coordinate is " + str(co))
         distance = math.sqrt(
             (co[0] - cursor[0]) ** 2 + (co[1] - cursor[1]) ** 2 + (co[2] - cursor[2]) ** 2)
 
@@ -476,15 +475,13 @@ def get_volume_perimeter(Muscle, index, n,both_ends):
     distance_list_ascending = sorted((both_ends), key=itemgetter(2)) #rank distances between points and cursor
     shortest_n= distance_list_ascending[0:n]
     vertices_loop = [item[0] for item in shortest_n] #gets correct vertices on muscle curve, closest to origin
-    print(vertices_loop)
-    obj = bpy.context.edit_object
-    #select ends of curve mesh that need to be bridged
+    print("vertices loop for bridging:" + str(vertices_loop))
+    #select ends of curve mesh that need to be bridged, assign to vertex group
     bpy.context.active_object.vertex_groups.new(name='CURVE_VERTS'+vertexGroupId[index])
-
+    obj = bpy.context.edit_object
     me = obj.data
     bm = bmesh.from_edit_mesh(me)
     vertices= [e for e in bm.verts]
-    oa = bpy.context.active_object
 
     for i in vertices_loop: 
         vertices[i].select=True
@@ -503,11 +500,18 @@ def get_volume_perimeter(Muscle, index, n,both_ends):
     obj = bpy.context.edit_object
     bpy.ops.mesh.select_all(action='DESELECT')
     bpy.context.tool_settings.mesh_select_mode = (
-        False, True, False)  # edge select mode required to select loose
-    bpy.ops.mesh.select_all()  # select vertices in boundary loop  
-    bpy.context.tool_settings.mesh_select_mode = (
     True, False, False)  # vertex select mode required to add groups
+    bpy.ops.mesh.select_all()  # select vertices in boundary loop
     bpy.context.active_object.vertex_groups.new(name='BOUNDARY_VERTS'+vertexGroupId[index])
+    #print the boundary loop coords here
+    loop = []
+    obj = bpy.context.edit_object
+    me = obj.data
+    bm = bmesh.from_edit_mesh(me)
+    for v in bm.verts:
+        if v.select:
+            loop.append([v.index, v.co])  
+    print("loop " + str(loop))
     bpy.ops.object.vertex_group_assign()
     bpy.ops.object.mode_set(mode='OBJECT')
     #bpy.data.objects[Muscle + boundaryName].select_set(True) 
@@ -539,30 +543,31 @@ def join_muscle(Muscle):
         True, False, False)  # vertex select mode
     bpy.ops.mesh.select_all(action='DESELECT')
     bpy.ops.mesh.select_non_manifold()
-    obj = bpy.context.edit_object
-    me = obj.data
-    bm = bmesh.from_edit_mesh(me)
-    for v in bm.verts:
-        if v.select:
-            both_ends_A.append([v.index, v.co])  
-    print(len(both_ends_A))  # works till here
-    print("vertex list both ends" + str(both_ends_A))
+    obj_A = bpy.context.edit_object
+    me_A = obj_A.data
+    bm_A = bmesh.from_edit_mesh(me_A)
+    selected_verts_A = [v for v in bm_A.verts if v.select]
+    for v in selected_verts_A:
+        both_ends_A.append([v.index, v.co])  
     n = int(len(both_ends_A)/2)
-    print("num of vertices on each end" + str(n))
+    print("num of vertices on each end is " + str(n))
+    print("printing both ends.." + str(both_ends_A))
     get_volume_perimeter(Muscle, 0, n, both_ends_A)
-
-
+    
     both_ends_B = [] 
     bpy.context.tool_settings.mesh_select_mode = (
         True, False, False)  # vertex select mode
     bpy.ops.mesh.select_all(action='DESELECT')
     bpy.ops.mesh.select_non_manifold()
-    obj = bpy.context.edit_object #test if works in edit mode
-    me = obj.data
-    bm = bmesh.from_edit_mesh(me)
-    for v in bm.verts:
-        if v.select:
-            both_ends_B.append([v.index, v.co])
+    obj_B = bpy.context.edit_object
+    me_B = obj_B.data
+    bm_B = bmesh.from_edit_mesh(me_B)
+    selected_verts_B = [v for v in bm_B.verts if v.select]
+    for v in selected_verts_B:
+        both_ends_A.append([v.index, v.co])  
+    n = int(len(both_ends_A)/2)
+    print("num of vertices on each end is " + str(n))
+    print(str(both_ends_B) + ".. printing both ends")
     get_volume_perimeter(Muscle, 1, n, both_ends_B)
     bpy.ops.object.mode_set(mode='OBJECT')
     muscle_volume = bpy.context.view_layer.objects.active
