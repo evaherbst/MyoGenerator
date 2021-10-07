@@ -437,6 +437,11 @@ def get_volume_perimeter(Muscle, index, n,both_ends):
     # bpy.data.objects[Muscle + " curve"].select_set(False)
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + boundaryName]
     bpy.data.objects[Muscle + boundaryName].select_set(True)
+
+    #write new code to get center of boundary loop
+    #double check that origin is set to geometry
+
+
     #snap 3D cursor to boundary centre
     bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS') #set object origin to geometry
     #set 3D cursor to object
@@ -565,8 +570,8 @@ def join_muscle(Muscle):
     bm_B = bmesh.from_edit_mesh(me_B)
     selected_verts_B = [v for v in bm_B.verts if v.select]
     for v in selected_verts_B:
-        both_ends_A.append([v.index, v.co])  
-    n = int(len(both_ends_A)/2)
+        both_ends_B.append([v.index, v.co])  
+    n = int(len(both_ends_B)/2)
     print("num of vertices on each end is " + str(n))
     print(str(both_ends_B) + ".. printing both ends")
     get_volume_perimeter(Muscle, 1, n, both_ends_B)
