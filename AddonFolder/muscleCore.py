@@ -546,6 +546,7 @@ def join_muscle(Muscle):
     obj_A = bpy.context.edit_object
     me_A = obj_A.data
     bm_A = bmesh.from_edit_mesh(me_A)
+    #try new way of selecting vertices
     selected_verts_A = [v for v in bm_A.verts if v.select]
     for v in selected_verts_A:
         both_ends_A.append([v.index, v.co])  
