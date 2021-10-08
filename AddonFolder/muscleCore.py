@@ -444,6 +444,7 @@ def get_volume_perimeter(Muscle, index, n,both_ends):
     boundary = bpy.context.view_layer.objects.active
     bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS') #set object origin to geometry
     loc = boundary.location
+    print("boundary center is " + str(loc))
 
    
 
@@ -457,11 +458,11 @@ def get_volume_perimeter(Muscle, index, n,both_ends):
     bpy.ops.mesh.select_all(action='DESELECT')
     #find points on curve that are closest to boundary loop
 
-    #try doing this after joining if vertex groups donät work
-    print(str(both_ends) + ".. printing both ends")
+
+
 
     for point in both_ends:
-        co = point[1]           #point = [ind,vector,dist]
+        co = point.co           #point = [ind,vector,dist]
        # print("coordinate is" + str(co))
         distance = math.sqrt(
             (co[0] - loc[0]) ** 2 + (co[1] - loc[1]) ** 2 + (co[2] - loc[2]) ** 2)
@@ -522,9 +523,9 @@ def get_volume_perimeter(Muscle, index, n,both_ends):
     bpy.ops.object.vertex_group_select()
 
 
-# bridge edge loops
-    bpy.ops.mesh.bridge_edge_loops()
-    bpy.ops.mesh.select_all(action='DESELECT')
+# # bridge edge loops
+#     bpy.ops.mesh.bridge_edge_loops()
+#     bpy.ops.mesh.select_all(action='DESELECT')
 
 
 
@@ -558,125 +559,18 @@ def join_muscle(Muscle):
     #         both_ends_A.append([v.index, v.co])  
 
 
-    # # print(both_ends_A, " both_ends_a")
-    # # get_volume_perimeter(Muscle, 0, len(both_ends_A)/2, both_ends_A)
+    print(both_ends_A, " both_ends_a")
     
-    # #TEST NEW FUNCTION                   
-                                        
-    # #NEED TO BE EDIT MODE
-
-    # #GENERATE LIST PAIRING ADJ VERTICES
-
-    connectedList=[]            #connectecdList=[[adVertices]]
-
-   ## vertList=[]
-    for v in vertList:
-        adjVertices=[]
-        for edge in v.link_edges:
-            otherV = edge.other_vert(v)
-            if(otherV in vertList):
-                adjVertices.append(otherV)
-        adjVertices.append(v)
-        connectedList.append(adjVertices)
-
-
-    isFirstList = True
-   
-    refBooleanList=[]
-
-    vertices_A=[]
-    vertices_B=[]
-
-    for vertList in connectedList:
-        if( len( list(set(connectedList[0])&set(vertList))) > 0):
-            refBooleanList.append(True)
-        
-            #AD GROUP_1/TRUE to boolean list at vertList index. 
-        else:
-            refBooleanList.append(False)
-
-# [abc] [abd] [2] [3] [4] [5] [6] [7]
-
-# T     f   f   t   f   f   f   f
-#f      t   t 
-
-
-    for listToCheck in connectedList:
-        booleanList=[]
-        for vertList in connectedList:
-
-            #GENERATE BOOL FINGERPRINT
-            if( len( list(set(listToCheck)&set(vertList))) > 0):
-                booleanList.append(True)
-            
-                #AD GROUP_1/TRUE to boolean list at vertList index. 
-            else:
-                booleanList.append(False)
-        print(booleanList)
-
-        if(booleanList==refBooleanList):
-            print("BELONG TO FIRST")
-            vertices_A = list(set(vertices_A+listToCheck))
-        else:  
-            print("BELONG TO SECOND")
-            vertices_B = list(set(vertices_B+listToCheck))
-
-    print(vertices_B)
-
-
-
-#Check which base is closest
-
-distance =0
-#distance with vertices_A[0] 
-
-
-
-#USE SETS
-# >>> a = [1,2,3,4,5]
-# >>> b = [1,3,5,6]
-# >>> list(set(a) & set(b))
-# [1, 3, 5]
-
-
-    # connectedDict = dict()
-
-    # for v in vertList:
-    #     adjVertices=[]
-    #     for edge in v.link_edges:
-    #         otherV = edge.other_vert(v)
-    #         if(otherV in vertList):
-    #             adjVertices.append(otherV)
-            
-    #     adjVertices.append(v)
-    #     connectedDict[v]=adjVertices
-    # print(connectedDict)
-
-
-
-
-
-    #FOR EACH KEY SEE IF IT IS IN LIST OF NEXT DICT VALUE
-
+    get_volume_perimeter(Muscle, 0, len(both_ends_A)/2, both_ends_A)
     
 
 
 
-    #MAYBE USE SETS
-    # listA=[]
-    # for vertexPair in connectedList:
-    #     for vertex in vertexPair:
-    #         for vertexPair in connectedList:
-    #             if vertex in vertexPair:
-    #                 listA.append[vertex]
-
-
-
-    # print(len(both_ends_A))  # works till here
-    # print("vertex list both ends" + str(both_ends_A))
-    # n = int(len(both_ends_A)/2)
-    # print("num of vertices on each end" + str(n))
-    # get_volume_perimeter(Muscle, 0, n, both_ends_A)
+    print(len(both_ends_A))  #
+    print("vertex list both ends A" + str(both_ends_A))
+    n = int(len(both_ends_A)/2)
+    print("num of vertices on each end" + str(n))
+    get_volume_perimeter(Muscle, 0, n, both_ends_A)
 
 
     # both_ends_B = [] 
