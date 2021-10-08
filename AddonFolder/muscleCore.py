@@ -436,19 +436,17 @@ def get_volume_perimeter(Muscle, index):
     
     # make active
     # bpy.data.objects[Muscle + " curve"].select_set(False)
-    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + boundaryName]
+    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + boundaryName]     #we'll need this centre.
     bpy.data.objects[Muscle + boundaryName].select_set(True)
-    #snap 3D cursor to boundary centre
-    bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS') #set object origin to geometry
-    #set 3D cursor to object
-    
+       
     boundary = bpy.context.view_layer.objects.active
     bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS') #set object origin to geometry
     loc = boundary.location
-    print("boundary center is " + str(loc))
+    print("boundary center is " + str(loc))      # get centre of the boundary of boundaryNames[index]
 
-   
 
+
+    # all that follows is to select the two "extremities" of the curve
 
     bpy.ops.object.select_all(action='DESELECT')
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " curve"]
@@ -471,13 +469,39 @@ def get_volume_perimeter(Muscle, index):
                 (co[0] - loc[0]) ** 2 + (co[1] - loc[1]) ** 2 + (co[2] - loc[2]) ** 2)
             distance_list.append([v,distance])
     print(distance_list)
-    distance_list_ascending = sorted((distance_list), key=itemgetter(1)) #rank distances between points and cursor
-    n = 4
-    shortest_n= distance_list_ascending[0:n][0]
+    distance_list_ascending = sorted((distance_list), key=itemgetter(1)) #rank distances between points and cursor     
+    
+    #n = len(distance_list_ascending)/2
+    
+    n=4
+
+    shortest_n= distance_list_ascending[0:n]
     print("shortest n " + str(shortest_n))
     bpy.ops.mesh.select_all(action='DESELECT')
-    for vertex in shortest_n:
-        vertex.select
+
+    for vertex in shortest_n:               #vertex [BMVert,lenght]
+
+
+        #     vertices[i].select=True
+        #     # bpy.ops.mesh.select
+        #     # obj.data.vertices[i].select = True
+
+    
+
+        # bpy.ops.object.mode_set(mode = 'OBJECT')
+        # obj = bpy.context.active_object
+        # bpy.ops.object.mode_set(mode = 'EDIT') 
+        # bpy.ops.mesh.select_mode(type="VERT")
+        # bpy.ops.mesh.select_all(action = 'DESELECT')
+        # bpy.ops.object.mode_set(mode = 'OBJECT')
+        # obj.data.vertices[0].select = True
+        # bpy.ops.object.mode_set(mode = 'EDIT') 
+
+        print(vertex[0].select)
+        vertex[0].select=True
+
+
+    #Does it keep selection? if not following need to be in the loop. 
     bpy.context.active_object.vertex_groups.new(name='CURVE_VERTS'+vertexGroupId[index])
     bpy.ops.object.vertex_group_set_active(group='CURVE_VERTS'+vertexGroupId[index])
     bpy.ops.object.vertex_group_assign()
