@@ -441,20 +441,11 @@ def get_volume_perimeter(Muscle, index, n,both_ends):
     bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS') #set object origin to geometry
     #set 3D cursor to object
     
-    
-    ##REPLACE CURSOR POSITION (cursor => loc) 
-    # # # # boundary = bpy.context.view_layer.objects.active
-    # # # # bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS') #set object origin to geometry
-    # # # # loc = boundary.location
+    boundary = bpy.context.view_layer.objects.active
+    bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS') #set object origin to geometry
+    loc = boundary.location
 
    
-    for area in bpy.context.screen.areas:
-        if area.type == 'VIEW_3D':
-            override = bpy.context.copy()
-            override['area'] = area
-            override['region'] = area.regions[4]
-            bpy.ops.view3d.snap_cursor_to_selected(override)
-    cursor = bpy.context.scene.cursor.location
 
 
     bpy.ops.object.select_all(action='DESELECT')
@@ -473,7 +464,7 @@ def get_volume_perimeter(Muscle, index, n,both_ends):
         co = point[1]           #point = [ind,vector,dist]
        # print("coordinate is" + str(co))
         distance = math.sqrt(
-            (co[0] - cursor[0]) ** 2 + (co[1] - cursor[1]) ** 2 + (co[2] - cursor[2]) ** 2)
+            (co[0] - loc[0]) ** 2 + (co[1] - loc[1]) ** 2 + (co[2] - loc[2]) ** 2)
 
         point.append(distance)
         print(point)
@@ -556,14 +547,14 @@ def join_muscle(Muscle):
     #bpy.ops.mesh.separate(type='LOOSE')
 
 
-    vertList=[]
+    both_ends_A=[]
 
     obj = bpy.context.edit_object
     me = obj.data
     bm = bmesh.from_edit_mesh(me)
     for v in bm.verts:
         if v.select:
-            vertList.append(v)
+            both_ends_A.append(v)
     #         both_ends_A.append([v.index, v.co])  
 
 
