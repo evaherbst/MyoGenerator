@@ -430,10 +430,17 @@ def get_volume_perimeter(Muscle, index):
 
     vertexGroupId=['_origin','_insertion']
 
+
+
+
     boundaryName = boundaryNames[index]
     bpy.ops.object.mode_set(mode='OBJECT')
     bpy.ops.object.select_all(action='DESELECT')
     
+
+
+
+
     # make active
     # bpy.data.objects[Muscle + " curve"].select_set(False)
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + boundaryName]     #we'll need this centre.
@@ -444,6 +451,11 @@ def get_volume_perimeter(Muscle, index):
     loc = boundary.location
     print("boundary center is " + str(loc))      # get centre of the boundary of boundaryNames[index]
 
+
+    # bpy.context.active_object.vertex_groups.new(name='CURVE_VERTS'+vertexGroupId[0])
+    # bpy.ops.object.vertex_group_set_active(group='CURVE_VERTS'+vertexGroupId[0])
+    # bpy.context.active_object.vertex_groups.new(name='CURVE_VERTS'+vertexGroupId[1])
+    # bpy.ops.object.vertex_group_set_active(group='CURVE_VERTS'+vertexGroupId[1])
 
 
     # all that follows is to select the two "extremities" of the curve
@@ -460,6 +472,16 @@ def get_volume_perimeter(Muscle, index):
     bpy.ops.mesh.select_all(action='DESELECT')
     bpy.ops.mesh.select_non_manifold()
     #find points on curve that are closest to boundary loop
+
+
+
+
+    # me = bpy.context.object.data
+    # bm=bmesh.new()
+    # bm.from_mesh(me)
+    # bm.mesh.select_non_manifold()
+
+
     distance_list = []
     for v in bm.verts:
         if v.select:
@@ -479,32 +501,84 @@ def get_volume_perimeter(Muscle, index):
     print("shortest n " + str(shortest_n))
     bpy.ops.mesh.select_all(action='DESELECT')
 
-    for vertex in shortest_n:               #vertex [BMVert,lenght]
+    originVerts=[]
+    insertionVerts=[]
+
+    
+    curveVertOrig = bpy.context.active_object.vertex_groups.new(name='CURVE_VERTS'+vertexGroupId[0])
+    curveVertIns = bpy.context.active_object.vertex_groups.new(name='CURVE_VERTS'+vertexGroupId[1])
 
 
-        #     vertices[i].select=True
-        #     # bpy.ops.mesh.select
-        #     # obj.data.vertices[i].select = True
+    for x in range(len(distance_list_ascending)-1):
+        originIndx=[]
+        insIndx=[]
+        if(x<n):
+
+          
+            print(distance_list_ascending[x][0].index,"___INDEX")
+            originVerts.append(distance_list_ascending[x][0])
+
+            originIndx.append(distance_list_ascending[x][0].index)
+        
+        
+        else:
+            insertionVerts.append(distance_list_ascending[x][0])
+
+        #bpy.ops.object.mode_set(mode='OBJECT')
+        curveVertOrig.add(originIndx,1,'ADD')
+
+    #ISSUE: cannot assign vertices to group in edit mode. BUT swapping to obj modes messes up the BMVert: ("BMVert has been removed" stupid error.) => GOOD REF => https://blender.stackexchange.com/questions/145972/how-to-select-and-assign-vertices-to-a-vertex-group-via-python +> https://blender.stackexchange.com/questions/199357/how-do-i-create-a-vertex-group-from-selected-vertices-in-edit-mode-with-python/204171#204171
+  
+    # print(insertionVerts)
+
+
+    # for vert in originVerts:
+    #     vert.select=True
+
+    # bpy.context.active_object.vertex_groups.new(name='CURVE_VERTS'+vertexGroupId[0])
+    # bpy.ops.object.vertex_group_set_active(group='CURVE_VERTS'+vertexGroupId[0])
+    # bpy.ops.object.vertex_group_assign()
+    
+
+    # for vert in originVerts:
+    #     vert.select=False
+    
+    # for vert in insertionVerts:
+    #         vert.select=True
+
+   
+    # bpy.context.active_object.vertex_groups.new(name='CURVE_VERTS'+vertexGroupId[1])
+    # bpy.ops.object.vertex_group_set_active(group='CURVE_VERTS'+vertexGroupId[1])
+    # bpy.ops.object.vertex_group_assign()
+
+##############  WHAT FOLLOWS IS GOOD: DO NOT ERASE
+
+    #     #     vertices[i].select=True
+    #     #     # bpy.ops.mesh.select
+    #     #     # obj.data.vertices[i].select = True
 
     
 
-        # bpy.ops.object.mode_set(mode = 'OBJECT')
-        # obj = bpy.context.active_object
-        # bpy.ops.object.mode_set(mode = 'EDIT') 
-        # bpy.ops.mesh.select_mode(type="VERT")
-        # bpy.ops.mesh.select_all(action = 'DESELECT')
-        # bpy.ops.object.mode_set(mode = 'OBJECT')
-        # obj.data.vertices[0].select = True
-        # bpy.ops.object.mode_set(mode = 'EDIT') 
+    #     # bpy.ops.object.mode_set(mode = 'OBJECT')
+    #     # obj = bpy.context.active_object
+    #     # bpy.ops.object.mode_set(mode = 'EDIT') 
+    #     # bpy.ops.mesh.select_mode(type="VERT")
+    #     # bpy.ops.mesh.select_all(action = 'DESELECT')
+    #     # bpy.ops.object.mode_set(mode = 'OBJECT')
+    #     # obj.data.vertices[0].select = True
+    #     # bpy.ops.object.mode_set(mode = 'EDIT') 
 
-        print(vertex[0].select)
-        vertex[0].select=True
+    #     print(vertex[0].select)
+    #     vertex[0].select=True
 
 
-    #Does it keep selection? if not following need to be in the loop. 
-    bpy.context.active_object.vertex_groups.new(name='CURVE_VERTS'+vertexGroupId[index])
-    bpy.ops.object.vertex_group_set_active(group='CURVE_VERTS'+vertexGroupId[index])
-    bpy.ops.object.vertex_group_assign()
+    # #Does it keep selection? if not following need to be in the loop. 
+    # bpy.context.active_object.vertex_groups.new(name='CURVE_VERTS'+vertexGroupId[index])
+    # bpy.ops.object.vertex_group_set_active(group='CURVE_VERTS'+vertexGroupId[index])
+    # bpy.ops.object.vertex_group_assign()
+
+################ WHAT PRECEEDES IS GOOD: DO NOT ERASE
+
 
     # vertices_loop = [item[0] for item in shortest_n] #gets correct vertices on muscle curve, closest to origin
     # print(vertices_loop)
