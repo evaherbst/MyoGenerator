@@ -438,23 +438,11 @@ def get_volume_perimeter(Muscle, index, n,both_ends):
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + boundaryName]
     bpy.data.objects[Muscle + boundaryName].select_set(True)
 
-    #write new code to get center of boundary loop
-    #double check that origin is set to geometry
-
-
-    #snap 3D cursor to boundary centre
+    boundary = bpy.context.view_layer.objects.active
     bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS') #set object origin to geometry
-    #set 3D cursor to object
-
+    loc = boundary.location
    
-    for area in bpy.context.screen.areas:
-        if area.type == 'VIEW_3D':
-            override = bpy.context.copy()
-            override['area'] = area
-            override['region'] = area.regions[4]
-            bpy.ops.view3d.snap_cursor_to_selected(override)
-    cursor = bpy.context.scene.cursor.location
-    print("cursor coord" + str(cursor))
+    print("boundary center" + str(loc))
 
 
     bpy.ops.object.select_all(action='DESELECT')
@@ -471,7 +459,7 @@ def get_volume_perimeter(Muscle, index, n,both_ends):
         co = point[1]           #point = [ind,vector,dist]
         print("coordinate is " + str(co))
         distance = math.sqrt(
-            (co[0] - cursor[0]) ** 2 + (co[1] - cursor[1]) ** 2 + (co[2] - cursor[2]) ** 2)
+            (co[0] - loc[0]) ** 2 + (co[1] - loc[1]) ** 2 + (co[2] - loc[2]) ** 2)
 
         point.append(distance)
         print(point)
