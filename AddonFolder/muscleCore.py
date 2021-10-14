@@ -525,9 +525,29 @@ def get_volume_perimeter(Muscle, index, n,both_ends):
     bpy.ops.mesh.select_all(action='DESELECT')
 
 
+
 def join_muscle(Muscle):
+    boundaryNames = [' origin_merge_with_volume',
+                     ' insertion_merge_with_volume']
+
+    vertexGroupId=['_origin','_insertion']
     duplicate_boundaries(Muscle)
-    both_ends_A = []
+    
+    bpy.ops.object.mode_set(mode='OBJECT')
+    bpy.ops.object.select_all(action='DESELECT')
+
+    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + boundaryNames[0]]
+    bpy.data.objects[Muscle + boundaryNames[0]].select_set(True)
+
+    #get center of origin loop
+    boundary = bpy.context.view_layer.objects.active
+    bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS') #set object origin to geometry
+    loc_origin = boundary.location
+    print("boundary center" + str(loc_origin))
+        
+    #scn = bpy.context.scene
+    #names = [ obj.name for obj in scn.objects]
+
     bpy.ops.object.select_all(action='DESELECT')
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " curve"]
     bpy.data.objects[Muscle + " curve"].select_set(True)
@@ -536,42 +556,66 @@ def join_muscle(Muscle):
         True, False, False)  # vertex select mode
     bpy.ops.mesh.select_all(action='DESELECT')
     bpy.ops.mesh.select_non_manifold()
-    obj_A = bpy.context.edit_object
-    me_A = obj_A.data
-    bm_A = bmesh.from_edit_mesh(me_A)
-    #try new way of selecting vertices
-    selected_verts_A = [v for v in bm_A.verts if v.select]
-    for v in selected_verts_A:
-        both_ends_A.append([v.index, v.co])  
-    n = int(len(both_ends_A)/2)
-    print("num of vertices on each end is " + str(n))
-    print("printing both ends.." + str(both_ends_A))
-    get_volume_perimeter(Muscle, 0, n, both_ends_A)
-    
-    both_ends_B = [] 
-    bpy.context.tool_settings.mesh_select_mode = (
-        True, False, False)  # vertex select mode
-    bpy.ops.mesh.select_all(action='DESELECT')
-    bpy.ops.mesh.select_non_manifold()
-    obj_B = bpy.context.edit_object
-    me_B = obj_B.data
-    bm_B = bmesh.from_edit_mesh(me_B)
-    selected_verts_B = [v for v in bm_B.verts if v.select]
-    for v in selected_verts_B:
-        both_ends_B.append([v.index, v.co])  
-    n = int(len(both_ends_B)/2)
-    print("num of vertices on each end is " + str(n))
-    print(str(both_ends_B) + ".. printing both ends")
-    get_volume_perimeter(Muscle, 1, n, both_ends_B)
+    #duplicate
+    bpy.ops.mesh.duplicate()
+    bpy.ops.mesh.separate(type='LOOSE')
+    bpy.ops.object.mode_set(mode = 'OBJECT')
+    tube_ends = []
+    #new_objs = [ obj for obj in scn.objects if not obj.name in names
+    bpy.data.objects[Muscle + " curve"].select_set(False)
+    for obj in bpy.context.selected_objects:
+        bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS') #set object origin to geometry
+        center = obj.location
+        distance_to_origin = math.sqrt(
+                (center[0] - loc_origin[0]) ** 2 + (center[1] - loc_origin[1]) ** 2 + (center[2] - loc_origin[2]) ** 2)
+        tube_ends.append([obj.name, distance_to_origin])
+    print("tube ends list " + str(tube_ends))
+    distance_list_ascending = sorted((tube_ends), key=itemgetter(1))
+    print("distances list ascending is " + str(distance_list_ascending))
+    origin_side = distance_list_ascending[0][0]
+    insertion_side = distance_list_ascending[1][0]
+    print("origin object is " + str(origin_side))
+
+    bpy.ops.object.select_all(action='DESELECT')
+    bpy.data.objects[origin_side].select_set(True)
+    bpy.context.view_layer.objects.active = bpy.data.objects[origin_side]
+    bpy.data.objects[Muscle + boundaryNames[0]].select_set(True)
+    bpy.ops.object.join()
+    # bridge edge loops
+    bpy.ops.object.mode_set(mode = 'EDIT')
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.bridge_edge_loops()
+
+    bpy.ops.object.mode_set(mode = 'OBJECT')
+    bpy.ops.object.select_all(action='DESELECT')
+    bpy.data.objects[insertion_side].select_set(True)
+    bpy.context.view_layer.objects.active = bpy.data.objects[insertion_side]
+    bpy.data.objects[Muscle + boundaryNames[1]].select_set(True)
+    bpy.ops.object.join()
+    bpy.ops.object.mode_set(mode = 'EDIT')
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.bridge_edge_loops()
+
+    bpy.ops.object.mode_set(mode = 'OBJECT')
+    bpy.data.objects[Muscle + " curve"].select_set(True)
+    bpy.data.objects[origin_side].select_set(True)
+    bpy.data.objects[insertion_side].select_set(True)
+    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " curve"]
+    bpy.ops.object.join()
+    bpy.ops.object.mode_set(mode = 'EDIT')
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.remove_doubles()
+
+
     bpy.ops.object.mode_set(mode='OBJECT')
     muscle_volume = bpy.context.view_layer.objects.active
     muscle_volume.name = Muscle + " volume"
     # parent to empty
-    muscle_volume.select_set(state=True)
+    muscle_volume.select_set(True)
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle]
     bpy.data.objects[Muscle].select_set(True)
     bpy.ops.object.parent_set(keep_transform=True)
-    # make sure only origin is selected
+    #deselect empty
     bpy.data.objects[Muscle].select_set(False)
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " volume"]
     # then duplicate origin and insertions (with faces) and merge
@@ -585,6 +629,9 @@ def join_muscle(Muscle):
     bpy.ops.object.mode_set(mode='EDIT')
     bpy.ops.mesh.select_all(action='SELECT')
     bpy.ops.mesh.remove_doubles() #get rid of edge duplicates
+    bpy.ops.mesh.normals_make_consistent(inside=False) #recalculate outside normals
+    bpy.ops.object.mode_set(mode='OBJECT')
+
 
 
 
