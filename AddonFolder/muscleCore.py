@@ -3,9 +3,7 @@
 Created on Fri Apr  2 12:47:46 2021
 
 @author: evach
-this script enables generation of muscle empties. 
-These can then be used as parents for muscle origins and insertions, 
-to run the Niva_Muscle_Analyzer script
+this script enables generation of 3D muscles based on user selected origin and insertion areas and an adjustable muscle path
 """
 from AddonFolder import test_op
 import bpy
@@ -243,8 +241,9 @@ def curve_creator(attachment_centroids,attachment_normals,Muscle): #need muscle 
     origin_normal = attachment_normals[0]
     insertion_normal = attachment_normals[1]
     lineLength=math.sqrt((insertion_centroid[0] - origin_centroid[0]) ** 2 + (insertion_centroid[1] - origin_centroid[1]) ** 2 + (insertion_centroid[2] - origin_centroid[2]) ** 2)
-    scaleFactor = .1*(lineLength) #decide on scale factor!
+    scaleFactor = .1*(lineLength) 
     origin_normal = Vector(origin_normal)
+    print("origin normal is " + str(origin_normal))
     origin_normal_unit = origin_normal/origin_normal.length
     insertion_normal = Vector(insertion_normal)
     insertion_normal_unit = insertion_normal/insertion_normal.length
