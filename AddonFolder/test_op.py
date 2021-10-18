@@ -7,15 +7,12 @@ import bmesh
 import os
 
 
-#from . muscleCore import make_muscle_empties
 from AddonFolder import muscleCore
 
 
-#from Muscle_Volume_Sculptor import create_muscle_empties 
+
 from AddonFolder import test_panel
 from AddonFolder import vertex_Counter
-#from AddonFolder import curve_creator
-# from AddonFolder import globalVariables
 
 
 isSubmittingOrigin = False
@@ -33,14 +30,10 @@ class Nico_Select_Muscle_Op(bpy.types.Operator):
 
     def execute(self,context):
 
-
         #function to execute
         objName = bpy.context.scene.muscle_Name
         muscleCore.make_empty(objName)
-       # make_muscle_empties()
-
         test_panel.parentMuscleGenerated = True
-
         print('executing function test')
       
         return{'FINISHED'}
@@ -62,9 +55,6 @@ class Nico_AllowAttach_Op(bpy.types.Operator):
         ob=bpy.context.scene.origin_object if isSubmittingOrigin else bpy.context.scene.insertion_object
         bpy.context.view_layer.objects.active = ob   # Make the cube the active object 
         ob.select_set(True)
-        
-        #bpy.data.objects[bpy.context.scene.origin_object.name].select_set(True)   
-
         test_panel.allowAttachmentSelection=True
         muscleCore.set_edit_mode()
         return{'FINISHED'}
@@ -77,7 +67,6 @@ class Nico_Select_Origin_Op(bpy.types.Operator):
         test_panel.originSelected=True
 
         muscleCore.create_attachment(0,bpy.context.scene.muscle_Name)
-       # muscleCore.create_orig(bpy.context.scene.muscle_Name)
         return{'FINISHED'}
 
 
@@ -88,7 +77,6 @@ class Nico_Select_Insertion_Op(bpy.types.Operator):
     def execute(self,context):
 
         muscleCore.create_attachment(1,bpy.context.scene.muscle_Name)
-        #muscleCore.create_insertion(bpy.context.scene.muscle_Name)
         bpy.ops.object.mode_set(mode='OBJECT')
         return{'FINISHED'}
         
@@ -114,30 +102,12 @@ class Nico_Curve_Creator_Op(bpy.types.Operator):
     def execute(self,context):
         
         from AddonFolder import globalVariables 
-        #print(muscleCore.attachment_centroids,muscleCore.attachment_normals,muscleCore.muscleName)
-       # print("TEST ATTCH",muscleCore.origin_centroid,muscleCore.origin_normal,muscleCore.insertion_centroid,muscleCore.insertion_normal)
         print("FINAL OVERALL TEST", globalVariables.attachment_normals)
-        
-        
-        #newVector = mathutils.Vector(muscleCore.attachment_normals[0].strip('<Vector ()>')
-        # originNormal = mathutils.Vector((float(muscleCore.attachment_normals[0].strip('\'<Vector ()>\'').split(',')[0]),float(muscleCore.attachment_normals[0].strip('\'<Vector ()>\'').split(',')[1]),float(muscleCore.attachment_normals[0].strip('\'<Vector ()>\'').split(',')[2])))
-        # attachNormal = mathutils.Vector((float(muscleCore.attachment_normals[1].strip('\'<Vector ()>\'').split(',')[0]),float(muscleCore.attachment_normals[1].strip('\'<Vector ()>\'').split(',')[1]),float(muscleCore.attachment_normals[1].strip('\'<Vector ()>\'').split(',')[2])))
         originNormal = globalVariables.attachment_normals[0]
         attachNormal = globalVariables.attachment_normals[1]
-        print(globalVariables.attachment_centroids[0],globalVariables.attachment_centroids[1],originNormal, attachNormal)
-       
-        #print(mathutils.Vector((4,4,4)))
-       
-       
+        print(globalVariables.attachment_centroids[0],globalVariables.attachment_centroids[1],originNormal, attachNormal)    
         muscleCore.curve_creator(globalVariables.attachment_centroids,[originNormal, attachNormal],muscleCore.muscleName)
-
         test_panel.curveCreated=True
-        #muscleCore.curve_creator(muscleCore.attachment_centroids,[Vector((0.56, 0.7, )),muscleCore.attachment_normals[1]],muscleCore.muscleName)
-       
-       # curve_creator(muscleCore.attachment_centroids,muscleCore.attachment_normals,muscleCore.muscleName)#PASS HERE ATTACH CENTROIDS,NORMALS,MUSCLE NAME)
-
-       
-
         return {'FINISHED'}
 
 
@@ -162,10 +132,7 @@ class Nico_Transform_To_Mesh_Op(bpy.types.Operator):
      
         from AddonFolder import globalVariables 
 
-
         globalVariables.csvDir = os.path.join(context.scene.conf_path, (context.scene.file_name+".csv"))
-       
-
 
         muscleCore.get_length()             #ASSIGN NURBS LENGTH TO DICTIONARY
         muscleCore.Transform_to_Mesh(bpy.context.scene.muscle_Name)
@@ -186,8 +153,6 @@ def SetAttach (index, thisValue):
         testAttch1=thisValue
         print(testAttch1,"FROMWONKY FUN")
 
-#     testList.append(thisValue)
-
 class SetBevel_Op(bpy.types.Operator):
     bl_idname = "view3d.set_bevel"
     bl_label="SetBevel"
@@ -197,12 +162,7 @@ class SetBevel_Op(bpy.types.Operator):
    
         print("worked?! ", bpy.context.scene.bevel )
         muscleCore.bpy.context.object.data.bevel_factor_start =  bpy.context.scene.bevel
-        # bpy.context.scene.bevel=bpy.props.FloatProperty(update=test)
-        
-        # props = self.properties
-        # self.report({'INFO'}, "The value of the slider: " + str(self.properties))
-        #return value that tells blender we finished without failure
-        #return {'FINISHED'}
+
 
 class SetBevel2_Op(bpy.types.Operator):
     bl_idname = "view3d.set_bevel2"

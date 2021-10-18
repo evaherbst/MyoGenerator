@@ -1,9 +1,8 @@
 # # -*- coding: utf-8 -*-
 """
-Created on Fri Apr  2 12:47:46 2021
 
-@author: evach
-this script enables generation of 3D muscles based on user selected origin and insertion areas and an adjustable muscle path
+@authors: Eva C. Herbst and Niccolo Fioritti
+this add-on enables generation of 3D muscles based on user selected origin and insertion areas and an adjustable muscle path
 """
 from AddonFolder import test_op
 import bpy
@@ -14,27 +13,18 @@ import bmesh
 import csv
 from operator import itemgetter, truediv
 
-# from AddonFolder import globalVariables
 from AddonFolder.test_op import testAttch0,testAttch1
-
-
-
 
 origin_centroid = mathutils.Vector()
 insertion_centroid = mathutils.Vector()
 origin_normal = mathutils.Vector()
 insertion_normal = mathutils.Vector()
-
 origin_centroid=0
 origin_normal=0
 insertion_centroid=0
 insertion_normal=0
 
-# attachment_centroids=[0,0]
-# attachment_normals=[0,0]
-
 muscleName=''
-
 
 
 def make_empty(Muscle):
@@ -65,14 +55,14 @@ def make_empty(Muscle):
 
 
 
-def create_attachment(index,Muscle): #function creates attachment as new object,parents to muscle empty, also contains functions to recenter object, get origin_centroid, create boundary, and calculate origin_normal
-# keep track of objects in scene to later rename new objects (#can't just rename active object bc duplicated object doesn't automatically become active)
-
+def create_attachment(index,Muscle): #function creates attachment as new object, parents to muscle empty
+    # also calls ontains functions to recenter object, create boundary, and calculate centroids and normals
     from AddonFolder import globalVariables
 
     attachmentNames = [' origin', ' insertion']
     attachmentName = attachmentNames[index]
     scn = bpy.context.scene
+    # keep track of objects in scene to later rename new objects (#can't just rename active object bc duplicated object doesn't automatically become active)
     names = [ obj.name for obj in scn.objects]
     #select faces, duplicate, separate
     bpy.ops.mesh.duplicate()
@@ -158,10 +148,9 @@ def object_Recenter(obj):
 	# center origin of object on center of mass
     bpy.ops.object.select_all( action = 'DESELECT' ) #make sure nothing else in scene is selected
     obj.select_set(True) #select obj only
-    bpy.ops.object.origin_set( type = 'ORIGIN_GEOMETRY' ) #need to set origin to geometry, otherwise all muscles will still have same origin as bone
+    bpy.ops.object.origin_set( type = 'ORIGIN_GEOMETRY' ) 
 
-def create_boundary(obj): #this works well - makes boundary, parents to attachment area area
-
+def create_boundary(obj): #makes boundary, parents to attachment area area
 
     name = obj.name
     # keep track of objects in scene to later rename new objects
@@ -176,11 +165,6 @@ def create_boundary(obj): #this works well - makes boundary, parents to attachme
     bpy.ops.mesh.separate(type='LOOSE')
     bpy.ops.object.mode_set(mode = 'OBJECT')
     bpy.ops.object.select_all(action='DESELECT') 
-    #for item in scn.objects:
-        #if obj.name in names:
-           # print("skip")
-        #else:
-            #print(obj.name + " is new")
     new_objs = [ obj for obj in scn.objects if not obj.name in names]#
     #rename new object and select and make active
     for item in new_objs:
@@ -224,9 +208,8 @@ def calculate_centroid(obj):
 
 #endregion
 
-#endregion
-def curve_creator(attachment_centroids,attachment_normals,Muscle): #need muscle name as input
-    
+def curve_creator(attachment_centroids,attachment_normals,Muscle): 
+
     global origin_centroid
     global insertion_centroid
     global origin_normal
@@ -249,7 +232,7 @@ def curve_creator(attachment_centroids,attachment_normals,Muscle): #need muscle 
     point1 = origin_centroid + (origin_normal_unit*scaleFactor) #
     point3 = insertion_centroid + (insertion_normal_unit*scaleFactor)
     point2 = (point1[0]+point3[0])/2,(point1[1]+point3[1])/2,(point1[2]+point3[2])/2
-    spline.points[0].co = [origin_centroid[0],origin_centroid[1],origin_centroid[2],1] #convert vector to tuple, 4th number is nurbs weight, currently set to =1
+    spline.points[0].co = [origin_centroid[0],origin_centroid[1],origin_centroid[2],1] #convert vector to tuple, 4th number is nurbs weight, set to =1
     spline.points[1].co = [point1[0],point1[1],point1[2],1]
     spline.points[2].co = [point2[0],point2[1],point2[2],1]
     spline.points[3].co = [point3[0],point3[1],point3[2],1]
@@ -268,7 +251,7 @@ def curve_creator(attachment_centroids,attachment_normals,Muscle): #need muscle 
 
     #now create cross section for muscle from muscle origin
 
-    bpy.ops.object.editmode_toggle() #somehow mode_set (mode = 'OBJECT') did not work but this worked
+    bpy.ops.object.editmode_toggle() 
     bpy.ops.object.select_all(action='DESELECT')
     # select origin boundary loop for that particular muscle
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin" + " boundary"] #make active 
@@ -276,7 +259,6 @@ def curve_creator(attachment_centroids,attachment_normals,Muscle): #need muscle 
     bpy.ops.object.duplicate()
     #duplicated objects now becomes selected and active
     #rename and unparent
-    
     cross_section = bpy.context.view_layer.objects.active
     cross_section.name = Muscle + " cross section template"
     bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
@@ -350,19 +332,6 @@ def align_with_XY(Muscle):
 
 
 
-
-
-# def Transform_to_Mesh(Muscle):
-
-#     bpy.ops.object.mode_set(mode = 'OBJECT')
-#     bpy.ops.object.select_all(action='DESELECT')
-#     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " curve"]
-#     bpy.data.objects[Muscle + " curve"].select_set(True)
-
-#     bpy.ops.object.convert(target="MESH")
-
-
-
 def Transform_to_Mesh(Muscle):
 
     try:
@@ -417,108 +386,6 @@ def duplicate_attachment_areas(Muscle):
     bpy.ops.object.select_all(action='DESELECT')
 
 
-def get_volume_perimeter(Muscle, index, n,both_ends):     
-    #vertices_loop = []
-    boundaryNames = [' origin_merge_with_volume',
-                     ' insertion_merge_with_volume']
-
-    vertexGroupId=['_origin','_insertion']
-
-    boundaryName = boundaryNames[index]
-    bpy.ops.object.mode_set(mode='OBJECT')
-    bpy.ops.object.select_all(action='DESELECT')
-    # make active
-    # bpy.data.objects[Muscle + " curve"].select_set(False)
-    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + boundaryName]
-    bpy.data.objects[Muscle + boundaryName].select_set(True)
-
-    boundary = bpy.context.view_layer.objects.active
-    bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS') #set object origin to geometry
-    loc = boundary.location
-   
-    print("boundary center" + str(loc))
-
-
-    bpy.ops.object.select_all(action='DESELECT')
-    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " curve"]
-    bpy.data.objects[Muscle + " curve"].select_set(True)
-    bpy.ops.object.mode_set(mode='EDIT')
-    bpy.context.tool_settings.mesh_select_mode = (
-        True, False, False)  # vertex select mode
-    bpy.ops.mesh.select_all(action='DESELECT')
-    #find points on curve that are closest to boundary loop
-
-
-    for point in both_ends:
-        co = point[1]           #point = [ind,vector,dist]
-        print("coordinate is " + str(co))
-        distance = math.sqrt(
-            (co[0] - loc[0]) ** 2 + (co[1] - loc[1]) ** 2 + (co[2] - loc[2]) ** 2)
-
-        point.append(distance)
-        print(point)
-
-
-    distance_list_ascending = sorted((both_ends), key=itemgetter(2)) #rank distances between points and cursor
-    shortest_n= distance_list_ascending[0:n]
-    vertices_loop = [item[0] for item in shortest_n] #gets correct vertices on muscle curve, closest to origin
-    print("vertices loop for bridging:" + str(vertices_loop))
-    #select ends of curve mesh that need to be bridged, assign to vertex group
-    bpy.context.active_object.vertex_groups.new(name='CURVE_VERTS'+vertexGroupId[index])
-    obj = bpy.context.edit_object
-    me = obj.data
-    bm = bmesh.from_edit_mesh(me)
-    vertices= [e for e in bm.verts]
-
-    for i in vertices_loop: 
-        vertices[i].select=True
-
-
-    bpy.ops.object.vertex_group_set_active(group='CURVE_VERTS'+vertexGroupId[index])
-    bpy.ops.object.vertex_group_assign()
-
-    #make boundary active to identify and select vertices that need to be bridged
-    bpy.ops.object.mode_set(mode='OBJECT')
-    bpy.data.objects[Muscle + boundaryName].select_set(True) 
-    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + boundaryName]
-    bpy.data.objects[Muscle + " curve"].select_set(False)
-
-    bpy.ops.object.mode_set(mode='EDIT')
-    obj = bpy.context.edit_object
-    bpy.ops.mesh.select_all(action='DESELECT')
-    bpy.context.tool_settings.mesh_select_mode = (
-    True, False, False)  # vertex select mode required to add groups
-    bpy.ops.mesh.select_all()  # select vertices in boundary loop
-    bpy.context.active_object.vertex_groups.new(name='BOUNDARY_VERTS'+vertexGroupId[index])
-    #print the boundary loop coords here
-    loop = []
-    obj = bpy.context.edit_object
-    me = obj.data
-    bm = bmesh.from_edit_mesh(me)
-    for v in bm.verts:
-        if v.select:
-            loop.append([v.index, v.co])  
-    print("loop " + str(loop))
-    bpy.ops.object.vertex_group_assign()
-    bpy.ops.object.mode_set(mode='OBJECT')
-    #bpy.data.objects[Muscle + boundaryName].select_set(True) 
-    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " curve"]
-    bpy.data.objects[Muscle + " curve"].select_set(True)
-    bpy.ops.object.join()
-    bpy.ops.object.mode_set(mode='EDIT')
-    #select vertex group (merged from 2 original objects)
-    bpy.ops.mesh.select_all(action='DESELECT')
-    bpy.ops.object.vertex_group_set_active(group='CURVE_VERTS'+vertexGroupId[index])
-    bpy.ops.object.vertex_group_select()
-    bpy.ops.object.vertex_group_set_active(group='BOUNDARY_VERTS'+vertexGroupId[index])
-    bpy.ops.object.vertex_group_select()
-
-
-# bridge edge loops
-    bpy.ops.mesh.bridge_edge_loops()
-    bpy.ops.mesh.select_all(action='DESELECT')
-
-
 
 def join_muscle(Muscle):
     boundaryNames = [' origin_merge_with_volume',
@@ -538,10 +405,6 @@ def join_muscle(Muscle):
     bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS') #set object origin to geometry
     loc_origin = boundary.location
     print("boundary center" + str(loc_origin))
-        
-    #scn = bpy.context.scene
-    #names = [ obj.name for obj in scn.objects]
-
     bpy.ops.object.select_all(action='DESELECT')
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " curve"]
     bpy.data.objects[Muscle + " curve"].select_set(True)
@@ -555,7 +418,6 @@ def join_muscle(Muscle):
     bpy.ops.mesh.separate(type='LOOSE')
     bpy.ops.object.mode_set(mode = 'OBJECT')
     tube_ends = []
-    #new_objs = [ obj for obj in scn.objects if not obj.name in names
     bpy.data.objects[Muscle + " curve"].select_set(False)
     for obj in bpy.context.selected_objects:
         bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS') #set object origin to geometry
@@ -635,11 +497,7 @@ def join_muscle(Muscle):
 def get_length():
 
     from AddonFolder import globalVariables
-
     length=0
-
-    name = globalVariables.muscleName + " curve" 
-
     try:
         bpy.ops.object.mode_set(mode='OBJECT')
     except:
@@ -680,10 +538,7 @@ def get_length():
     globalVariables.allMuscleParameters[globalVariables.muscleName][5]=length  
     print(globalVariables.allMuscleParameters[globalVariables.muscleName])
 
-
-
-
-    dir=globalVariables.csvDir       #"C:/Users/evach/Dropbox/Blender Myogenerator and Reconstruction Paper"
+    dir=globalVariables.csvDir
 
     DictionaryExporter(globalVariables.allMuscleParameters, dir)
     
@@ -692,15 +547,7 @@ def DictionaryExporter(d, dir):
     import os
     directory = dir
     rows = []
-    # for key in d:
-    #     temp =[]
-    #     temp.append(key)
-    #     temp = temp + d[key]
-    #     # temp.append(d[key])
-    #     rows.append(temp)
     print(rows)
-    #print(directory)
-    # header = ['muscle_name', 'origin_area', 'insertion_area', 'origin_centroid', 'insertion_centroid', 'linear_length', 'muscle_length', 'muscle_volume']
     with open(directory, "a",  newline='') as f:
         
         writer = csv.writer(f)
@@ -710,17 +557,6 @@ def DictionaryExporter(d, dir):
             row.append(key)
             row = row + d[key]
             writer.writerow(row)
-          
-
-        # with open(directory, "a",  newline='') as f:
-        #     writer = csv.writer(f)
-            # writer.writerow(header)
-
-        # #if file exists
-        # if os.path.isfile(directory):
-        #     writer.writerows(d.items())
-        # else:
-    
 
 
 
@@ -739,7 +575,7 @@ def measure_muscle_volume(obj):
     return volume
     #bm.clear()
 
-#def updateVolumes(path, fileName): #want inputs in final add-on instead of hard coding directory
+
 def updateVolumes():
     from AddonFolder import globalVariables
 
@@ -748,14 +584,12 @@ def updateVolumes():
     except:
         pass
     bpy.ops.object.select_all(action='DESELECT')
-    #fileNameConv = fileName+'.csv'
-    #directory = os.sep.join([path, fileNameConv])
     directory = globalVariables.csvDir
     muscleMetrics= {}
     #Open the file in read mode
     with open(directory, mode='r') as infile:
     #Open a reader to the csv
-        reader = csv.reader(infile, delimiter=',') #double check if Add-on produces ; delimited file
+        reader = csv.reader(infile, delimiter=',') 
     #Read into the dictionary using dictionary comprehension, key is the first column and row are rest of the columns
         for row in reader:
             print(row)
@@ -790,7 +624,6 @@ def updateVolumes():
             print("header already written") #header will already exist *if* volumes were already calculated, this checks and only writes if header doesn't exist
         else:
             writer.writerow(header) 
-        #writer.writerow(row)
         for key in d_new:
             row = []
             row.append(key)
