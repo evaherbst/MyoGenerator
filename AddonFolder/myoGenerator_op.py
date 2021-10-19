@@ -1,18 +1,11 @@
-import bpy
-import sys
-import mathutils
-from mathutils import Vector
 import math
-import bmesh
 import os
+import sys
+
+import bpy
 
 
-from AddonFolder import muscleCore
-
-
-from AddonFolder import myoGenerator_panel
-from AddonFolder import vertex_Counter
-
+from AddonFolder import muscleCore, myoGenerator_panel, vertex_Counter
 
 isSubmittingOrigin = False
 

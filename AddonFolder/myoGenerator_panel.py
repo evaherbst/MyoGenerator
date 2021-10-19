@@ -1,6 +1,5 @@
 import bpy
 
-from bpy.props import PointerProperty, FloatProperty
 from AddonFolder import muscleCore
 
 parentMuscleGenerated = False
@@ -33,7 +32,7 @@ class myoGenerator_panel_PT_(bpy.types.Panel):
         layout.separator()
 
         box = layout.box()
-        box.label(text="Muscle Id")
+        box.label(text="Muscle ID")
         row = box.row()
         row.prop(context.scene, "muscle_Name", text="Muscle Name")
         row.enabled = (context.scene.file_name != "")

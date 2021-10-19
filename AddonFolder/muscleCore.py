@@ -11,9 +11,8 @@ from mathutils import Vector, Matrix
 import math
 import bmesh
 import csv
-from operator import itemgetter, truediv
+from operator import itemgetter
 
-from AddonFolder.myoGenerator_op import testAttch0, testAttch1
 
 origin_centroid = mathutils.Vector()
 insertion_centroid = mathutils.Vector()
@@ -97,7 +96,7 @@ def create_attachment(index, Muscle):
     bpy.ops.object.mode_set(mode='OBJECT')
     att = calculate_centroid(obj)
     globalVariables.attachment_centroids[index] = att
-    boundary = create_boundary(obj)
+    create_boundary(obj)
 
     area = get_attachment_area(obj)
 
@@ -392,7 +391,7 @@ def Transform_to_Mesh(Muscle):
     bpy.ops.object.convert(target="MESH")
 
 
-# NRE JOIN
+
 
 
 def duplicate_boundaries(Muscle):
@@ -401,55 +400,7 @@ def duplicate_boundaries(Muscle):
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle +
                                                              " origin" + " boundary"]
     bpy.data.objects[Muscle + " origin" + " boundary"].select_set(True)
-    bpy.ops.object.duplicate_move(
-        OBJECT_OT_duplicate={
-            "linked": False,
-            "mode": 'TRANSLATION'},
-        TRANSFORM_OT_translate={
-            "value": (
-                0,
-                0,
-                0),
-            "orient_type": 'GLOBAL',
-            "orient_matrix": (
-                (1,
-                 0,
-                 0),
-                (0,
-                 1,
-                 0),
-                (0,
-                 0,
-                 1)),
-            "orient_matrix_type": 'GLOBAL',
-            "constraint_axis": (
-                True,
-                True,
-                True),
-            "mirror": True,
-            "use_proportional_edit": False,
-            "proportional_edit_falloff": 'SMOOTH',
-            "proportional_size": 1,
-            "use_proportional_connected": False,
-            "use_proportional_projected": False,
-            "snap": False,
-            "snap_target": 'CLOSEST',
-            "snap_point": (
-                0,
-                0,
-                0),
-            "snap_align": False,
-            "snap_normal": (
-                0,
-                0,
-                0),
-            "gpencil_strokes": False,
-            "cursor_transform": False,
-            "texture_space": False,
-            "remove_on_cancel": False,
-            "release_confirm": False,
-            "use_accurate": False,
-            "use_automerge_and_split": False})
+    bpy.ops.object.duplicate()
     bpy.context.view_layer.objects.active.name = str(
         Muscle + " origin_merge_with_volume")
     bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
@@ -458,55 +409,7 @@ def duplicate_boundaries(Muscle):
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle +
                                                              " insertion" + " boundary"]
     bpy.data.objects[Muscle + " insertion" + " boundary"].select_set(True)
-    bpy.ops.object.duplicate_move(
-        OBJECT_OT_duplicate={
-            "linked": False,
-            "mode": 'TRANSLATION'},
-        TRANSFORM_OT_translate={
-            "value": (
-                0,
-                0,
-                0),
-            "orient_type": 'GLOBAL',
-            "orient_matrix": (
-                (1,
-                 0,
-                 0),
-                (0,
-                 1,
-                 0),
-                (0,
-                 0,
-                 1)),
-            "orient_matrix_type": 'GLOBAL',
-            "constraint_axis": (
-                True,
-                True,
-                True),
-            "mirror": True,
-            "use_proportional_edit": False,
-            "proportional_edit_falloff": 'SMOOTH',
-            "proportional_size": 1,
-            "use_proportional_connected": False,
-            "use_proportional_projected": False,
-            "snap": False,
-            "snap_target": 'CLOSEST',
-            "snap_point": (
-                0,
-                0,
-                0),
-            "snap_align": False,
-            "snap_normal": (
-                0,
-                0,
-                0),
-            "gpencil_strokes": False,
-            "cursor_transform": False,
-            "texture_space": False,
-            "remove_on_cancel": False,
-            "release_confirm": False,
-            "use_accurate": False,
-            "use_automerge_and_split": False})
+    bpy.ops.object.duplicate()
     bpy.context.view_layer.objects.active.name = str(
         Muscle + " insertion_merge_with_volume")
     bpy.data.objects[Muscle + " insertion_merge_with_volume"].select_set(True)
@@ -521,55 +424,7 @@ def duplicate_attachment_areas(Muscle):
     # make active
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " origin"]
     bpy.data.objects[Muscle + " origin"].select_set(True)
-    bpy.ops.object.duplicate_move(
-        OBJECT_OT_duplicate={
-            "linked": False,
-            "mode": 'TRANSLATION'},
-        TRANSFORM_OT_translate={
-            "value": (
-                0,
-                0,
-                0),
-            "orient_type": 'GLOBAL',
-            "orient_matrix": (
-                (1,
-                 0,
-                 0),
-                (0,
-                 1,
-                 0),
-                (0,
-                 0,
-                 1)),
-            "orient_matrix_type": 'GLOBAL',
-            "constraint_axis": (
-                True,
-                True,
-                True),
-            "mirror": True,
-            "use_proportional_edit": False,
-            "proportional_edit_falloff": 'SMOOTH',
-            "proportional_size": 1,
-            "use_proportional_connected": False,
-            "use_proportional_projected": False,
-            "snap": False,
-            "snap_target": 'CLOSEST',
-            "snap_point": (
-                0,
-                0,
-                0),
-            "snap_align": False,
-            "snap_normal": (
-                0,
-                0,
-                0),
-            "gpencil_strokes": False,
-            "cursor_transform": False,
-            "texture_space": False,
-            "remove_on_cancel": False,
-            "release_confirm": False,
-            "use_accurate": False,
-            "use_automerge_and_split": False})
+    bpy.ops.object.duplicate()
     bpy.context.view_layer.objects.active.name = str(
         Muscle + " origin_area_merge_with_volume")
     bpy.data.objects[Muscle +
@@ -579,55 +434,8 @@ def duplicate_attachment_areas(Muscle):
     # make active
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " insertion"]
     bpy.data.objects[Muscle + " insertion"].select_set(True)
-    bpy.ops.object.duplicate_move(
-        OBJECT_OT_duplicate={
-            "linked": False,
-            "mode": 'TRANSLATION'},
-        TRANSFORM_OT_translate={
-            "value": (
-                0,
-                0,
-                0),
-            "orient_type": 'GLOBAL',
-            "orient_matrix": (
-                (1,
-                 0,
-                 0),
-                (0,
-                 1,
-                 0),
-                (0,
-                 0,
-                 1)),
-            "orient_matrix_type": 'GLOBAL',
-            "constraint_axis": (
-                True,
-                True,
-                True),
-            "mirror": True,
-            "use_proportional_edit": False,
-            "proportional_edit_falloff": 'SMOOTH',
-            "proportional_size": 1,
-            "use_proportional_connected": False,
-            "use_proportional_projected": False,
-            "snap": False,
-            "snap_target": 'CLOSEST',
-            "snap_point": (
-                0,
-                0,
-                0),
-            "snap_align": False,
-            "snap_normal": (
-                0,
-                0,
-                0),
-            "gpencil_strokes": False,
-            "cursor_transform": False,
-            "texture_space": False,
-            "remove_on_cancel": False,
-            "release_confirm": False,
-            "use_accurate": False,
-            "use_automerge_and_split": False})
+    bpy.ops.object.duplicate()
+
     bpy.context.view_layer.objects.active.name = str(
         Muscle + " insertion_area_merge_with_volume")
     bpy.data.objects[Muscle +
@@ -757,55 +565,7 @@ def get_length():
         pass
     bpy.context.view_layer.objects.active = bpy.data.objects[globalVariables.muscleName + " curve"]
     bpy.data.objects[globalVariables.muscleName + " curve"].select_set(True)
-    bpy.ops.object.duplicate_move(
-        OBJECT_OT_duplicate={
-            "linked": False,
-            "mode": 'TRANSLATION'},
-        TRANSFORM_OT_translate={
-            "value": (
-                0,
-                0,
-                0),
-            "orient_type": 'GLOBAL',
-            "orient_matrix": (
-                (1,
-                 0,
-                 0),
-                (0,
-                 1,
-                 0),
-                (0,
-                 0,
-                 1)),
-            "orient_matrix_type": 'GLOBAL',
-            "constraint_axis": (
-                True,
-                True,
-                True),
-            "mirror": True,
-            "use_proportional_edit": False,
-            "proportional_edit_falloff": 'SMOOTH',
-            "proportional_size": 1,
-            "use_proportional_connected": False,
-            "use_proportional_projected": False,
-            "snap": False,
-            "snap_target": 'CLOSEST',
-            "snap_point": (
-                0,
-                0,
-                0),
-            "snap_align": False,
-            "snap_normal": (
-                0,
-                0,
-                0),
-            "gpencil_strokes": False,
-            "cursor_transform": False,
-            "texture_space": False,
-            "remove_on_cancel": False,
-            "release_confirm": False,
-            "use_accurate": False,
-            "use_automerge_and_split": False})
+    bpy.ops.object.duplicate()
     bpy.context.view_layer.objects.active.name = "curve_copy"
     bpy.ops.object.select_all(action='DESELECT')
     bpy.context.view_layer.objects.active = bpy.data.objects["curve_copy"]

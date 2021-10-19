@@ -11,10 +11,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from . myoGenerator_panel import myoGenerator_panel_PT_
-from . myoGenerator_op import Select_Muscle_Op, Select_Origin_Op, Select_Insertion_Op, AllowAttach_Op, Muscle_Creation_Op, Curve_Creator_Op, Join_Muscle_Op, Transform_To_Mesh_Op, SetBevel_Op, SetBevel2_Op, SetTilt_Op, Calculate_Volume_Op, Reset_Variables_Op
 import bpy
+
 from AddonFolder.muscleCore import curve_creator
+
+from .myoGenerator_op import (AllowAttach_Op, Calculate_Volume_Op,
+                              Curve_Creator_Op, Join_Muscle_Op,
+                              Muscle_Creation_Op, Reset_Variables_Op,
+                              Select_Insertion_Op, Select_Muscle_Op,
+                              Select_Origin_Op, SetBevel2_Op, SetBevel_Op,
+                              SetTilt_Op, Transform_To_Mesh_Op)
+from .myoGenerator_panel import myoGenerator_panel_PT_
+
 bl_info = {
     "name": "MyoGenerator",
     "author": "Niccolo Fioritti and Eva Herbst",

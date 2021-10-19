@@ -1,7 +1,7 @@
-import bpy
-from mathutils import Vector, Matrix
 import math
+
 import bmesh
+import bpy
 
 from AddonFolder import muscleCore
 
