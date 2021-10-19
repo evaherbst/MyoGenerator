@@ -4,7 +4,7 @@ Blender add-on to create volumetric muscles
 
 ## Output of Add-On
 - muscle volume mesh, origin area, insertion area, origin boundary loop, insertion boundary loop
-- .csv file with all of the muscle metrics (name, origin area, insertion area, origin centroid, insertion centroid, linear length, muscle length, muscle volume)
+- .csv file with all of the muscle metrics (name, origin area, insertion area, origin centroid, insertion centroid, linear length, muscle length, muscle volume). Headers are included, and multiple muscles are written to the same file as rows.
 - The add-on automatically organizes your muscle components (attachment areas and volume) under an empty whose name is equal to the muscle name:   
 ![Hierarchy](https://github.com/evaherbst/MyoGenerator/blob/main/Hierarchy_example.PNG)
 
@@ -50,5 +50,3 @@ Blender add-on to create volumetric muscles
  
  To install the add-on, download the Add-on Folder from this repository (make sure it is zipped) and then follow the instructions [here](https://docs.blender.org/manual/en/latest/editors/preferences/addons.html).
  
-
-
