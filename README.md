@@ -5,16 +5,18 @@ Blender add-on to create volumetric muscles
 ## Output of Add-On
 - muscle volume mesh, origin area, insertion area, origin boundary loop, insertion boundary loop
 - .csv file with all of the muscle metrics (name, origin area, insertion area, origin centroid, insertion centroid, linear length, muscle length, muscle volume)
-- The add-on automatically organizes your muscle components (attachment areas and volume) under an empty whose name is equal to the muscle name: 
-- ![Hierarchy](https://github.com/evaherbst/MyoGenerator/blob/main/Hierarchy_example.PNG)
+- The add-on automatically organizes your muscle components (attachment areas and volume) under an empty whose name is equal to the muscle name:   
+![Hierarchy](https://github.com/evaherbst/MyoGenerator/blob/main/Hierarchy_example.PNG)
 
-## NOTES FOR USE:
+## Notes for User
 - Ensure bone meshes are clean (manifold) and of suitably high res to be able to select attachment areas with the desired precision
 - Ensure that your face orientation (e.g. normals) is correct. You can check this by selecting Overlay > Geometry > Face orientation. You can change normals in Edit Mode with Mesh > Normals > Recalculate outside
 - Make sure a continuous area is selected for your muscle attachments (no accidental unselected faces in the general attachment area, no faces only connected to other faces by single vertex)
 - For attachment select, we recommend using the lasso tool, which can be accessed by left clicking on the select box and selecting the lasso tool
 
 ## Summary of Add-on Steps
+
+![Add_on_screenshot](https://github.com/evaherbst/MyoGenerator/blob/main/Addon_example.PNG)
 
 1. User enters muscle name
 2. Code creates empty with that muscle name
@@ -49,4 +51,4 @@ Blender add-on to create volumetric muscles
  To install the add-on, download the Add-on Folder from this repository (make sure it is zipped) and then follow the instructions [here](https://docs.blender.org/manual/en/latest/editors/preferences/addons.html).
  
 
-![Add_on_screenshot](https://github.com/evaherbst/MyoGenerator/blob/main/Addon_example.PNG)
+
