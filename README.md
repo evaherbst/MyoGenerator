@@ -49,5 +49,5 @@ Blender add-on to create volumetric muscles
  
  The add-on currently works for versions 2.91.0 - 2.93.0. Blender can be installed [here](https://www.blender.org/).
  
- To install the add-on, download the Add-on Folder from this repository (make sure it is zipped) and then follow the instructions [here](https://docs.blender.org/manual/en/latest/editors/preferences/addons.html).
+ To install the add-on, download this repository, zip the Add-on folder, and then follow the instructions [here](https://docs.blender.org/manual/en/latest/editors/preferences/addons.html).
  
