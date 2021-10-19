@@ -1,6 +1,6 @@
-#  Muscle_Volume_Sculptor
- Blender add-on to create volumetric muscles 
- 
+#  MyoGenerator Blender Add-On
+Blender add-on to create volumetric muscles 
+*created by Eva c. Herbst and Niccolo Fioritti*
  
 ## NOTES FOR USE:
 - Ensure bone meshes are clean (manifold) and of suitably high res to be able to select attachment areas with the desired precision
