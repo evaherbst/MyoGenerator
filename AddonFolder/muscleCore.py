@@ -319,12 +319,6 @@ def curve_creator(attachment_centroids, attachment_normals, Muscle):
     bpy.context.object.data.bevel_factor_end = 1
     bpy.ops.object.select_all(action='DESELECT')
     # make curve active
-    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle +
-                                                             " cross section template"]
-    bpy.data.objects[Muscle + " cross section template"].select_set(True)
-    # hide cross section template
-    bpy.ops.object.hide_view_set(unselected=False)
-    # make curve active
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " curve"]
 
 
@@ -455,9 +449,10 @@ def join_muscle(Muscle):
     bpy.ops.object.select_all(action='DESELECT')
 
     #delete cross section template
-    obj = bpy.data.objects[Muscle + " cross section template"] 
+    bpy.data.objects[Muscle + " cross section template"].select_set(True)
+    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " cross section template"]
     bpy.ops.object.delete()
-    bpy.ops.object.select_all(action='DESELECT')
+
 
     #make origin boundary active and select
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle +
