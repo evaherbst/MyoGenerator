@@ -7,4 +7,3 @@ allMuscleParameters = dict()
 
 #   allMuscleParameters format:
 #   {'muscleName' : [origArea, insertionArea, originCentroid, insertionCentroid, linearLength, muscleLength, muscleVolume]}
-

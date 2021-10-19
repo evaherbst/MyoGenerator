@@ -10,6 +10,7 @@ vertexCountMatched = False
 curveCreated = False
 curveToMesh = False
 
+
 class myoGenerator_panel_PT_(bpy.types.Panel):
 
     bl_idname = "MyoGenerator"
@@ -48,14 +49,13 @@ class myoGenerator_panel_PT_(bpy.types.Panel):
         row = box.row()
         row.prop(context.scene, "origin_object", text='Origin\'s Bone')
 
-
         row = box.row()
-        col1=row.column()
+        col1 = row.column()
         col1.operator("view3d.attch", text="Start Origin Selection")
         col1.enabled = context.scene.origin_object is not None
 
         col2 = row.column()
-        col2.operator('view3d.select_origin', text="Submit Origin") 
+        col2.operator('view3d.select_origin', text="Submit Origin")
         col2.enabled = context.scene.origin_object is not None
 
         layout.separator()
@@ -64,7 +64,7 @@ class myoGenerator_panel_PT_(bpy.types.Panel):
         box.label(text="Insertion Creation")
         row1 = box.row()
         row1.prop(context.scene, "insertion_object", text='Insertion\'s Bone')
-    
+
         row2 = box.row()
         col1 = row2.column()
         col1.operator("view3d.attch", text="Start Insertion Selection")

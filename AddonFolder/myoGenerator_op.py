@@ -34,7 +34,7 @@ class Select_Muscle_Op(bpy.types.Operator):
         objName = bpy.context.scene.muscle_Name
         muscleCore.make_empty(objName)
         myoGenerator_panel.parentMuscleGenerated = True
-       
+
         return{'FINISHED'}
 
 
@@ -74,7 +74,7 @@ class Select_Insertion_Op(bpy.types.Operator):
 
     def execute(self, context):
 
-        myoGenerator_panel.insertionSubmitted=True
+        myoGenerator_panel.insertionSubmitted = True
         muscleCore.create_attachment(1, bpy.context.scene.muscle_Name)
         bpy.ops.object.mode_set(mode='OBJECT')
         return{'FINISHED'}
@@ -86,7 +86,7 @@ class Muscle_Creation_Op(bpy.types.Operator):
 
     def execute(self, context):
         print("ALL OK")
-        myoGenerator_panel.vertexCountMatched=True
+        myoGenerator_panel.vertexCountMatched = True
         vertex_Counter.OverallVertexCount()
         return{'FINISHED'}
 
