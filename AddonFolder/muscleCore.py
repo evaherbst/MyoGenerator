@@ -4,7 +4,7 @@
 @authors: Eva C. Herbst and Niccolo Fioritti
 this add-on enables generation of 3D muscles based on user selected origin and insertion areas and an adjustable muscle path
 """
-from AddonFolder import test_op
+from AddonFolder import myoGenerator_op
 import bpy
 import mathutils
 from mathutils import Vector, Matrix
@@ -13,7 +13,7 @@ import bmesh
 import csv
 from operator import itemgetter, truediv
 
-from AddonFolder.test_op import testAttch0, testAttch1
+from AddonFolder.myoGenerator_op import testAttch0, testAttch1
 
 origin_centroid = mathutils.Vector()
 insertion_centroid = mathutils.Vector()

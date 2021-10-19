@@ -10,7 +10,7 @@ import os
 from AddonFolder import muscleCore
 
 
-from AddonFolder import test_panel
+from AddonFolder import myoGenerator_panel
 from AddonFolder import vertex_Counter
 
 
@@ -25,17 +25,16 @@ testList = ["list"]
 
 class Nico_Select_Muscle_Op(bpy.types.Operator):
     bl_idname = "view3d.submit_button"
-    bl_label = "Nico Test Operator"
-    bl_description = "Centre Cursor Test"
+    bl_label = "Submit Muscle Name"
+    bl_description = "Submit Muscle Name"
 
     def execute(self, context):
 
         # function to execute
         objName = bpy.context.scene.muscle_Name
         muscleCore.make_empty(objName)
-        test_panel.parentMuscleGenerated = True
-        print('executing function test')
-
+        myoGenerator_panel.parentMuscleGenerated = True
+       
         return{'FINISHED'}
 
 
@@ -45,16 +44,15 @@ class Nico_AllowAttach_Op(bpy.types.Operator):
 
     def execute(self, context):
 
-        # QUITE SKETCHY!
         global isSubmittingOrigin
         isSubmittingOrigin = not isSubmittingOrigin
-        # deselecting all, selecting picked obk
+        # deselecting all, selecting picked obj
         bpy.ops.object.select_all(action='DESELECT')
 
         ob = bpy.context.scene.origin_object if isSubmittingOrigin else bpy.context.scene.insertion_object
         bpy.context.view_layer.objects.active = ob   # Make the cube the active object
         ob.select_set(True)
-        test_panel.allowAttachmentSelection = True
+        myoGenerator_panel.allowAttachmentSelection = True
         muscleCore.set_edit_mode()
         return{'FINISHED'}
 
@@ -65,7 +63,7 @@ class Nico_Select_Origin_Op(bpy.types.Operator):
 
     def execute(self, context):
 
-        test_panel.originSubmitted = True
+        myoGenerator_panel.originSubmitted = True
         muscleCore.create_attachment(0, bpy.context.scene.muscle_Name)
         return{'FINISHED'}
 
@@ -76,7 +74,7 @@ class Nico_Select_Insertion_Op(bpy.types.Operator):
 
     def execute(self, context):
 
-        test_panel.insertionSubmitted=True
+        myoGenerator_panel.insertionSubmitted=True
         muscleCore.create_attachment(1, bpy.context.scene.muscle_Name)
         bpy.ops.object.mode_set(mode='OBJECT')
         return{'FINISHED'}
@@ -88,7 +86,7 @@ class Nico_Muscle_Creation_Op(bpy.types.Operator):
 
     def execute(self, context):
         print("ALL OK")
-        test_panel.vertexCountMatched=True
+        myoGenerator_panel.vertexCountMatched=True
         vertex_Counter.OverallVertexCount()
         return{'FINISHED'}
 
@@ -112,7 +110,7 @@ class Nico_Curve_Creator_Op(bpy.types.Operator):
         muscleCore.curve_creator(
             globalVariables.attachment_centroids, [
                 originNormal, attachNormal], muscleCore.muscleName)
-        test_panel.curveCreated = True
+        myoGenerator_panel.curveCreated = True
         return {'FINISHED'}
 
 
@@ -142,7 +140,7 @@ class Nico_Transform_To_Mesh_Op(bpy.types.Operator):
 
         muscleCore.get_length()  # ASSIGN NURBS LENGTH TO DICTIONARY
         muscleCore.Transform_to_Mesh(bpy.context.scene.muscle_Name)
-        test_panel.curveToMesh = True
+        myoGenerator_panel.curveToMesh = True
         return{"FINISHED"}
 
 
@@ -229,11 +227,11 @@ class Reset_Variables_Op(bpy.types.Operator):
         bpy.context.scene.bevel = 0
         bpy.context.scene.bevel2 = 0
 
-        test_panel.parentMuscleGenerated = False
-        test_panel.originSubmitted = False
-        test_panel.insertionSubmitted = False
-        test_panel.vertexCountMatched = False
-        test_panel.curveCreated = False
-        test_panel.curveToMesh = False
+        myoGenerator_panel.parentMuscleGenerated = False
+        myoGenerator_panel.originSubmitted = False
+        myoGenerator_panel.insertionSubmitted = False
+        myoGenerator_panel.vertexCountMatched = False
+        myoGenerator_panel.curveCreated = False
+        myoGenerator_panel.curveToMesh = False
 
         return {'FINISHED'}

@@ -30,10 +30,10 @@ import bpy
 #import bpy.utilis
 
 
-from . test_op import Nico_Select_Muscle_Op, Nico_Select_Origin_Op,Nico_Select_Insertion_Op,Nico_AllowAttach_Op, Nico_Muscle_Creation_Op,Nico_Curve_Creator_Op,Nico_Join_Muscle_Op,Nico_Transform_To_Mesh_Op,SetBevel_Op,SetBevel2_Op,SetTilt_Op, Calculate_Volume_Op,Reset_Variables_Op
+from . myoGenerator_op import Nico_Select_Muscle_Op, Nico_Select_Origin_Op,Nico_Select_Insertion_Op,Nico_AllowAttach_Op, Nico_Muscle_Creation_Op,Nico_Curve_Creator_Op,Nico_Join_Muscle_Op,Nico_Transform_To_Mesh_Op,SetBevel_Op,SetBevel2_Op,SetTilt_Op, Calculate_Volume_Op,Reset_Variables_Op
 
-from . test_panel import Nico_Test_Panel_PT_
-#classes =(Nico_Test_Op, Nico_Test_Panel_PT_)
+from . myoGenerator_panel import Nico_myoGenerator_panel_PT_
+#classes =(Nico_myoGenerator_op, Nico_myoGenerator_panel_PT_)
 #register, unregister = bpy.utils.register_classes_factory(classes)
 
 
@@ -51,7 +51,7 @@ def register():
     bpy.utils.register_class(Nico_Select_Origin_Op)
     bpy.utils.register_class(Nico_Select_Insertion_Op)
     bpy.utils.register_class(Nico_AllowAttach_Op)
-    bpy.utils.register_class(Nico_Test_Panel_PT_)
+    bpy.utils.register_class(Nico_myoGenerator_panel_PT_)
     bpy.utils.register_class( Nico_Muscle_Creation_Op)
     bpy.utils.register_class(Nico_Curve_Creator_Op)
     bpy.utils.register_class(Nico_Join_Muscle_Op)
@@ -165,7 +165,7 @@ def unregister():
     bpy.utils.unregister_class(Nico_Select_Origin_Op)
     bpy.utils.unregister_class(Nico_Select_Insertion_Op)
     bpy.utils.unregister_class(Nico_AllowAttach_Op)
-    bpy.utils.unregister_class(Nico_Test_Panel_PT_)
+    bpy.utils.unregister_class(Nico_myoGenerator_panel_PT_)
     bpy.utils.unregister_class( Nico_Muscle_Creation_Op)
     bpy.utils.unregister_class(Nico_Curve_Creator_Op)
     bpy.utils.unregister_class(Nico_Join_Muscle_Op)

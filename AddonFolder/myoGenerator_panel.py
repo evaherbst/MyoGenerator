@@ -10,7 +10,7 @@ vertexCountMatched = False
 curveCreated = False
 curveToMesh = False
 
-class Nico_Test_Panel_PT_(bpy.types.Panel):
+class Nico_myoGenerator_panel_PT_(bpy.types.Panel):
 
     bl_idname = "MyoGenerator"
     bl_label = "MyoGenerator: create muscle"
