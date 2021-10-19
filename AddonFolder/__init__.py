@@ -30,10 +30,10 @@ import bpy
 #import bpy.utilis
 
 
-from . myoGenerator_op import Nico_Select_Muscle_Op, Nico_Select_Origin_Op,Nico_Select_Insertion_Op,Nico_AllowAttach_Op, Nico_Muscle_Creation_Op,Nico_Curve_Creator_Op,Nico_Join_Muscle_Op,Nico_Transform_To_Mesh_Op,SetBevel_Op,SetBevel2_Op,SetTilt_Op, Calculate_Volume_Op,Reset_Variables_Op
+from . myoGenerator_op import Select_Muscle_Op, Select_Origin_Op,Select_Insertion_Op,AllowAttach_Op, Muscle_Creation_Op,Curve_Creator_Op,Join_Muscle_Op,Transform_To_Mesh_Op,SetBevel_Op,SetBevel2_Op,SetTilt_Op, Calculate_Volume_Op,Reset_Variables_Op
 
-from . myoGenerator_panel import Nico_myoGenerator_panel_PT_
-#classes =(Nico_myoGenerator_op, Nico_myoGenerator_panel_PT_)
+from . myoGenerator_panel import myoGenerator_panel_PT_
+#classes =(myoGenerator_op, myoGenerator_panel_PT_)
 #register, unregister = bpy.utils.register_classes_factory(classes)
 
 
@@ -47,15 +47,15 @@ from . myoGenerator_panel import Nico_myoGenerator_panel_PT_
 
 
 def register():
-    bpy.utils.register_class(Nico_Select_Muscle_Op)
-    bpy.utils.register_class(Nico_Select_Origin_Op)
-    bpy.utils.register_class(Nico_Select_Insertion_Op)
-    bpy.utils.register_class(Nico_AllowAttach_Op)
-    bpy.utils.register_class(Nico_myoGenerator_panel_PT_)
-    bpy.utils.register_class( Nico_Muscle_Creation_Op)
-    bpy.utils.register_class(Nico_Curve_Creator_Op)
-    bpy.utils.register_class(Nico_Join_Muscle_Op)
-    bpy.utils.register_class(Nico_Transform_To_Mesh_Op)
+    bpy.utils.register_class(Select_Muscle_Op)
+    bpy.utils.register_class(Select_Origin_Op)
+    bpy.utils.register_class(Select_Insertion_Op)
+    bpy.utils.register_class(AllowAttach_Op)
+    bpy.utils.register_class(myoGenerator_panel_PT_)
+    bpy.utils.register_class( Muscle_Creation_Op)
+    bpy.utils.register_class(Curve_Creator_Op)
+    bpy.utils.register_class(Join_Muscle_Op)
+    bpy.utils.register_class(Transform_To_Mesh_Op)
     bpy.utils.register_class(SetBevel_Op)
     bpy.utils.register_class(SetBevel2_Op)
     bpy.utils.register_class(SetTilt_Op)
@@ -161,15 +161,15 @@ def register():
 #### FOR OBJECT EYEDROPPER: https://blender.stackexchange.com/questions/30487/object-selection-box-with-eyedropper
 
 def unregister():
-    bpy.utils.unregister_class(Nico_Select_Muscle_Op)
-    bpy.utils.unregister_class(Nico_Select_Origin_Op)
-    bpy.utils.unregister_class(Nico_Select_Insertion_Op)
-    bpy.utils.unregister_class(Nico_AllowAttach_Op)
-    bpy.utils.unregister_class(Nico_myoGenerator_panel_PT_)
-    bpy.utils.unregister_class( Nico_Muscle_Creation_Op)
-    bpy.utils.unregister_class(Nico_Curve_Creator_Op)
-    bpy.utils.unregister_class(Nico_Join_Muscle_Op)
-    bpy.utils.unregister_class(Nico_Transform_To_Mesh_Op)
+    bpy.utils.unregister_class(Select_Muscle_Op)
+    bpy.utils.unregister_class(Select_Origin_Op)
+    bpy.utils.unregister_class(Select_Insertion_Op)
+    bpy.utils.unregister_class(AllowAttach_Op)
+    bpy.utils.unregister_class(myoGenerator_panel_PT_)
+    bpy.utils.unregister_class( Muscle_Creation_Op)
+    bpy.utils.unregister_class(Curve_Creator_Op)
+    bpy.utils.unregister_class(Join_Muscle_Op)
+    bpy.utils.unregister_class(Transform_To_Mesh_Op)
     bpy.utils.unregister_class(SetBevel_Op)
     bpy.utils.unregister_class(SetBevel2_Op)
     bpy.utils.unregister_class(SetTilt_Op)

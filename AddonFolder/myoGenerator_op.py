@@ -23,7 +23,7 @@ testAttch1 = "baseAttch1"
 testList = ["list"]
 
 
-class Nico_Select_Muscle_Op(bpy.types.Operator):
+class Select_Muscle_Op(bpy.types.Operator):
     bl_idname = "view3d.submit_button"
     bl_label = "Submit Muscle Name"
     bl_description = "Submit Muscle Name"
@@ -38,7 +38,7 @@ class Nico_Select_Muscle_Op(bpy.types.Operator):
         return{'FINISHED'}
 
 
-class Nico_AllowAttach_Op(bpy.types.Operator):
+class AllowAttach_Op(bpy.types.Operator):
     bl_idname = "view3d.attch"
     bl_label = "Test"
 
@@ -57,7 +57,7 @@ class Nico_AllowAttach_Op(bpy.types.Operator):
         return{'FINISHED'}
 
 
-class Nico_Select_Origin_Op(bpy.types.Operator):
+class Select_Origin_Op(bpy.types.Operator):
     bl_idname = "view3d.select_origin"
     bl_label = "Select Origin"
 
@@ -68,7 +68,7 @@ class Nico_Select_Origin_Op(bpy.types.Operator):
         return{'FINISHED'}
 
 
-class Nico_Select_Insertion_Op(bpy.types.Operator):
+class Select_Insertion_Op(bpy.types.Operator):
     bl_idname = "view3d.select_insertion"
     bl_label = "Select Insertion"
 
@@ -80,7 +80,7 @@ class Nico_Select_Insertion_Op(bpy.types.Operator):
         return{'FINISHED'}
 
 
-class Nico_Muscle_Creation_Op(bpy.types.Operator):
+class Muscle_Creation_Op(bpy.types.Operator):
     bl_idname = "view3d.muscle_creation"
     bl_label = "Muscle Creation"
 
@@ -91,7 +91,7 @@ class Nico_Muscle_Creation_Op(bpy.types.Operator):
         return{'FINISHED'}
 
 
-class Nico_Curve_Creator_Op(bpy.types.Operator):
+class Curve_Creator_Op(bpy.types.Operator):
 
     bl_idname = "view3d.curve_creator"
     bl_label = "Curve Creator"
@@ -114,7 +114,7 @@ class Nico_Curve_Creator_Op(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class Nico_Join_Muscle_Op(bpy.types.Operator):
+class Join_Muscle_Op(bpy.types.Operator):
     bl_idname = "view3d.join_muscle"
     bl_label = "Join Muscle"
 
@@ -126,7 +126,7 @@ class Nico_Join_Muscle_Op(bpy.types.Operator):
         return{"FINISHED"}
 
 
-class Nico_Transform_To_Mesh_Op(bpy.types.Operator):
+class Transform_To_Mesh_Op(bpy.types.Operator):
     bl_idname = "view3d.convert_to_mesh"
     bl_label = "Convert To Mesh"
 
