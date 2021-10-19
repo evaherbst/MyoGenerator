@@ -18,12 +18,13 @@ from AddonFolder.muscleCore import curve_creator
 bl_info = {
     "name": "MyoGenerator",
     "author": "Niccolo Fioritti and Eva Herbst",
-    "description": "TestAddon",
+    "description": "This add-on enables generation of 3D muscles based on user selected origin and insertion areas and an adjustable muscle path.",
     "blender": (2, 80, 0),
     "version": (0, 0, 1),
     "location": "View3D",
+    "doc_url": "https://github.com/evaherbst/-Muscle_Volume_Sculptor/blob/main/README.md",
     "warning": "",
-    "category": "Generic"
+    "category": "Mesh"
 }
 
 
