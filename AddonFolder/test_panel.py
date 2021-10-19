@@ -1,11 +1,14 @@
 import bpy
+
 from bpy.props import PointerProperty, FloatProperty
 from AddonFolder import muscleCore
-parentMuscleGenerated = False
-originSelected = False
-allowAttachmentSelection = False
-curveCreated = False
 
+parentMuscleGenerated = False
+originSubmitted = False
+insertionSubmitted = False
+vertexCountMatched = False
+curveCreated = False
+curveToMesh = False
 
 class Nico_Test_Panel_PT_(bpy.types.Panel):
 
@@ -18,71 +21,102 @@ class Nico_Test_Panel_PT_(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
 
-        row = layout.row()  # creates a col within the row previosuly defined
+        box = layout.box()
+        box.label(text="Data Storage Location")
+        row = box.row()
         row.prop(context.scene, "conf_path", text="")
 
-        row = layout.row()  # creates a col within the row previosuly defined
-        # we dont have properties yet
+        row = box.row()
         row.prop(context.scene, "file_name", text="")
 
-        row = layout.row()
+        layout.separator()
+
+        box = layout.box()
+        box.label(text="Muscle Id")
+        row = box.row()
         row.prop(context.scene, "muscle_Name", text="Muscle Name")
         row.enabled = (context.scene.file_name != "")
 
-        row = layout.row()
-        # operator idname . it'll invoce the execute function of operator
+        row = box.row()
         row.operator('view3d.submit_button', text="Submit Muscle")
         row.enabled = context.scene.muscle_Name != "Insert muscle name"
 
-        col1 = layout.column()
-        col1.prop(context.scene, "origin_object", text='Origin\'s Bone')
-        # col1.enabled=allowAttachmentSelection    #maybe check if selected
-        # face ' is not None '
+        layout.separator()
 
-        row = layout.row()
-        row.operator("view3d.attch", text="Start Origin Selection")
-        row.enabled = context.scene.origin_object is not None
+        box = layout.box()
+        box.label(text="Origin Creation")
+        row = box.row()
+        row.prop(context.scene, "origin_object", text='Origin\'s Bone')
 
-        row = layout.row()
-        col1 = layout.column()
-        col1.operator('view3d.select_origin', text="Submit Origin")
+
+        row = box.row()
+        col1=row.column()
+        col1.operator("view3d.attch", text="Start Origin Selection")
         col1.enabled = context.scene.origin_object is not None
 
-        col1 = layout.column()
-        col1.prop(context.scene, "insertion_object", text='Insertion\'s Bone')
-        # col1.enabled=allowAttachmentSelection
+        col2 = row.column()
+        col2.operator('view3d.select_origin', text="Submit Origin") 
+        col2.enabled = context.scene.origin_object is not None
 
-        row = layout.row()
-        row.operator("view3d.attch", text="Start Insertion Selection")
+        layout.separator()
 
-        col2 = layout.column()
+        box = layout.box()
+        box.label(text="Insertion Creation")
+        row1 = box.row()
+        row1.prop(context.scene, "insertion_object", text='Insertion\'s Bone')
+    
+        row2 = box.row()
+        col1 = row2.column()
+        col1.operator("view3d.attch", text="Start Insertion Selection")
+        col1.enabled = context.scene.insertion_object is not None
+
+        col2 = row2.column()
         col2.operator('view3d.select_insertion', text="Submit Insertion")
         col2.enabled = context.scene.insertion_object is not None
 
-        row = layout.row()
+        layout.separator()
+
+        box = layout.box()
+        box.label(text="Muscle Curve Creation")
+        row = box.row()
         row.operator(
             "view3d.muscle_creation",
             text="Match Attachment Vertex Counts")
+        row.enabled = (originSubmitted and insertionSubmitted)
 
-        row = layout.row()
+        row = box.row()
         row.operator("view3d.curve_creator", text="Create Muscle Curve")
+        row.enabled = vertexCountMatched
 
-        row = layout.row()
+        layout.separator()
+
+        box = layout.box()
+        box.label(text="Edit Muscle Curve")
+        row = box.row()
         row.prop(context.scene, "tilt", text="Set Tilt", slider=True)
+        row.enabled = curveCreated
 
-        row = layout.row()
+        row = box.row()
         row.prop(context.scene, "bevel", text="Bevel Start", slider=True)
         row.enabled = curveCreated
 
-        row = layout.row()
+        row = box.row()
         row.prop(context.scene, "bevel2", text="Bevel End", slider=True)
         row.enabled = curveCreated
 
-        row = layout.row()
-        row.operator("view3d.convert_to_mesh", text="Convert Curve To Mesh")
+        layout.separator()
 
-        row = layout.row()
+        box = layout.box()
+        box.label(text="Muscle Finalization")
+        row = box.row()
+        row.operator("view3d.convert_to_mesh", text="Convert Curve To Mesh")
+        row.enabled = curveCreated
+
+        row = box.row()
         row.operator("view3d.join_muscle", text="Join Muscle")
+        row.enabled = curveToMesh
+
+        layout.separator()
 
         row = layout.row()
         row.operator("view3d.reset_variables", text="Next Muscle")

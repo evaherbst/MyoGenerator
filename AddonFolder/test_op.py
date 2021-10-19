@@ -64,8 +64,8 @@ class Nico_Select_Origin_Op(bpy.types.Operator):
     bl_label = "Select Origin"
 
     def execute(self, context):
-        test_panel.originSelected = True
 
+        test_panel.originSubmitted = True
         muscleCore.create_attachment(0, bpy.context.scene.muscle_Name)
         return{'FINISHED'}
 
@@ -76,6 +76,7 @@ class Nico_Select_Insertion_Op(bpy.types.Operator):
 
     def execute(self, context):
 
+        test_panel.insertionSubmitted=True
         muscleCore.create_attachment(1, bpy.context.scene.muscle_Name)
         bpy.ops.object.mode_set(mode='OBJECT')
         return{'FINISHED'}
@@ -87,6 +88,7 @@ class Nico_Muscle_Creation_Op(bpy.types.Operator):
 
     def execute(self, context):
         print("ALL OK")
+        test_panel.vertexCountMatched=True
         vertex_Counter.OverallVertexCount()
         return{'FINISHED'}
 
@@ -140,6 +142,7 @@ class Nico_Transform_To_Mesh_Op(bpy.types.Operator):
 
         muscleCore.get_length()  # ASSIGN NURBS LENGTH TO DICTIONARY
         muscleCore.Transform_to_Mesh(bpy.context.scene.muscle_Name)
+        test_panel.curveToMesh = True
         return{"FINISHED"}
 
 
@@ -227,8 +230,10 @@ class Reset_Variables_Op(bpy.types.Operator):
         bpy.context.scene.bevel2 = 0
 
         test_panel.parentMuscleGenerated = False
-        test_panel.originSelected = False
-        test_panel.allowAttachmentSelection = False
+        test_panel.originSubmitted = False
+        test_panel.insertionSubmitted = False
+        test_panel.vertexCountMatched = False
         test_panel.curveCreated = False
+        test_panel.curveToMesh = False
 
         return {'FINISHED'}
