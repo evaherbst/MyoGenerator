@@ -319,12 +319,6 @@ def curve_creator(attachment_centroids, attachment_normals, Muscle):
     bpy.context.object.data.bevel_factor_end = 1
     bpy.ops.object.select_all(action='DESELECT')
     # make curve active
-    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle +
-                                                             " cross section template"]
-    bpy.data.objects[Muscle + " cross section template"].select_set(True)
-    # hide cross section template
-    bpy.ops.object.hide_view_set(unselected=False)
-    # make curve active
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " curve"]
 
 
@@ -448,13 +442,19 @@ def duplicate_attachment_areas(Muscle):
 def join_muscle(Muscle):
     boundaryNames = [' origin_merge_with_volume',
                      ' insertion_merge_with_volume']
-
-    vertexGroupId = ['_origin', '_insertion']
+    
     duplicate_boundaries(Muscle)
 
     bpy.ops.object.mode_set(mode='OBJECT')
     bpy.ops.object.select_all(action='DESELECT')
 
+    #delete cross section template
+    bpy.data.objects[Muscle + " cross section template"].select_set(True)
+    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " cross section template"]
+    bpy.ops.object.delete()
+
+
+    #make origin boundary active and select
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle +
                                                              boundaryNames[0]]
     bpy.data.objects[Muscle + boundaryNames[0]].select_set(True)
@@ -465,6 +465,8 @@ def join_muscle(Muscle):
                               center='BOUNDS')  # set object origin to geometry
     loc_origin = boundary.location
     print("boundary center" + str(loc_origin))
+
+    #select muscle volume, select end loops, duplicate and separate (to bridge with origin and insertion loops)
     bpy.ops.object.select_all(action='DESELECT')
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " curve"]
     bpy.data.objects[Muscle + " curve"].select_set(True)
@@ -494,6 +496,7 @@ def join_muscle(Muscle):
     insertion_side = distance_list_ascending[1][0]
     print("origin object is " + str(origin_side))
 
+    #bridge origin side
     bpy.ops.object.select_all(action='DESELECT')
     bpy.data.objects[origin_side].select_set(True)
     bpy.context.view_layer.objects.active = bpy.data.objects[origin_side]
@@ -504,6 +507,7 @@ def join_muscle(Muscle):
     bpy.ops.mesh.select_all(action='SELECT')
     bpy.ops.mesh.bridge_edge_loops()
 
+    #bridge insertion side
     bpy.ops.object.mode_set(mode='OBJECT')
     bpy.ops.object.select_all(action='DESELECT')
     bpy.data.objects[insertion_side].select_set(True)
@@ -514,6 +518,7 @@ def join_muscle(Muscle):
     bpy.ops.mesh.select_all(action='SELECT')
     bpy.ops.mesh.bridge_edge_loops()
 
+    #merge bridged ends with muscle volume
     bpy.ops.object.mode_set(mode='OBJECT')
     bpy.data.objects[Muscle + " curve"].select_set(True)
     bpy.data.objects[origin_side].select_set(True)
@@ -524,6 +529,7 @@ def join_muscle(Muscle):
     bpy.ops.mesh.select_all(action='SELECT')
     bpy.ops.mesh.remove_doubles()
 
+    #rename, parent, merge with origin and attachment areas
     bpy.ops.object.mode_set(mode='OBJECT')
     muscle_volume = bpy.context.view_layer.objects.active
     muscle_volume.name = Muscle + " volume"

@@ -146,10 +146,10 @@ def SetAttach(index, thisValue):
 
     if(index == 1):
         testAttch0 = thisValue
-        print(testAttch0, "FROMWONKY FUN")
+
     else:
         testAttch1 = thisValue
-        print(testAttch1, "FROMWONKY FUN")
+
 
 
 class SetBevel_Op(bpy.types.Operator):
@@ -158,7 +158,6 @@ class SetBevel_Op(bpy.types.Operator):
 
     def execute(self, context):
 
-        print("worked?! ", bpy.context.scene.bevel)
         muscleCore.bpy.context.object.data.bevel_factor_start = bpy.context.scene.bevel
 
 
@@ -187,7 +186,6 @@ class SetTilt_Op(bpy.types.Operator):
         bpy.ops.curve.tilt_clear()
         bpy.ops.transform.tilt(value=tilt)
 
-        return {'FINISHED'}
 
 
 class Calculate_Volume_Op(bpy.types.Operator):
