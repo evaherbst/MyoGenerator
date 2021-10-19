@@ -2,7 +2,7 @@
 Blender add-on to create volumetric muscles 
 *created by Eva c. Herbst and Niccolo Fioritti*
 
-# Output of Add-On
+## Output of Add-On
 - muscle volume mesh, origin area, insertion area, origin boundary loop, insertion boundary loop
 - .csv file with all of the muscle metrics (name, origin area, insertion area, origin centroid, insertion centroid, linear length, muscle length, muscle volume)
 - The add-on automatically organizes your muscle components (attachment areas and volume) under an empty whose name is equal to the muscle name: 
@@ -42,7 +42,7 @@ Blender add-on to create volumetric muscles
 
 
  
-# Add-on Installation
+## Add-on Installation
  
  The add-on currently works for versions 2.91.0 - 2.93.0. Blender can be installed [here](https://www.blender.org/).
  
