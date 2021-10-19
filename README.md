@@ -1,5 +1,5 @@
 #  MyoGenerator Blender Add-On
-Blender add-on to create volumetric muscles 
+Blender add-on to create volumetric muscles   
 *created by Eva c. Herbst and Niccolo Fioritti*
 
 ## Output of Add-On
