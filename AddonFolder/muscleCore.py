@@ -37,7 +37,10 @@ def make_empty(Muscle):
     globalVariables.allMuscleParameters[muscleName] = [
         0, 0, 0, 0, 0, 0, 0]  # assigning to dict()
 
-    bpy.ops.object.mode_set(mode='OBJECT')
+    try:
+        bpy.ops.object.mode_set(mode='OBJECT')
+    except BaseException:
+        pass
     o = bpy.data.objects.new(Muscle, None)
     o.empty_display_size = 2
     o.empty_display_type = 'PLAIN_AXES'
@@ -298,7 +301,7 @@ def curve_creator(attachment_centroids, attachment_normals, Muscle):
     # projection on curve is correct, also converts to curve
     align_with_XY(Muscle)
     # Bevel nurbs path with origin boundary curve
-    bpy.ops.object.mode_set(mode='OBJECT')  # NICO ADD
+    bpy.ops.object.mode_set(mode='OBJECT')  
     bpy.ops.object.select_all(action='DESELECT')
 
     cross_section = bpy.context.view_layer.objects.active
@@ -306,7 +309,7 @@ def curve_creator(attachment_centroids, attachment_normals, Muscle):
     bpy.data.objects[Muscle + " cross section template"].select_set(True)
     bpy.ops.object.convert(target='CURVE')
 
-    bpy.ops.object.mode_set(mode='OBJECT')  # NICO ADD
+    bpy.ops.object.mode_set(mode='OBJECT')  
     bpy.ops.object.select_all(action='DESELECT')
 
     # make curve active
@@ -323,6 +326,8 @@ def curve_creator(attachment_centroids, attachment_normals, Muscle):
 
 
 def align_with_XY(Muscle):
+    #orients cross section to be as parallel as possible to XY plane, to make sure that regardless of initial origin orientation in scene, muscle cross section will be the 
+    # largest planar projection of that origin area
     bpy.ops.object.mode_set(mode='OBJECT')
     bpy.ops.object.select_all(action='DESELECT')
     # make active
@@ -383,6 +388,17 @@ def Transform_to_Mesh(Muscle):
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " curve"]
     bpy.data.objects[Muscle + " curve"].select_set(True)
     bpy.ops.object.convert(target="MESH")
+    #get rid of T junctions by connecting edges and vertices by creating faces where the holes are (holes are hidden at T junction)
+    #once connected via faces, remove 0 area faces with degenerate dissolve, then select whole mesh and triangulate
+    bpy.ops.object.mode_set(mode='EDIT')
+    bpy.ops.mesh.select_all(action='DESELECT')
+    bpy.ops.mesh.select_non_manifold()
+    bpy.ops.mesh.edge_face_add()
+    bpy.ops.mesh.dissolve_degenerate()
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.quads_convert_to_tris(quad_method='BEAUTY', ngon_method='BEAUTY')
+    bpy.ops.object.mode_set(mode='OBJECT')
+
 
 
 

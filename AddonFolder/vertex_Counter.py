@@ -40,6 +40,7 @@ def change_vertex_number(
                 bpy.ops.mesh.subdivide()
                 print(counter)
                 print("subdivision successful")
+                #bpy.ops.object.mode_set(mode='OBJECT')
     elif (originCount > insertionCount):
         print("ORIGIN > INSERTION")
         # rounds down to nearest whole number increment
@@ -65,6 +66,7 @@ def change_vertex_number(
                 bpy.ops.mesh.subdivide()
                 print(counter)
                 print("subdivision successful")
+                #bpy.ops.object.mode_set(mode='OBJECT')
     elif (originCount == insertionCount):
         print('wow, that was lucky')
 
