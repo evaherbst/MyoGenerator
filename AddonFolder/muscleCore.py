@@ -320,6 +320,7 @@ def curve_creator(attachment_centroids, attachment_normals, Muscle):
     bpy.context.object.data.bevel_object = bpy.data.objects[cross_section.name]
     bpy.context.object.data.bevel_factor_start = 0  # user can adjust this in add-on
     bpy.context.object.data.bevel_factor_end = 1
+    bpy.context.object.data.use_fill_caps = False
     bpy.ops.object.select_all(action='DESELECT')
     # make curve active
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " curve"]
@@ -401,16 +402,7 @@ def Transform_to_Mesh(Muscle):
     bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " curve"]
     bpy.data.objects[Muscle + " curve"].select_set(True)
     bpy.ops.object.convert(target="MESH")
-    #get rid of T junctions by connecting edges and vertices by creating faces where the holes are (holes are hidden at T junction)
-    #once connected via faces, remove 0 area faces with degenerate dissolve, then select whole mesh and triangulate
-    bpy.ops.object.mode_set(mode='EDIT')
-    bpy.ops.mesh.select_all(action='DESELECT')
-    bpy.ops.mesh.select_non_manifold()
-    bpy.ops.mesh.edge_face_add()
-    bpy.ops.mesh.dissolve_degenerate()
-    bpy.ops.mesh.select_all(action='SELECT')
-    bpy.ops.mesh.quads_convert_to_tris(quad_method='BEAUTY', ngon_method='BEAUTY')
-    bpy.ops.object.mode_set(mode='OBJECT')
+
 
 
 
@@ -588,6 +580,16 @@ def join_muscle(Muscle):
         inside=False)  # recalculate outside normals
     bpy.ops.object.mode_set(mode='OBJECT')
     bpy.ops.object.shade_flat()
+    #get rid of T junctions by connecting edges and vertices by creating faces where the holes are (holes are hidden at T junction)
+    #once connected via faces, remove 0 area faces with degenerate dissolve, then select whole mesh and triangulate
+    bpy.ops.object.mode_set(mode='EDIT')
+    bpy.ops.mesh.select_all(action='DESELECT')
+    bpy.ops.mesh.select_non_manifold()
+    bpy.ops.mesh.edge_face_add()
+    bpy.ops.mesh.dissolve_degenerate()
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.quads_convert_to_tris(quad_method='BEAUTY', ngon_method='BEAUTY')
+    bpy.ops.object.mode_set(mode='OBJECT')
 
 
 def get_length():
