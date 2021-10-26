@@ -376,6 +376,19 @@ def align_with_XY(Muscle):
     bmesh.ops.transform(bm, verts=bm.verts, matrix=T)
     bmesh.update_edit_mesh(me)
 
+def mirror_bevel(Muscle):
+    bpy.ops.object.mode_set(mode='OBJECT')
+    bpy.ops.object.select_all(action='DESELECT')
+    # make active
+    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " cross section template"]
+    bpy.data.objects[Muscle + " cross section template"].select_set(True)
+    #flip X axis to mirror object
+    bpy.context.object.scale[0] = -1
+    #apply scale transform
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    bpy.ops.object.mode_set(mode='EDIT')
+
+
 
 def Transform_to_Mesh(Muscle):
 
