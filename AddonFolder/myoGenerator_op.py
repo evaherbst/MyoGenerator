@@ -199,13 +199,13 @@ class Calculate_Volume_Op(bpy.types.Operator):
 
 
 
-class Mirror_Cross_Section(bpy.types.Operator):
+class Mirror_Cross_Section_Op(bpy.types.Operator):
     bl_idname = "view3d.mirror_cross_section"
     bl_label = "MirrorCrossSection"
 
     def execute(self, context):
-        from AddonFolder import globalvariables
-        muscleCore.mirror_bevel(globalvariables.muscleName)
+        from AddonFolder import globalVariables
+        muscleCore.mirror_bevel(globalVariables.muscleName)
         return {'FINISHED'}
 
 
