@@ -198,6 +198,17 @@ class Calculate_Volume_Op(bpy.types.Operator):
         return {'FINISHED'}
 
 
+
+class Mirror_Cross_Section(bpy.types.Operator):
+    bl_idname = "view3d.mirror_cross_section"
+    bl_label = "MirrorCrossSection"
+
+    def execute(self, context):
+        from AddonFolder import globalvariables
+        muscleCore.mirror_bevel(globalvariables.muscleName)
+        return {'FINISHED'}
+
+
 class Reset_Variables_Op(bpy.types.Operator):
     bl_idname = "view3d.reset_variables"
     bl_label = "ResetVariables"

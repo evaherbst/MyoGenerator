@@ -92,6 +92,11 @@ class myoGenerator_panel_PT_(bpy.types.Panel):
         box = layout.box()
         box.label(text="Edit Muscle Curve")
         row = box.row()
+        row.operator(
+            "view3d.mirror_cross_section",
+            text="Mirror Cross Section")
+        row.enabled = curveCreated
+        row = box.row()
         row.prop(context.scene, "tilt", text="Set Tilt", slider=True)
         row.enabled = curveCreated
 

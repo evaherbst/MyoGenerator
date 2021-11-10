@@ -20,7 +20,7 @@ from .myoGenerator_op import (AllowAttach_Op, Calculate_Volume_Op,
                               Muscle_Creation_Op, Reset_Variables_Op,
                               Select_Insertion_Op, Select_Muscle_Op,
                               Select_Origin_Op, SetBevel2_Op, SetBevel_Op,
-                              SetTilt_Op, Transform_To_Mesh_Op)
+                              SetTilt_Op, Transform_To_Mesh_Op, Mirror_Cross_Section_Op)
 from .myoGenerator_panel import myoGenerator_panel_PT_
 
 bl_info = {
@@ -51,6 +51,8 @@ def register():
     bpy.utils.register_class(SetTilt_Op)
     bpy.utils.register_class(Calculate_Volume_Op)
     bpy.utils.register_class(Reset_Variables_Op)
+    bpy.utils.register_class(Mirror_Cross_Section_Op)
+
 
     bpy.types.Scene.conf_path = bpy.props.StringProperty(
         name="Path",
@@ -135,6 +137,7 @@ def unregister():
     bpy.utils.unregister_class(SetTilt_Op)
     bpy.utils.unregister_class(Calculate_Volume_Op)
     bpy.utils.unregister_class(Reset_Variables_Op)
+    bpy.utils.unregister_class(Mirror_Cross_Section_Op)
 
     del bpy.types.Scene.muscle_Name
     del bpy.types.Scene.bevel
