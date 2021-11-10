@@ -2,7 +2,7 @@
 """
 
 @authors: Eva C. Herbst and Niccolo Fioritti
-this add-on enables generation of 3D muscles based on user selected origin and insertion areas and an adjustable muscle path
+This add-on enables generation of 3D muscles based on user selected origin and insertion areas and an adjustable muscle path.
 """
 from AddonFolder import myoGenerator_op
 import bpy
