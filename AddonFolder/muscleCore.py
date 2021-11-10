@@ -387,6 +387,9 @@ def mirror_bevel(Muscle):
     bpy.context.object.scale[0] = -1
     #apply scale transform
     bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    bpy.context.view_layer.objects.active = bpy.data.objects[Muscle + " curve"]
+    bpy.data.objects[Muscle + " curve"].select_set(True)
+    bpy.data.objects[Muscle + " cross section template"].select_set(False)
     bpy.ops.object.mode_set(mode='EDIT')
 
 
