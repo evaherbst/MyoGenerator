@@ -2,21 +2,23 @@
 Blender add-on to create volumetric muscles   
 *created by Eva c. Herbst and Niccolo Fioritti*
 
+
 ## Output of Add-On
 - muscle volume mesh, origin area, insertion area, origin boundary loop, insertion boundary loop
 - .csv file with all of the muscle metrics (name, origin area, insertion area, origin centroid, insertion centroid, linear length, muscle length, muscle volume). Headers are included, and multiple muscles are written to the same file as rows.
-- The add-on automatically organizes your muscle components (attachment areas and volume) under an empty whose name is equal to the muscle name:   
-![Hierarchy](https://github.com/evaherbst/MyoGenerator/blob/main/Hierarchy_example.PNG)
+- The add-on automatically organizes your muscle components (attachment areas and volume) under an empty whose name is equal to the muscle name.
 
 ## Notes for User
-- Ensure bone meshes are clean (manifold) and of suitably high res to be able to select attachment areas with the desired precision
+- Start with a new Blender file, and import your bone meshes.
+- Do not rename the collections. The default Blender collection is named "Collection" and the muscle hierarchies will be created as part of this collection. The bone meshes you import should also automatically be part of this collection.
+- Ensure bone meshes are clean (manifold, no intersecting edges and faces) and of suitably high res to be able to select attachment areas with the desired precision
 - Ensure that your face orientation (e.g. normals) is correct. You can check this by selecting Overlay > Geometry > Face orientation. You can change normals in Edit Mode with Mesh > Normals > Recalculate outside
 - Make sure a continuous area is selected for your muscle attachments (no accidental unselected faces in the general attachment area, no faces only connected to other faces by single vertex)
 - For attachment select, we recommend using the lasso tool, which can be accessed by left clicking on the select box and selecting the lasso tool
 
 ## Summary of Add-on Steps
 
-![Add_on_screenshot](https://github.com/evaherbst/MyoGenerator/blob/main/Addon_example.PNG)
+![AddOn](https://github.com/evaherbst/MyoGenerator/blob/main/Myogenerator_Addon_Fig.png.PNG)
 
 1. User enters folder and file name for saving data.
 2. User enters muscle name
@@ -57,5 +59,5 @@ Blender add-on to create volumetric muscles
  ## Troubleshooting Errors
  
  - Note that you need to close the .csv file with the muscle metrics before more information can be written to it. Otherwise you will get an error.
- - If you do not have admin rights, there may be issues with writing the files to your drive (causing error when first submitting the file information and muscle name). This could be a problem in university settings where researchers do not always have admin accounts (although for some of us it has worked without admin rights, so it probably depends on the exact permissions you have). We recommend testing on another computer with admin rights if possible or contacting your IT department.
+ - If you do not have permissions to write and read and edit files in the folder you designated, this will throw an error. This could be a problem in university settings where researchers do not always have admin accounts (although for some of us it has worked without admin rights, so it probably depends on the exact permissions you have). We recommend testing on another computer with admin rights if possible or contacting your IT department. 
  
