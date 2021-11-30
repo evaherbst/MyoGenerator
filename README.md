@@ -18,7 +18,7 @@ Blender add-on to create volumetric muscles
 
 ## Summary of Add-on Steps
 
-![AddOn](https://github.com/evaherbst/MyoGenerator/blob/main/Myogenerator_Addon_Fig.PNG)
+![AddOn](https://github.com/evaherbst/MyoGenerator/blob/main/Myogenerator_Addon_Fig_lowres.png)
 
 1. User enters folder and file name for saving data.
 2. User enters muscle name
