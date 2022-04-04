@@ -590,8 +590,8 @@ def join_muscle(Muscle):
     bpy.ops.mesh.select_non_manifold()
     bpy.ops.mesh.edge_face_add()
     bpy.ops.mesh.dissolve_degenerate()
-    bpy.ops.mesh.select_all(action='SELECT')
-    bpy.ops.mesh.quads_convert_to_tris(quad_method='BEAUTY', ngon_method='BEAUTY')
+    #bpy.ops.mesh.select_all(action='SELECT')
+    #bpy.ops.mesh.quads_convert_to_tris(quad_method='BEAUTY', ngon_method='BEAUTY')
     bpy.ops.object.mode_set(mode='OBJECT')
 
 
