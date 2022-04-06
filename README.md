@@ -15,6 +15,8 @@ Note that this add-on has been tested and works on v. 2.91.0 - 2.93.0 of Blender
 - Ensure that your face orientation (e.g. normals) is correct. You can check this by selecting Overlay > Geometry > Face orientation. You can change normals in Edit Mode with Mesh > Normals > Recalculate outside
 - Make sure a continuous area is selected for your muscle attachments (no accidental unselected faces in the general attachment area, no faces only connected to other faces by single vertex)
 - For attachment select, we recommend using the lasso tool, which can be accessed by left clicking on the select box and selecting the lasso tool
+- Note that attachment areas, centroids, boundaries, and muscle curve lengths are calculated during the muscle creation. Therefore, excessive changes to the muscle structure after meshing and joining the muscle may result in a mistmatch between the original attachments and curve length and the final muscle. We therefore recommend to model the muscle as accurately as possible, and if attachment areas are used in analysis, to check afterwards whether the final muscle corresponds to the initially selected areas (a good rule of thumb is to not change the attachment vertices through  roportional editing and sculpting). To enable muscle anatomy adjustments after muscle meshing while maintaining the initial curvature and attachment, our method creates a muscle mesh that consits of edge loops that can easily be selected to adjust cross sections via scaling without changing the central curvature of the muscle or the origin and insertion areas.
+
 
 ## Summary of Add-on Steps
 
