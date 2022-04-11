@@ -127,9 +127,24 @@ class Transform_To_Mesh_Op(bpy.types.Operator):
 
         from AddonFolder import globalVariables
 
-        globalVariables.csvDir = os.path.join(
+
+
+
+        path =os.path.join(
             context.scene.conf_path,
             (context.scene.file_name + ".csv"))
+
+        
+        path = (os.path.realpath(bpy.path.abspath(path)))
+
+
+        globalVariables.csvDir=path
+
+
+        # this code is deprecated but keep it jic: relative path to blender file. 
+        # globalVariables.csvDir = os.path.join(
+        #     context.scene.conf_path,
+        #     (context.scene.file_name + ".csv"))
 
         muscleCore.get_length()  # ASSIGN NURBS LENGTH TO DICTIONARY
         muscleCore.Transform_to_Mesh(bpy.context.scene.muscle_Name)
