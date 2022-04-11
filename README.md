@@ -1,6 +1,6 @@
 #  MyoGenerator Blender Add-On
 Blender add-on to create volumetric muscles   
-*created by Eva c. Herbst and Niccolo Fioritti*  
+*created by Eva C. Herbst and Niccolo Fioritti*  
 Note that this add-on has been tested and works on v. 2.91.0 - 2.93.0 of Blender. Older or newer versions may break the code.
 
 ## Output of Add-On
