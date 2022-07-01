@@ -53,11 +53,16 @@ def make_empty(Muscle):
         coll.objects.unlink(o)
     # Link each object to the target collection
     coll_target.objects.link(o)
+    bpy.ops.object.select_all(action='SELECT')
+    for obj in bpy.context.selected_objects:
+        bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+    bpy.ops.object.select_all(action='DESELECT')
+    
 
 
 # function creates attachment as new object, parents to muscle empty
 def create_attachment(index, Muscle):
-    # also calls ontains functions to recenter object, create boundary, and
+    # also contains functions to recenter object, create boundary, and
     # calculate centroids and normals
     from AddonFolder import globalVariables
 
