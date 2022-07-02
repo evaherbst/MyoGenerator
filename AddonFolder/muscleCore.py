@@ -693,6 +693,7 @@ def updateVolumes():
         pass
     bpy.ops.object.select_all(action='DESELECT')
     directory = globalVariables.csvDir
+    print("File name that muscle outputs are written to is:" + directory)
     muscleMetrics = {}
     # Open the file in read mode
     with open(directory, mode='r') as infile:
