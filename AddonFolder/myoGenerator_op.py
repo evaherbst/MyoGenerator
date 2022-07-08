@@ -208,7 +208,15 @@ class Calculate_Volume_Op(bpy.types.Operator):
     bl_label = "CalculateVolume"
 
     def execute(self, context):
+        
+        from AddonFolder import globalVariables
+        path =os.path.join(
+            context.scene.conf_path,
+            (context.scene.file_name + ".csv"))
+        
+        path = (os.path.realpath(bpy.path.abspath(path)))
 
+        globalVariables.csvDir=path
         muscleCore.updateVolumes()
         return {'FINISHED'}
 
