@@ -3,6 +3,11 @@ Blender add-on to create volumetric muscles
 *created by Eva C. Herbst and Niccolo Fioritti*  
 Note that this add-on has been tested and works on v. 2.91.0 - 2.93.0 of Blender. Older or newer versions may break the code.
 
+
+[![DOI](https://zenodo.org/badge/355606184.svg)](https://zenodo.org/badge/latestdoi/355606184)
+
+
+
 ## Output of Add-On
 - muscle volume mesh, origin area, insertion area, origin boundary loop, insertion boundary loop
 - .csv file with all of the muscle metrics (name, origin area, insertion area, origin centroid, insertion centroid, linear length, muscle length, muscle volume). Linear length is calculated as the Euclidean distance between origin and insertion centroids, muscle length is calculated as the length of the curve of the Blender muscle (sum of edge lengths constituting the curve). Headers are included, and multiple muscles are written to the same file as rows.
