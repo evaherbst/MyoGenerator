@@ -4,9 +4,11 @@ Blender add-on to create volumetric muscles
 Note that this add-on has been tested and works on v. 2.91.0 - 2.93.0 of Blender. Older or newer versions may break the code.
 
 
+:pencil:  Please read our [paper](LINKHERE), which we wrote with Luke E. Meade, Stephan
+Lautenschlager, and Torsten M. Scheyer. If you use this method, please cite our paper (Herbst et al. 2022) and the doi of the most recent Github release:
 [![DOI](https://zenodo.org/badge/355606184.svg)](https://zenodo.org/badge/latestdoi/355606184)
 
-
+:video_camera: A video tutorial can be found on [Dryad](doi.org/10.5061/dryad.qjq2bvqk2).
 
 ## Output of Add-On
 - muscle volume mesh, origin area, insertion area, origin boundary loop, insertion boundary loop
