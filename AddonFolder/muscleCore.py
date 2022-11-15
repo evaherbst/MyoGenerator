@@ -709,7 +709,7 @@ def updateVolumes():
                 row[4] = row[4].replace("<Vector (", "")
                 row[4] = row[4].replace(")>", "")
             # create dictionary where key = muscle name, value = all values
-            muscleMetrics[row[0]] = row[1:]
+        muscleMetrics[row[0]] = row[1:]
     print("muscle metrics from csv: " + str(muscleMetrics))
     bpy.ops.object.select_all(action='SELECT')
     # now calculate muscle volumes for all volumes in scence
