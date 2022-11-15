@@ -10,10 +10,21 @@ Lautenschlager, and Torsten M. Scheyer. If you use this method, please cite our 
 
 :video_camera: A video tutorial can be found on [Dryad](doi.org/10.5061/dryad.qjq2bvqk2).
 
+## Note about Release 1.1 
+Release 1.1 fixes a small bug. Previously, updating muscle volumes also reformatted data and removed "vector" string for centroids. However, this caused an error when recalculating muscle volumes if "vector" was already removed. Release 1.1 fixes this.
+
+## 
+
 ## Output of Add-On
 - muscle volume mesh, origin area, insertion area, origin boundary loop, insertion boundary loop
 - .csv file with all of the muscle metrics (name, origin area, insertion area, origin centroid, insertion centroid, linear length, muscle length, muscle volume). Linear length is calculated as the Euclidean distance between origin and insertion centroids, muscle length is calculated as the length of the curve of the Blender muscle (sum of edge lengths constituting the curve). Headers are included, and multiple muscles are written to the same file as rows.
 - The add-on automatically organizes your muscle components (attachment areas and volume) under an empty whose name is equal to the muscle name.
+
+## Note about Release 1.1 
+Release 1.1 fixes a small bug. Previously, updating muscle volumes also reformatted data and removed "vector" string for centroids. However, this caused an error when recalculating muscle volumes if "vector" was already removed. Release 1.1 fixes this.
+
+## 
+
 
 ## Notes for User
 - Start with a new Blender file, and import your bone meshes.
@@ -25,7 +36,8 @@ Lautenschlager, and Torsten M. Scheyer. If you use this method, please cite our 
 - Make sure a continuous area is selected for your muscle attachments (no accidental unselected faces in the general attachment area, no faces only connected to other faces by single vertex)
 - For attachment select, we recommend using the lasso tool, which can be accessed by left clicking on the select box and selecting the lasso tool
 - Note that attachment areas, centroids, boundaries, and muscle curve lengths are calculated during the muscle creation. Therefore, excessive changes to the muscle structure after meshing and joining the muscle may result in a mistmatch between the original attachments and curve length and the final muscle. We therefore recommend to model the muscle as accurately as possible, and if attachment areas are used in analysis, to check afterwards whether the final muscle corresponds to the initially selected areas (a good rule of thumb is to not change the attachment vertices through  roportional editing and sculpting). To enable muscle anatomy adjustments after muscle meshing while maintaining the initial curvature and attachment, our method creates a muscle mesh that consits of edge loops that can easily be selected to adjust cross sections via scaling without changing the central curvature of the muscle or the origin and insertion areas.
-- Do not click the next buttons too quickly! The code needs time to run before the next step can happen. This is especially the case if you get an error with the "duplicate" function context being incorrect when pressing "create muscle curve" too quickly after "match attachment vertex counts". So please do not click these buttons too quickly in a row - if the error comes up re-pressing "create muscle curve" has worked successfully to solve it, or restrat.
+- *Do not click the next buttons too quickly!* The code needs time to run before the next step can happen. This is especially the case if you get an error with the "duplicate" function context being incorrect when pressing "create muscle curve" too quickly after "match attachment vertex counts". So please do not click these buttons too quickly in a row - if the error comes up re-pressing "create muscle curve" has worked successfully to solve it, or restrat.
+- *Do not reformat your csv file in Excel until everything is finalized. You can reformat it to view data, but do not save this reformatted version, because then the program will try to write to write the muscle metrics to this reformatted file, which breaks the data structures.*
 
 
 ## Summary of Add-on Steps
@@ -61,16 +73,18 @@ Lautenschlager, and Torsten M. Scheyer. If you use this method, please cite our 
 
 **Note:** If you aligned the muscle nicely with the bevels and curvature there should not be any issues with messy geometry (e.g. edges crossing each other). However, if you have a very tight curve in your muscle, or if you used Boolean difference operations, you could end up with messy geometry. Using Mesh > Clean Up > Merge by distance and playing around with the slider can help clean this up, but be careful because it can smooth over some of the geometry. You can also use Voxel remeshing in Sculpt mode to get a better mesh (since the Boolean intersection operation can result in faces with different number of edges). Again, ensure that the remeshing is not overly smoothing your geometry.
 
-
  
 ## Add-on Installation
  
  The add-on currently works for versions 2.91.0 - 2.93.0. Blender can be installed [here](https://www.blender.org/).
  
- To install the add-on, download this repository, zip the Add-on folder, and then follow the instructions [here](https://docs.blender.org/manual/en/latest/editors/preferences/addons.html).
+ To install the add-on, download this repository, extract all, zip the Add-on folder, and then follow the instructions [here](https://docs.blender.org/manual/en/latest/editors/preferences/addons.html), selecting the zipped Add-on Folder
  
  ## Troubleshooting Errors
  
  - Note that you need to close the .csv file with the muscle metrics before more information can be written to it. Otherwise you will get an error.
  - If you do not have permissions to write and read and edit files in the folder you designated, this will throw an error. This could be a problem in university settings where researchers do not always have admin accounts (although for some of us it has worked without admin rights, so it probably depends on the exact permissions you have). We recommend testing on another computer with admin rights if possible or contacting your IT department. 
  
+## Notes about File Management
+- It is possible to work on a Blender muscle file, save, then open in another computer and update volumes (tested 15.11).
+- Note that if working on several muscle models, make sure the folders that the data is saved to have distinct file names (the same file name should technically be possible if saving in different folders, but this is not recommended, because your file name should include specifics of the model that the muscle metrics were obtained from=.
