@@ -703,13 +703,13 @@ def updateVolumes():
     # first column and row are rest of the columns
         for row in reader:
             print(row)
-        if row[3].startswith("<Vector"): #check if you already removed Vector string, if not, do so
-                row[3] = row[3].replace("<Vector (", "")
-                row[3] = row[3].replace(")>", "")
-                row[4] = row[4].replace("<Vector (", "")
-                row[4] = row[4].replace(")>", "")
-            # create dictionary where key = muscle name, value = all values
-        muscleMetrics[row[0]] = row[1:]
+            if row[3].startswith("<Vector"): #check if you already removed Vector string, if not, do so
+                    row[3] = row[3].replace("<Vector (", "")
+                    row[3] = row[3].replace(")>", "")
+                    row[4] = row[4].replace("<Vector (", "")
+                    row[4] = row[4].replace(")>", "")
+                # create dictionary where key = muscle name, value = all values
+            muscleMetrics[row[0]] = row[1:]
     print("muscle metrics from csv: " + str(muscleMetrics))
     bpy.ops.object.select_all(action='SELECT')
     # now calculate muscle volumes for all volumes in scence
