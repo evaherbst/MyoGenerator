@@ -717,6 +717,7 @@ def updateVolumes():
         print(obj)
         if obj.type == 'EMPTY':
             muscleName = obj.name
+            print(type(muscleName))
             print(muscleName)
             children = []
             children = obj.children
