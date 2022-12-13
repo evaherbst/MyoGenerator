@@ -8,7 +8,7 @@ Note that this add-on has been tested and works on v. 2.91.0 - 2.93.0 of Blender
 Lautenschlager, and Torsten M. Scheyer. If you use this method, please cite our paper (Herbst et al. 2022) and the doi of the most recent Github release:
 [![DOI](https://zenodo.org/badge/355606184.svg)](https://zenodo.org/badge/latestdoi/355606184)
 
-:video_camera: A video tutorial can be found on [Dryad](doi.org/10.5061/dryad.qjq2bvqk2).
+:video_camera: A video tutorial can be found on [Dryad](https://doi.org/10.5061/dryad.qjq2bvqk2).
 
 ## Note about Release 1.1 
 Release 1.1 fixes a small bug. Previously, updating muscle volumes also reformatted data and removed "vector" string for centroids. However, this caused an error when recalculating muscle volumes if "vector" was already removed. Release 1.1 fixes this.
